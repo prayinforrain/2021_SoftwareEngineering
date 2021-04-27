@@ -1,14 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import Mainpage from "./Mainpage";
-import Mypage from "./Mypage";
-import Managerpage from "./Managerpage";
 import reportWebVitals from "./reportWebVitals";
+import App from './App';
 
 ReactDOM.render(
     <React.StrictMode>
-        <Managerpage /> {/* Mypage, Mainpage, Managerpage */}
+        <App/>
     </React.StrictMode>,
     document.getElementById("root")
 );

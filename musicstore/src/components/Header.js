@@ -27,7 +27,7 @@ const Header = () => {
                         </a>
                     </div>
                     <div id="mapage">
-                        <a href="./mypage.html">마이페이지</a>
+                        <a href="./mypage">마이페이지</a>
                     </div>
                     <div id="shopping>">
                         <a href=".">장바구니</a>
