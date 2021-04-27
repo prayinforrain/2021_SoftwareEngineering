@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>My Page</title>
+        <link rel="stylesheet" href="./common.css" />
+    </head>
+    <body>
+        <header>
+            <div class="header_container">
+                <div id="logo">로고</div>
+                <div id="search">
+                    <input type="text" placeholder="앨범, 가수, 제작사..." />
+                    <button>검색</button>
+                </div>
+                <div class="menu">
+                    <div id="login">로그인</div>
+                    <div id="signup">회원가입</div>
+                    <div id="mypage">마이페이지</div>
+                    <div id="shopping">장바구니</div>
+                </div>
+            </div>
+        </header>
+        <div id="main">
+            <div id="main_container">
+                <div class="menu">
+                    <h3>menu</h3>
+                    <hr/>
+                    <ul>
+                        <li><a href="mypage.html">회원정보</a></li>
+                        <li><a href="tracking.html">주문/배송 조회</a></li>
+                        <li><a href="wishlist.html">찜목록</a></li>
+                        <li><a href="cart.html">장바구니</a></li>
+                        <li><a href="service_center.html">내 문의</a></li>
+                    </ul>
+                </div>
+                <div id="content_container">
+                    <h1>장바구니</h1>
+                    <div id="cart_box">
+                        <div class="cart_line">
+                            <div class="cart_check"><input type="checkbox" name="cart_selectAll"/></div>
+                            <div class="cart_name">상품 이름</div>
+                            <div class="cart_artist">아티스트명</div>
+                            <div class="cart_publish">배급사</div>
+                            <div class="cart_count">수량</div>
+                            <div class="cart_price">가격</div>
+                        </div>
+                        <div class="cart_line">
+                            <div class="cart_check"><input type="checkbox" name="cart_select"/></div>
+                            <div class="cart_name">앨범이름</div>
+                            <div class="cart_artist">가수</div>
+                            <div class="cart_publish">(주)빅배급맨</div>
+                            <div class="cart_count"><input type="number" name="product_count" value="1"/></div>
+                            <div class="cart_price">8000</div>
+                        </div>
+                        <div class="cart_line">
+                            <div class="cart_check"><input type="checkbox" name="cart_select"/></div>
+                            <div class="cart_name">다른 앨범 이름</div>
+                            <div class="cart_artist">새 가수</div>
+                            <div class="cart_publish">(주)빅배급맨</div>
+                            <div class="cart_count"><input type="number" name="product_count" value="1"/></div>
+                            <div class="cart_price">15000</div>
+                        </div>
+                    </div>
+                    <div class="cart_button">
+                        선택한 상품을: <button>구매</button><button>삭제</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer>
+            <div class="footer_container">
+                <div class="names">오윤환 이우재 전윤철</div>
+                <div class="git_address">
+                    <a
+                        target="_blank"
+                        href="https://github.com/prayinforrain/2021_SoftwareEngineering"
+                        >https://github.com/prayinforrain/2021_SoftwareEngineering</a
+                    >
+                </div>
+            </div>
+        </footer>
+    </body>
+</html>

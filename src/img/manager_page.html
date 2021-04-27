@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Manager Page</title>
+        <link rel="stylesheet" href="./common.css" />
+        <link rel="stylesheet" href="./manager_page.css" />
+    </head>
+    <body>
+        <header>
+            <div class="header_container">
+                <div id="logo">로고</div>
+                <div id="search">
+                    <input type="text" placeholder="앨범, 가수, 제작사..." />
+                    <button>검색</button>
+                </div>
+                <div class="menu">관리자님 환영합니다</div>
+            </div>
+        </header>
+        <div class="body_container">
+            <div class="inner_body">
+                <ul class="body_menu">
+                    <li class="menu_notice active">공지 관리</li>
+                    <li class="menu_banner">배너 관리</li>
+                    <li class="menu_product">상품 관리</li>
+                    <li class="menu_qna">Q&A 관리</li>
+                    <li class="menu_faq">FAQ 관리</li>
+                </ul>
+                <div class="notice_board board">
+                    <div class="notice">
+                        <div class="notice_idx">번호</div>
+                        <div class="notice_title notice_title_top">제목</div>
+                        <div class="notice_date">날짜</div>
+                    </div>
+                </div>
+                <div class="banner_board board">
+                    <div class="banner">
+                        <div class="banner_idx">번호</div>
+                        <div class="banner_title banner_title_top">제목</div>
+                        <div class="banner_date">날짜</div>
+                    </div>
+                </div>
+                <div class="product_board board">
+                    <div class="product">
+                        <div class="product_idx">번호</div>
+                        <div class="product_singer">가수</div>
+                        <div class="product_title">앨범명</div>
+                        <div class="product_genre">장르</div>
+                        <div class="product_release_date">발매일</div>
+                        <div class="product_publish">유통사</div>
+                    </div>
+                </div>
+                <div class="qna_board board">
+                    <div class="qna">
+                        <div class="qna_idx">번호</div>
+                        <div class="qna_title qna_title_top">제목</div>
+                        <div class="qna_date">날짜</div>
+                    </div>
+                </div>
+                <div class="faq_board board">
+                    <div class="faq">
+                        <div class="faq_idx">번호</div>
+                        <div class="faq_title faq_title_top">제목</div>
+                        <div class="faq_date">날짜</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="insert_button">
+            <div class="left"></div>
+            <div class="right"></div>
+        </div>
+        <div class="popup_background"></div>
+        <div class="notice_modify_popup">
+            <form action="#" id="notice_modify_form">
+                <div class="notice_popup_title_area">
+                    <div class="notice_popup_text">제목</div>
+                    <input type="text" id="notice_popup_title" />
+                </div>
+                <div class="notice_popup_detail_area">
+                    <div class="notice_popup_text">내용</div>
+                    <textarea
+                        name="notice_popup_detail"
+                        id="notice_popup_detail"
+                    ></textarea>
+                </div>
+                <div class="notice_popup_ox">
+                    <button>입력하기</button>
+                    <button>취소하기</button>
+                </div>
+            </form>
+        </div>
+        <div class="qna_modify_popup">
+            <form action="#" id="qna_modify_form">
+                <div class="qna_popup_title_area">
+                    <div class="qna_popup_text">제목</div>
+                    <input type="text" id="qna_popup_title" />
+                </div>
+                <div class="qna_popup_detail_area">
+                    <div class="qna_popup_text">내용</div>
+                    <textarea
+                        name="qna_popup_detail"
+                        id="qna_popup_detail"
+                    ></textarea>
+                </div>
+                <div class="qna_popup_ox">
+                    <button>입력하기</button>
+                    <button>취소하기</button>
+                </div>
+            </form>
+        </div>
+        <div class="faq_modify_popup">
+            <form action="#" id="faq_modify_form">
+                <div class="faq_popup_title_area">
+                    <div class="faq_popup_text">제목</div>
+                    <input type="text" id="faq_popup_title" />
+                </div>
+                <div class="faq_popup_detail_area">
+                    <div class="faq_popup_text">내용</div>
+                    <textarea
+                        name="faq_popup_detail"
+                        id="faq_popup_detail"
+                    ></textarea>
+                </div>
+                <div class="faq_popup_ox">
+                    <button>입력하기</button>
+                    <button>취소하기</button>
+                </div>
+            </form>
+        </div>
+        <div class="banner_modify_popup">
+            <form action="#" id="banner_modify_form">
+                <div class="banner_popup_title_area">
+                    <div class="banner_popup_text">제목</div>
+                    <input type="text" id="banner_popup_title" />
+                </div>
+                <div class="banner_popup_detail_area">
+                    <div class="banner_popup_text">내용</div>
+                    <textarea
+                        name="banner_popup_detail"
+                        id="banner_popup_detail"
+                    ></textarea>
+                </div>
+                <div class="banner_popup_ox">
+                    <button>입력하기</button>
+                    <button>취소하기</button>
+                </div>
+            </form>
+        </div>
+        <div class="product_modify_popup">
+            <form action="#" id="product_modify_form">
+                <div class="product_popup_singer_area">
+                    <div class="product_popup_text">가수</div>
+                    <input type="text" id="product_popup_singer" />
+                </div>
+                <div class="product_popup_title_area">
+                    <div class="product_popup_text">앨범명</div>
+                    <input type="text" id="product_popup_title" />
+                </div>
+                <div class="product_popup_genre_area">
+                    <div class="product_popup_text">장르</div>
+                    <input type="text" id="product_popup_genre" />
+                </div>
+                <div class="product_popup_release_date_area">
+                    <div class="product_popup_text">발매일</div>
+                    <input type="text" id="product_popup_release_date" />
+                </div>
+                <div class="product_popup_publish_area">
+                    <div class="product_popup_text">유통사</div>
+                    <input type="text" id="product_popup_publish" />
+                </div>
+                <div class="product_popup_picture_area">
+                    <div class="product_popup_text">앨범사진</div>
+                    <input type="file" id="product_popup_picture" />
+                </div>
+                <div class="product_popup_ox">
+                    <button>입력하기</button>
+                    <button>취소하기</button>
+                </div>
+            </form>
+        </div>
+        <footer>
+            <div class="footer_container">
+                <div class="names">오윤환 이우재 전윤철</div>
+                <div class="git_address">
+                    <a
+                        target="_blank"
+                        href="https://github.com/prayinforrain/2021_SoftwareEngineering"
+                        >https://github.com/prayinforrain/2021_SoftwareEngineering</a
+                    >
+                </div>
+            </div>
+        </footer>
+        <script>
+            const manage_menus = document.getElementsByClassName("body_menu")[0]
+                .children;
+            const notice_board = document.getElementsByClassName(
+                "notice_board"
+            )[0];
+            const banner_board = document.getElementsByClassName(
+                "banner_board"
+            )[0];
+            const product_board = document.getElementsByClassName(
+                "product_board"
+            )[0];
+            const faq_board = document.getElementsByClassName("faq_board")[0];
+            const qna_board = document.getElementsByClassName("qna_board")[0];
+
+            let active = notice_board;
+            for (let menu of manage_menus) {
+                menu.addEventListener("click", () => {
+                    active.style.display = "none";
+                    const active_menu = active.children[0].classList[0];
+                    document
+                        .querySelector(".menu_" + active_menu)
+                        .classList.remove("active");
+                    active = document.getElementsByClassName(
+                        menu.classList[0].split("_")[1] + "_board"
+                    )[0];
+                    document
+                        .querySelector("." + menu.classList[0])
+                        .classList.add("active");
+                    active.style.display = "block";
+                });
+            }
+            // 각 게시판 등록/수정 팝업
+            const popup_background = document.getElementsByClassName(
+                "popup_background"
+            )[0];
+            const notice_modify_popup = document.getElementsByClassName(
+                "notice_modify_popup"
+            )[0];
+            const notice_modify_popup_buttons = notice_modify_popup.getElementsByTagName(
+                "button"
+            );
+            const qna_modify_popup = document.getElementsByClassName(
+                "qna_modify_popup"
+            )[0];
+            const qna_modify_popup_buttons = qna_modify_popup.getElementsByTagName(
+                "button"
+            );
+            const faq_modify_popup = document.getElementsByClassName(
+                "faq_modify_popup"
+            )[0];
+            const faq_modify_popup_buttons = faq_modify_popup.getElementsByTagName(
+                "button"
+            );
+            const banner_modify_popup = document.getElementsByClassName(
+                "banner_modify_popup"
+            )[0];
+            const banner_modify_popup_buttons = banner_modify_popup.getElementsByTagName(
+                "button"
+            );
+            const product_modify_popup = document.getElementsByClassName(
+                "product_modify_popup"
+            )[0];
+            const product_modify_popup_buttons = product_modify_popup.getElementsByTagName(
+                "button"
+            );
+
+            //각 게시판 등록 팝업 온오프 버튼
+            for (let button of notice_modify_popup_buttons) {
+                button.addEventListener("click", () => {
+                    popup_background.style.display = "none";
+                    notice_modify_popup.style.display = "none";
+                });
+            }
+            for (let button of faq_modify_popup_buttons) {
+                button.addEventListener("click", () => {
+                    popup_background.style.display = "none";
+                    faq_modify_popup.style.display = "none";
+                });
+            }
+            for (let button of qna_modify_popup_buttons) {
+                button.addEventListener("click", () => {
+                    popup_background.style.display = "none";
+                    qna_modify_popup.style.display = "none";
+                });
+            }
+            for (let button of banner_modify_popup_buttons) {
+                button.addEventListener("click", () => {
+                    popup_background.style.display = "none";
+                    banner_modify_popup.style.display = "none";
+                });
+            }
+            for (let button of product_modify_popup_buttons) {
+                button.addEventListener("click", () => {
+                    popup_background.style.display = "none";
+                    product_modify_popup.style.display = "none";
+                });
+            }
+
+            //공지사항 더미 게시글 생성
+            const notice_example = {
+                title: "공지사항 관리 게시판 제목",
+                date: "21-04-08",
+            };
+            for (let i = 10; i >= 1; i--) {
+                const div = document.createElement("div");
+                div.classList.add("notice");
+                const idx_div = document.createElement("div");
+                idx_div.classList.add("notice_idx");
+                idx_div.innerText = i;
+                const title_div = document.createElement("div");
+                title_div.classList.add("notice_title");
+                title_div.innerText = notice_example.title;
+                title_div.addEventListener("click", () => {
+                    popup_background.style.display = "block";
+                    notice_modify_popup.style.display = "block";
+                });
+                const date_div = document.createElement("div");
+                date_div.classList.add("notice_date");
+                date_div.innerText = notice_example.date;
+                div.appendChild(idx_div);
+                div.appendChild(title_div);
+                div.appendChild(date_div);
+                notice_board.appendChild(div);
+            }
+
+            // QnA 더미 게시글 생성
+            const qna_example = {
+                title: "QnA 관리 게시판 제목",
+                date: "21-04-04",
+            };
+            for (let i = 10; i >= 1; i--) {
+                const div = document.createElement("div");
+                div.classList.add("qna");
+                const idx_div = document.createElement("div");
+                idx_div.classList.add("qna_idx");
+                idx_div.innerText = i;
+                const title_div = document.createElement("div");
+                title_div.classList.add("qna_title");
+                title_div.innerText = qna_example.title;
+                title_div.addEventListener("click", () => {
+                    popup_background.style.display = "block";
+                    qna_modify_popup.style.display = "block";
+                });
+                const date_div = document.createElement("div");
+                date_div.classList.add("qna_date");
+                date_div.innerText = qna_example.date;
+                div.appendChild(idx_div);
+                div.appendChild(title_div);
+                div.appendChild(date_div);
+                qna_board.appendChild(div);
+            }
+
+            // FAQ 더미 게시글 생성
+            const faq_example = {
+                title: "FAQ 관리 게시판 제목",
+                date: "21-04-04",
+            };
+            for (let i = 10; i >= 1; i--) {
+                const div = document.createElement("div");
+                div.classList.add("faq");
+                const idx_div = document.createElement("div");
+                idx_div.classList.add("faq_idx");
+                idx_div.innerText = i;
+                const title_div = document.createElement("div");
+                title_div.classList.add("faq_title");
+                title_div.innerText = faq_example.title;
+                title_div.addEventListener("click", () => {
+                    popup_background.style.display = "block";
+                    faq_modify_popup.style.display = "block";
+                });
+                const date_div = document.createElement("div");
+                date_div.classList.add("faq_date");
+                date_div.innerText = faq_example.date;
+                div.appendChild(idx_div);
+                div.appendChild(title_div);
+                div.appendChild(date_div);
+                faq_board.appendChild(div);
+            }
+
+            // banner 더미 게시글 생성
+            const banner_example = {
+                title: "banner 관리 게시판 제목",
+                date: "21-04-04",
+            };
+            for (let i = 10; i >= 1; i--) {
+                const div = document.createElement("div");
+                div.classList.add("banner");
+                const idx_div = document.createElement("div");
+                idx_div.classList.add("banner_idx");
+                idx_div.innerText = i;
+                const title_div = document.createElement("div");
+                title_div.classList.add("banner_title");
+                title_div.innerText = banner_example.title;
+                title_div.addEventListener("click", () => {
+                    popup_background.style.display = "block";
+                    banner_modify_popup.style.display = "block";
+                });
+                const date_div = document.createElement("div");
+                date_div.classList.add("banner_date");
+                date_div.innerText = banner_example.date;
+                div.appendChild(idx_div);
+                div.appendChild(title_div);
+                div.appendChild(date_div);
+                banner_board.appendChild(div);
+            }
+            // product 더미 게시글 생성
+            const product_example = [
+                {
+                    singer: "아이유(IU)",
+                    title: "IU 5th Album 'LILAC",
+                    genre: "댄스",
+                    release_date: "21.03.25",
+                    publish: "카카오엔터테인먼트",
+                },
+                {
+                    singer: "사이먼 도미닉",
+                    title: "Party Forever",
+                    genre: "힙합",
+                    release_date: "21.03.09",
+                    publish: "(주)지니뮤직",
+                },
+                {
+                    singer: "폴킴",
+                    title: "사랑하는 당신께",
+                    genre: "발라드",
+                    release_date: "21.02.25",
+                    publish: "카카오엔터테인먼트",
+                },
+            ];
+            product_example.forEach((el, idx) => {
+                const div = document.createElement("div");
+                div.classList.add("product");
+                const idx_div = document.createElement("div");
+                const singer = document.createElement("div");
+                const title = document.createElement("div");
+                const genre = document.createElement("genre");
+                const release_date = document.createElement("div");
+                const publish = document.createElement("div");
+
+                idx_div.innerText = idx + 1;
+                singer.innerText = el.singer;
+                title.innerText = el.title;
+                genre.innerText = el.genre;
+                release_date.innerText = el.release_date;
+                publish.innerText = el.publish;
+
+                idx_div.classList.add("product_idx");
+                singer.classList.add("product_singer");
+                title.classList.add("product_title");
+                genre.classList.add("product_genre");
+                release_date.classList.add("product_release_date");
+                publish.classList.add("product_publish");
+
+                div.appendChild(idx_div);
+                div.appendChild(singer);
+                div.appendChild(title);
+                div.appendChild(genre);
+                div.appendChild(release_date);
+                div.appendChild(publish);
+
+                div.style.cursor = "pointer";
+                div.addEventListener("click", () => {
+                    popup_background.style.display = "block";
+                    product_modify_popup.style.display = "block";
+                });
+
+                product_board.appendChild(div);
+            });
+
+            const insert_button = document.getElementById("insert_button");
+            insert_button.addEventListener("click", () => {
+                popup_background.style.display = "block";
+                const temp_popup =
+                    active.classList[0].split("_")[0] + "_modify_popup";
+                document.querySelector("." + temp_popup).style.display =
+                    "block";
+                console.log(active);
+            });
+        </script>
+    </body>
+</html>

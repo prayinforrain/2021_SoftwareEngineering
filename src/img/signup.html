@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Signup Page</title>
+        <link rel="stylesheet" href="./common.css" />
+    </head>
+    <body>
+        <div id="member_container" style="padding: 20px;">
+            <div class="form_container">
+                <form name="login_form" action="/cookie" method="get">
+                    <div class="form_title_div">
+                        <p class="form_title_p" style="text-align: center;">회원가입</p>
+                    </div>
+                    <div style="padding: 25px;">
+                        <div>
+                            <div>
+                                <a class="form_item_name">이름</a>
+                            </div>
+                            <div>
+                                <input type="text" name="username" placeholder="이름을 입력하세요" class="form_input"/>
+                            </div>
+                            <div class="form_text_alert_padding">
+                                <div id="alert_username" class="form_text_alert"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <a class="form_item_name">ID</a>
+                            </div>
+                            <div>
+                                <input type="text" name="id" placeholder="ID를 입력히세요" class="form_input" />
+                            </div>
+                            <div class="form_text_alert_padding">
+                                <div id="alert_id" class="form_text_alert"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <a class="form_item_name">E-mail 주소</a>
+                            </div>
+                            <div>
+                                <input type="text" name="email" placeholder="E-mail을 입력하세요" class="form_input"/>
+                            </div>
+                            <div class="form_text_alert_padding">
+                                <div id="alert_email" class="form_text_alert"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <a class="form_item_name">비밀번호</a>
+                            </div>
+                            <div>
+                                <input type="password" name="password" placeholder="비밀번호를 입력하세요" class="form_input" />
+                            </div>
+                            <div class="form_text_alert_padding">
+                                <div id="alert_password" class="form_text_alert"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <a class="form_item_name">비밀번호 확인</a>
+                            </div>
+                            <div>
+                                <input type="password" name="password2" onfocus="" placeholder="비밀번호를 다시 입력하세요" class="form_input" />
+                            </div>
+                            <div class="form_text_alert_padding">
+                                <div id="alert_password2" class="form_text_alert"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <a class="form_item_name">성별</a>
+                            </div>
+                            <div>
+                                <label><input type="radio" name="sex" value="male"> 남</label>
+                                <label><input type="radio" name="sex" value="female"> 여</label>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <a class="form_item_name">생일</a>
+                            </div>
+                            <div>
+                                <select name="user_birth_year">
+                                    <option value="2000" selected>2000</option>
+                                    <option value="1999" selected>1999</option>
+                                    <option value="1998" selected>1998</option>
+                                    <option value="1997" selected>1997</option>
+                                    <option value="1996" selected>1996</option>
+                                    <option value="1995" selected>1995</option>
+                                    <option value="1994" selected>1994</option>
+                                    <option value="1993" selected>1993</option>
+                                    <option value="1992" selected>1992</option>
+                                    <option value="1991" selected>1991</option>
+                                    <option value="1990" selected>1990</option>
+                                </select>
+                                년
+                                <select name="user_birth_month">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                </select>
+                                월
+                                <select name="user_birth_day">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                    <option value="13">13</option>
+                                    <option value="14">14</option>
+                                    <option value="15">15</option>
+                                    <option value="16">16</option>
+                                    <option value="17">17</option>
+                                    <option value="18">18</option>
+                                    <option value="19">19</option>
+                                    <option value="20">20</option>
+                                    <option value="21">21</option>
+                                    <option value="22">22</option>
+                                    <option value="23">23</option>
+                                    <option value="24">24</option>
+                                    <option value="25">25</option>
+                                    <option value="26">26</option>
+                                    <option value="27">27</option>
+                                    <option value="28">28</option>
+                                    <option value="29">29</option>
+                                    <option value="30">30</option>
+                                    <option value="31">31</option>
+                                </select>
+                                일
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <a class="form_item_name">성인인증</a>
+                            </div>
+                            <div>
+                                <button type="button">성인인증</button>
+                            </div>
+                        </div>
+                    </div>                    
+                    <div style="text-align:center; ">
+                        <button type="button" class="form_submit_button" onclick="login()">확인</button>
+                        <button type="button"  onclick="window.close()">취소</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+    </html>
