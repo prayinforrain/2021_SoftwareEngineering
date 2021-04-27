@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>login Page</title>
+        <link rel="stylesheet" href="./common.css" />
+    </head>
+    <body>
+        <div id="member_container" style="padding: 20px;">
+            <div class="form_container">
+                <form name="login_form" action="/cookie" method="get">
+                    <div class="form_title_div">
+                        <p class="form_title_p" style="text-align: center;">로그인</p>
+                    </div>
+                    <div style="padding: 25px;">
+                        <div>
+                            <div>
+                                <input type="text" name="id" class="form_input" placeholder="ID" />
+                            </div>
+                            
+                        </div>
+                        <div>
+                            <div>
+                                <input type="password" name="password" class="form_input" placeholder="비밀번호" />
+                            </div>
+                        </div>
+                    </div>                    
+                    <div style="text-align:center; margin-top: 10px;">
+                        <button type="button" class="form_submit_button" onclick="login()">확인</button>
+                        <button type="button"  onclick="window.close()">취소</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+    </html>
