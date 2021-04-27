@@ -4,7 +4,6 @@ import Mainpage from "../Mainpage";
 import Mypage from "../Mypage";
 import Managerpage from "../Managerpage";
 
-//트리 상 가장 위에 있는 페이지(가장 넓은 범주)를 아래로 넣을 것!
 
 function WebRouter() {
     return(
