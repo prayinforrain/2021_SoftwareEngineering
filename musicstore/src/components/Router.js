@@ -3,6 +3,12 @@ import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import Mainpage from "../Mainpage";
 import Mypage from "../Mypage";
 import Managerpage from "../Managerpage";
+import Header from "./Header";
+import Footer from "./Footer";
+import Cart from "./mypage/cart";
+import Cs from "./mypage/cs";
+import Tracking from "./mypage/tracking";
+import Wishlist from "./mypage/wishlist";
 
 /*
 트리 상 가장 위에 있는 페이지(가장 넓은 범주)를 아래로 넣을 것!
@@ -16,7 +22,31 @@ function WebRouter() {
     return(
         <Router>
             <Switch>
-
+                <Route exact path="/mypage/cart">
+                    <Header/>
+                    <Cart/>
+                    <Footer/>
+                </Route>
+                <Route exact path="/mypage/service-center">
+                    <Header/>
+                    <Cs/>
+                    <Footer/>
+                </Route>
+                <Route exact path="/mypage/tracking">
+                    <Header/>
+                    <Tracking/>
+                    <Footer/>
+                </Route>
+                <Route exact path="/mypage/wishlist">
+                    <Header/>
+                    <Wishlist/>
+                    <Footer/>
+                </Route>
+                <Route exact path="/mypage/service_center">
+                    <Header/>
+                    <Cs/>
+                    <Footer/>
+                </Route>
                 <Route exact path="/mypage">
                     <Mypage/>
                 </Route>

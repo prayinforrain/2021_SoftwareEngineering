@@ -9,19 +9,19 @@ const MypageSection = () => {
                     <hr />
                     <ul>
                         <li>
-                            <a href="mypage.html">회원정보</a>
+                            <a href="/mypage">회원정보</a>
                         </li>
                         <li>
-                            <a href="tracking.html">주문/배송 조회</a>
+                            <a href="/mypage/tracking">주문/배송 조회</a>
                         </li>
                         <li>
-                            <a href="wishlist.html">찜목록</a>
+                            <a href="/mypage/wishlist">찜목록</a>
                         </li>
                         <li>
-                            <a href="cart.html">장바구니</a>
+                            <a href="/mypage/cart">장바구니</a>
                         </li>
                         <li>
-                            <a href="service_center.html">내 문의</a>
+                            <a href="/mypage/service_center">내 문의</a>
                         </li>
                     </ul>
                 </div>
