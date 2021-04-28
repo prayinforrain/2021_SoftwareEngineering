@@ -9,6 +9,7 @@ import Cart from "./mypage/cart";
 import Cs from "./mypage/cs";
 import Tracking from "./mypage/tracking";
 import Wishlist from "./mypage/wishlist";
+import ItemInfo from "./item_info";
 
 /*
 트리 상 가장 위에 있는 페이지(가장 넓은 범주)를 아래로 넣을 것!
@@ -22,6 +23,11 @@ function WebRouter() {
     return(
         <Router>
             <Switch>
+                <Route exact path="/test">
+                    <Header/>
+                    <ItemInfo/>
+                    <Footer/>
+                </Route>
                 <Route exact path="/mypage/cart">
                     <Header/>
                     <Cart/>
