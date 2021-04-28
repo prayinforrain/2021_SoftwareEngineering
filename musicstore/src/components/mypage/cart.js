@@ -1,6 +1,11 @@
 import React from "react";
+import {useState} from "react";
 
 const Cart = () => {
+    const [totalPrice, setTotalPrice] = useState(0);
+    function onTest() {
+        setTotalPrice(totalPrice + 1000);
+    }
     return (
         <div id="main">
             <div id="main_container">
@@ -27,6 +32,7 @@ const Cart = () => {
                 </div>
                 <div id="content_container">
                     <h1>장바구니</h1>
+                    <button onClick={onTest}>테스트용 1000원증가</button>
                     <div id="cart_box">
                         <div class="cart_line">
                             <div class="cart_check"><input type="checkbox" name="cart_selectAll"/></div>
@@ -53,8 +59,13 @@ const Cart = () => {
                             <div class="cart_price">15000</div>
                         </div>
                     </div>
-                    <div class="cart_button">
-                        선택한 상품을: <button>구매</button><button>삭제</button>
+                    <div id="cart_box_footer">
+                        <div id="cart_total">
+                            총 : <span id="cart_total_price">{totalPrice}</span>원
+                        </div>
+                        <div class="cart_button">
+                            선택한 상품을: <button>구매</button><button>삭제</button>
+                        </div>
                     </div>
                 </div>
             </div>

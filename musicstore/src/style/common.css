@@ -267,6 +267,15 @@ header .header_container .menu {
     text-align: center;
 }
 
+#cart_box_footer {
+    display: flex;
+    flex-direction: row;
+}
+
+#cart_total_price {
+    font-weight: bold;
+}
+
 .cart_button {
     margin: 0 0 0 auto;
 }
