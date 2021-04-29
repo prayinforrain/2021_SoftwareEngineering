@@ -1,33 +1,27 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "../style/common.css";
-const Header = () => {
+const Header = ({ openSignup, openLogin }) => {
+    console.log(openSignup);
     return (
         <header>
-            <div class="header_container">
-                <div id="logo"></div>
+            <div className="header_container">
+                <div id="logo">
+                    <Link to="/" className="logo_link" />
+                </div>
                 <div id="search">
                     <input type="text" placeholder="앨범, 가수, 제작사..." />
                     <button>검색</button>
                 </div>
-                <div class="menu">
-                    <div id="login">
-                        <a
-                            href="./login.html"
-                            onclick="window.open(this.href, '_blank', 'width=300px ,height=200px ,toolbars=no,scrollbars=no'); return false;"
-                        >
-                            로그인
-                        </a>
+                <div className="menu">
+                    <div id="login" onClick={openLogin}>
+                        로그인
                     </div>
-                    <div id="signup">
-                        <a
-                            href="./signup.html"
-                            onclick="window.open(this.href, '_blank', 'width=300px ,height=500px ,toolbars=no,scrollbars=no'); return false;"
-                        >
-                            회원가입
-                        </a>
+                    <div id="signup" onClick={openSignup}>
+                        회원가입
                     </div>
                     <div id="mapage">
-                        <a href="/mypage">마이페이지</a>
+                        <Link to="/mypage">마이페이지</Link>
                     </div>
                     <div id="shopping">
                         <a href=".">장바구니</a>

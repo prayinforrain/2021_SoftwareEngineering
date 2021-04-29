@@ -3,9 +3,9 @@ import React from "react";
 const Footer = () => {
     return (
         <footer>
-            <div class="footer_container">
-                <div class="names">오윤환 이우재 전윤철</div>
-                <div class="git_address">
+            <div className="footer_container">
+                <div className="names">오윤환 이우재 전윤철</div>
+                <div className="git_address">
                     <a
                         rel="noreferrer"
                         target="_blank"

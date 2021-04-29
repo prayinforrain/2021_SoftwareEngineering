@@ -5,10 +5,10 @@ const Main = () => {
     return (
         <div id="main">
             <div id="main_container">
-                <div class="menu">
+                <div className="menu">
                     <ul>
                         <li valign="top">
-                            <a class="active" href="#home">
+                            <a className="active" href="#home">
                                 menu
                             </a>
                         </li>
