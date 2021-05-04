@@ -24,7 +24,7 @@ const Header = ({ openSignup, openLogin }) => {
                         <Link to="/mypage">마이페이지</Link>
                     </div>
                     <div id="shopping">
-                        <a href=".">장바구니</a>
+                        <a href="/mypage/cart">장바구니</a>
                     </div>
                 </div>
             </div>
