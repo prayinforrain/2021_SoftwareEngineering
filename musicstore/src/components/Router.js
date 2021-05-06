@@ -21,6 +21,8 @@ import MypageMenu from "./Mypage/MypageMenu";
 순으로 들어가 있어야 함
 */
 
+// '/test' 주소에 들어간 ItemInfo의 queryID를 백엔드에 보내서 요청하는 상품의 ID를 지정
+
 function WebRouter({ openSignup, openLogin, openDestinationEnrollModal }) {
     return (
         <Router>
@@ -28,8 +30,8 @@ function WebRouter({ openSignup, openLogin, openDestinationEnrollModal }) {
                 <Route exact path="/test">
                     <Header openSignup={openSignup} openLogin={openLogin} />
                     <div id="main_container">
-                        <MypageMenu />
-                        <ItemInfo />
+                        <ItemInfo 
+                         queryID = {1}/>
                     </div>
                     <Footer />
                 </Route>
