@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "../style/common.css";
 const Header = ({ openSignup, openLogin }) => {
-    console.log(openSignup);
+    //console.log(openSignup);
     return (
         <header>
             <div className="header_container">

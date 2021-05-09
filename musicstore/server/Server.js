@@ -16,6 +16,10 @@ app.get('/item_detail', (req, res) => {
 });
 */
 
+app.post('./user_info/', (req, res) => {
+    res.send(null);
+})
+
 app.post('/item_detail', (req, res) => {
     let sendData;
     const q = req.body.queryID;
