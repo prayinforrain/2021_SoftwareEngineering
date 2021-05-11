@@ -3,6 +3,31 @@ import "../style/modal.css";
 import axios from "axios";
 
 const SignUp = ({ onClose }) => {
+    const idCheck = () =>{
+        const id = document.getElementById('signUpId').value;
+        if(id.length >=6 && id.length<=12){
+            return true;
+        }else {
+            return false;
+        }
+    }
+    const passwordCheck = () => {
+        const password = document.getElementById('signUpPassword').value;
+        if(password.length >= 8 && password.length <= 12){
+            return true;
+        } else {
+            return false;
+        }
+    }
+    const emailCheck = () => {
+        var regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+        const email = document.getElementById('signUpEmail').value;
+        if(email.match(regExp) != null){
+            return true;
+        }else {
+            return false;
+        }
+    }
     const formCheck = () => {
         const form = document.getElementById("signup_form");
         const {
@@ -33,6 +58,18 @@ const SignUp = ({ onClose }) => {
             alert("입력하지 않은 항목이 있습니다.");
             return;
         }
+        if(!idCheck()){
+            alert("ID는 6~12글자로 입력해주세요");
+            return;
+        }
+        if(!passwordCheck()){
+            alert("Password는 8~12글자로 입력해주세요");
+            return;
+        }
+        if(!emailCheck()){
+            alert("Email 양식을 확인해주세요");
+            return;
+        }
         axios({
             method: "POST",
             url: "http://localhost:3001/signup",
@@ -47,7 +84,17 @@ const SignUp = ({ onClose }) => {
             },
         }).then((res) => {
             console.log(res);
-        });
+            onClose();
+            alert('회원가입이 완료되었습니다.');
+        }).catch(err=>{
+            console.log("아이디 중복!!");
+            alert("이미 가입된 아이디가 있습니다!");
+            id.value='';
+            id.focus();
+            id.style.border="2px solid red";
+            return;
+        })
+        
     };
 
     return (
@@ -78,9 +125,10 @@ const SignUp = ({ onClose }) => {
                         <div>ID</div>
                         <div>
                             <input
+                                id="signUpId"
                                 type="text"
                                 name="id"
-                                placeholder="ID를 입력히세요"
+                                placeholder="6글자 ~ 12글자"
                                 className="form_input"
                             />
                         </div>
@@ -95,9 +143,10 @@ const SignUp = ({ onClose }) => {
                         <div>E-mail</div>
                         <div>
                             <input
+                                id="signUpEmail"
                                 type="email"
                                 name="email"
-                                placeholder="E-mail을 입력하세요"
+                                placeholder="example@email.com"
                                 className="form_input"
                             />
                         </div>
@@ -112,9 +161,10 @@ const SignUp = ({ onClose }) => {
                         <div>비밀번호</div>
                         <div>
                             <input
+                                id="signUpPassword"
                                 type="password"
                                 name="password"
-                                placeholder="비밀번호를 입력하세요"
+                                placeholder="8글자 ~ 12글자"
                                 className="form_input"
                             />
                         </div>

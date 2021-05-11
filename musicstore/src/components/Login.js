@@ -4,21 +4,39 @@ import "../style/modal.css";
 
 
 const Login = ({ onClose }) => {
-    const [id, setId] = useState("");
-    const [pw, setPw] = useState("");
 
-    const onChange = (e) => {
-        const {target : {name, value}} = e;
-        if(name === "id") setId(value);
-        if(name === "password") setPw(value);
+    const LoginHandler =() => {
+        const id = document.getElementById('loginId');
+        const password = document.getElementById('loginPassword');
+
+        axios({
+            method:"POST",
+            url:"http://localhost:3001/login",
+            data:{
+                id:id.value,
+                password:password.value
+            }
+        })
+            .then(response => {
+                console.log('login axios 성공');
+                console.log(response.data);
+                if(response.data.length!==0){
+                    alert(response.data[0].name +'님 환영합니다!');
+                    onClose();
+                }else{
+                    alert("로그인 정보가 일치하지 않습니다");
+                    id.value='';
+                    password.value='';
+                    id.focus();
+                    return;
+                }
+            })
+            .catch(err => {
+                console.log('login axios 실패')
+                console.error(err);
+            })
     }
-    const LoginHandler =(e) => {
-        if(id == "" || pw == "") {
-            console.log("empty field");
-        } else {
-            //대충 로그인 한다는 내용
-        }
-    }
+
     return (
         <div id="member_container" style={{ padding: "20px" }}>
             <div className="login_form_container">
@@ -39,22 +57,20 @@ const Login = ({ onClose }) => {
                     <div>
                         <div>
                             <input
+                                id="loginId"
                                 type="text"
                                 name="id"
                                 className="form_input"
                                 placeholder="ID"
-                                value={id}
-                                onChange={onChange}
                                 style={{ marginBottom: "40px" }}
                             />
                         </div>
                         <div>
                             <input
+                                id="loginPassword"
                                 type="password"
                                 name="password"
                                 className="form_input"
-                                onChange={onChange}
-                                value={pw}
                                 placeholder="비밀번호"
                             />
                         </div>
