@@ -1,7 +1,25 @@
-import React from "react";
+import axios from "axios";
+import React, { useState, useEffect } from "react";
 import "../../style/destination.css";
 
 const Destination = ({ openDestinationEnrollModal }) => {
+    const [items, setItems] = useState({})
+
+    useEffect(() => {
+        axios({
+            method:"POST",
+            url:"http://localhost:3001/destination",
+            //로그인중인 사용자 ID의 데이터베이스상 id (user.id) 번호
+            data:{
+                id:1,
+            }
+        }).then(res => {
+            //console.log(res.data);
+            setItems(res.data);
+        })
+    }, [])
+
+
     return (
         <div id="content_container" className="destination_container">
             <div className="inner_container">
@@ -28,78 +46,27 @@ const Destination = ({ openDestinationEnrollModal }) => {
                 <div className="destination_list">
                     <div className="box_header">배송지 목록</div>
                     <div className="list_container">
-                        <div className="destination">
-                            <div className="receiver">
-                                <span className="bold">수령인</span>
-                                <span className="name">손흥민</span>
+                        {items.map((i) => (
+                            <div className = "destination">
+                                <div className="receiver">
+                                    <span className="bold">수령인</span>
+                                    <span className="name">아맞다이름</span>
+                                </div>
+                                <div className="receiver_destinaion">
+                                    <span className="bold">수령지</span>
+                                    <span className="address">
+                                        {i.jibunAddress1} {i.jibunAddress2}<br/>
+                                        {i.postcode}
+                                    </span>
+                                </div>
+                                <div className="contact">
+                                    <span className="bold">연락처</span>
+                                    <span className="receiver_contact">
+                                        아맞다연락처
+                                    </span>
+                                </div>
                             </div>
-                            <div className="receiver_destinaion">
-                                <span className="bold">수령지</span>
-                                <span className="address">
-                                    서울시 송파구 잠실동 장미아파트
-                                </span>
-                            </div>
-                            <div className="contact">
-                                <span className="bold">연락처</span>
-                                <span className="receiver_contact">
-                                    010-5513-3452
-                                </span>
-                            </div>
-                        </div>
-                        <div className="destination">
-                            <div className="receiver">
-                                <span className="bold">수령인</span>
-                                <span className="name">오윤환</span>
-                            </div>
-                            <div className="receiver_destinaion">
-                                <span className="bold">수령지</span>
-                                <span className="address">
-                                    서울시 송파구 잠실동 장미아파트
-                                </span>
-                            </div>
-                            <div className="contact">
-                                <span className="bold">연락처</span>
-                                <span className="receiver_contact">
-                                    010-2413-4412
-                                </span>
-                            </div>
-                        </div>
-                        <div className="destination">
-                            <div className="receiver">
-                                <span className="bold">수령인</span>
-                                <span className="name">이우재</span>
-                            </div>
-                            <div className="receiver_destinaion">
-                                <span className="bold">수령지</span>
-                                <span className="address">
-                                    서울시 송파구 잠실동 장미아파트
-                                </span>
-                            </div>
-                            <div className="contact">
-                                <span className="bold">연락처</span>
-                                <span className="receiver_contact">
-                                    010-@@@@-####
-                                </span>
-                            </div>
-                        </div>
-                        <div className="destination">
-                            <div className="receiver">
-                                <span className="bold">수령인</span>
-                                <span className="name">전윤철</span>
-                            </div>
-                            <div className="receiver_destinaion">
-                                <span className="bold">수령지</span>
-                                <span className="address">
-                                    서울시 송파구 잠실동 장미아파트
-                                </span>
-                            </div>
-                            <div className="contact">
-                                <span className="bold">연락처</span>
-                                <span className="receiver_contact">
-                                    010-7251-2411
-                                </span>
-                            </div>
-                        </div>
+                        ))}
                     </div>
                     <div
                         className="insert_destination"

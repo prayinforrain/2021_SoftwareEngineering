@@ -2,8 +2,56 @@
 import React, { useEffect } from "react";
 import "../style/modal.css";
 import "../style/destination.css";
+import axios from "axios";
 
 const DestinationEnroll = ({ onClose }) => {
+
+    const formCheck = (e) => {
+        e.preventDefault();
+        const form = document.getElementById("destination_form");
+        const {
+            postcode,
+            roadAddress,
+            jibunAddress1,
+            jibunAddress2,
+            extraAddress,
+        } = form;
+        if(
+            !(
+                postcode.value &&
+                roadAddress.value &&
+                jibunAddress1.value &&
+                jibunAddress2.value &&
+                extraAddress.value
+            )
+        ) {
+            alert("정보를 모두 채워주세요.");
+            return;
+        }
+
+        axios({
+            method: "POST",
+            url: "http://localhost:3001/add_destination",
+            data: {
+                postcode: postcode.value,
+                roadAddress: roadAddress.value,
+                jibunAddress1: jibunAddress1.value,
+                jibunAddress2: jibunAddress2.value,
+                extraAddress: extraAddress.value,
+                //addressOwner : 로그인 세션에서 유저ID의 데이터베이스상 인덱스번호(id)를 숫자형태로 기입
+                addressOwner: 1,
+            },
+        }).then((res) => {
+            console.log(res);
+            onClose();
+            alert('등록 완료');
+        }).catch(err=>{
+            console.log("err occured");
+            alert("Error occured");
+            return;
+        })
+    }
+
     async function execDaumPostcode() {
         await new daum.Postcode({
             oncomplete: function (data) {
@@ -25,15 +73,15 @@ const DestinationEnroll = ({ onClose }) => {
 
                 document.getElementById("postcode").value = data.zonecode;
                 document.getElementById("roadAddress").value = roadAddr;
-                document.getElementById("jibunAddress").value =
+                document.getElementById("jibunAddress1").value =
                     data.jibunAddress;
 
                 if (roadAddr !== "") {
                     document.getElementById(
-                        "extraAddress"
+                        "jibunAddress2"
                     ).value = extraRoadAddr;
                 } else {
-                    document.getElementById("extraAddress").value = "";
+                    document.getElementById("jibunAddress2").value = "";
                 }
 
                 var guideTextBox = document.getElementById("guide");
@@ -86,7 +134,7 @@ const DestinationEnroll = ({ onClose }) => {
                         <span className="form_span">지번 주소</span>
                         <input
                             type="text"
-                            id="jibunAddress"
+                            id="jibunAddress1"
                             placeholder="지번주소"
                         />
                     </div>
@@ -94,7 +142,7 @@ const DestinationEnroll = ({ onClose }) => {
                         <span className="form_span"></span>
                         <input
                             type="text"
-                            id="extraAddress"
+                            id="jibunAddress2"
                             placeholder="참고항목"
                         />
                     </div>
@@ -106,12 +154,13 @@ const DestinationEnroll = ({ onClose }) => {
                         <span className="form_span">상세 주소</span>
                         <input
                             type="text"
-                            id="detailAddress"
+                            id="extraAddress"
                             placeholder="상세주소"
                         />
                     </div>
                     <div className="button_box">
-                        <button type="submit">등록하기</button>
+                        <button type="submit"
+                        onClick={formCheck}>등록하기</button>
                         <button onClick={onClose}>취소하기</button>
                     </div>
                     {

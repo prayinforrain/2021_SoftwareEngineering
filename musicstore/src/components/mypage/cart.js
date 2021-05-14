@@ -76,10 +76,10 @@ const Cart = ( {userToken} ) => {
     const setGlobalPrice = () => {
         let total = 0;
         cart.map((item) => {
-            if(checkItems.indexOf(item.id) != -1) {
+            if(checkItems.indexOf(item.id) !== -1) {
                 total += item.count * item.price;
             }
-        })
+        });
         setTotalPrice(total);
     }
 
