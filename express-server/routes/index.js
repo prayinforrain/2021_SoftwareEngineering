@@ -2,10 +2,15 @@ var express = require("express");
 var router = express.Router();
 var User = require("../models").User;
 var Destination = require("../models").Destination;
+const passport = require('passport');
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
-    res.render("index", { title: "Express" });
+    if(req.isAuthenticated()){
+        res.send(req.session.userID);
+    }else{
+        res.status(403).send('로그인 필요');
+    }
 });
 
 router.post("/signup", function (req, res, next) {
@@ -72,20 +77,41 @@ router.post('/destination', function(req, res, next) {
     });
 })
 
-router.post('/login', function (req, res, next){
-    console.log('in /login POST req');
-    console.log(req.body.id);
-    console.log(req.body.password);
-    User.findAll({
-        where:{
-            userID:req.body.id,
-            password:req.body.password
-        }
-    }).then(result=>{
-        console.log(result);
-        res.status(201).json(result);
-    })
+router.post('/login', 
+    passport.authenticate('local'), function(req, res) {
+        res.status(201).send(req.user);
+    });
+
+
+router.get('/login', function(req, res, next) {
+    console.log(req.isAuthenticated())
+    if(req.isAuthenticated()){
+        res.json(req.user);
+    }else{
+       res.send('not logged in');
+    }
 })
+
+router.get('/logout', (req,res)=>{
+    req.logout();
+    delete req.user;
+    res.status(201).send('logout 성공');
+})
+
+// router.post('/login', (req, res, next) => {
+//     passport.authenticate('local', (authError, user, info) => {
+//         console.log(info);
+//         console.log('in route, index.js /login');
+//         res.status(201).json(req.user);
+//         return req.login(user, loginError => {
+//             if(loginError){
+//                 console.error(loginError);
+//             }
+//         });
+//     })(req, res, next);
+    
+// })
+
 
 router.get("/test", function(req, res, next) {
     Destination.findAll({
