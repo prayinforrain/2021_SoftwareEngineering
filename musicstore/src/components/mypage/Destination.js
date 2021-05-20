@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import "../../style/destination.css";
 
 const Destination = ({ openDestinationEnrollModal }) => {
-    const [items, setItems] = useState({})
+    const [items, setItems] = useState([]);
 
     useEffect(() => {
         axios({
