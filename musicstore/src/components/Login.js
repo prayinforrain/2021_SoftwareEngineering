@@ -3,12 +3,14 @@ import axios from 'axios';
 import "../style/modal.css";
 
 
-const Login = ({ onClose }) => {
+const Login = ({ onLogin, onClose }) => {
 
-    const LoginHandler =() => {
+    const LoginHandler =(e) => {
+        e.preventDefault();
+
         const id = document.getElementById('loginId');
         const password = document.getElementById('loginPassword');
-
+        axios.defaults.withCredentials = true;
         axios({
             method:"POST",
             url:"http://localhost:3001/login",
@@ -19,9 +21,12 @@ const Login = ({ onClose }) => {
         })
             .then(response => {
                 console.log('login axios 성공');
-                console.log(response.data);
-                if(response.data.length!==0){
-                    alert(response.data[0].name +'님 환영합니다!');
+                console.log(response);
+                const data = response.data;
+                if(data.id){
+                    console.log(data);
+                    onLogin(data);
+                    alert(data.name +'님 환영합니다!');
                     onClose();
                 }else{
                     alert("로그인 정보가 일치하지 않습니다");
@@ -43,8 +48,10 @@ const Login = ({ onClose }) => {
                 <form
                     id="login_form"
                     name="login_form"
-                    action="/cookie"
-                    method="get"
+                    action="/login"
+                    method="post"
+                    onSubmit={(e)=>{
+                        LoginHandler(e)}}
                 >
                     <div className="form_title_div">
                         <p
@@ -76,7 +83,7 @@ const Login = ({ onClose }) => {
                         </div>
                     </div>
                     <div style={{ textAlign: "center", marginTop: "10px" }}>
-                        <button type="button" className="form_submit_button" onClick={LoginHandler}>
+                        <button type="submit" className="form_submit_button" >
                             확인
                         </button>
                         <button onClick={onClose}>취소</button>

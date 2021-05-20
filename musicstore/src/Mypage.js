@@ -4,10 +4,10 @@ import MypageMenu from "./components/Mypage/MypageMenu";
 import Myinfo from "./components/Mypage/Myinfo";
 import "./style/common.css";
 
-function Mypage({ openSignup, openLogin }) {
+function Mypage({ user, onLogout, openSignup, openLogin }) {
     return (
         <div className="App">
-            <Header openSignup={openSignup} openLogin={openLogin} />
+            <Header user={user} onLogout={onLogout} openSignup={openSignup} openLogin={openLogin} />
             <div id="main_container">
                 <MypageMenu />
                 <Myinfo />

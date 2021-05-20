@@ -23,12 +23,12 @@ import MypageMenu from "./Mypage/MypageMenu";
 
 // '/test' 주소에 들어간 ItemInfo의 queryID를 백엔드에 보내서 요청하는 상품의 ID를 지정
 
-function WebRouter({ openSignup, openLogin, openDestinationEnrollModal }) {
+function WebRouter({ user, onLogout, openSignup, openLogin, openDestinationEnrollModal }) {
     return (
         <Router>
             <Switch>
                 <Route exact path="/test">
-                    <Header openSignup={openSignup} openLogin={openLogin} />
+                    <Header user={user} onLogout={onLogout} openSignup={openSignup} openLogin={openLogin} />
                     <div id="main_container">
                         <ItemInfo 
                          queryID = {1}/>
@@ -36,7 +36,7 @@ function WebRouter({ openSignup, openLogin, openDestinationEnrollModal }) {
                     <Footer />
                 </Route>
                 <Route exact path="/mypage/destination">
-                    <Header openSignup={openSignup} openLogin={openLogin} />
+                    <Header user={user} onLogout={onLogout} openSignup={openSignup} openLogin={openLogin} />
                     <div id="main_container">
                         <MypageMenu />
                         <Destination
@@ -48,7 +48,7 @@ function WebRouter({ openSignup, openLogin, openDestinationEnrollModal }) {
                     <Footer />
                 </Route>
                 <Route exact path="/mypage/cart">
-                    <Header openSignup={openSignup} openLogin={openLogin} />
+                    <Header user={user} onLogout={onLogout}  openSignup={openSignup} openLogin={openLogin} />
                     <div id="main_container">
                         <MypageMenu />
                         <Cart />
@@ -56,7 +56,7 @@ function WebRouter({ openSignup, openLogin, openDestinationEnrollModal }) {
                     <Footer />
                 </Route>
                 <Route exact path="/mypage/service-center">
-                    <Header openSignup={openSignup} openLogin={openLogin} />
+                    <Header user={user} onLogout={onLogout}  openSignup={openSignup} openLogin={openLogin} />
                     <div id="main_container">
                         <MypageMenu />
                         <Cs />
@@ -64,7 +64,7 @@ function WebRouter({ openSignup, openLogin, openDestinationEnrollModal }) {
                     <Footer />
                 </Route>
                 <Route exact path="/mypage/tracking">
-                    <Header openSignup={openSignup} openLogin={openLogin} />
+                    <Header user={user} onLogout={onLogout}  openSignup={openSignup} openLogin={openLogin} />
                     <div id="main_container">
                         <MypageMenu />
                         <Tracking />
@@ -72,7 +72,7 @@ function WebRouter({ openSignup, openLogin, openDestinationEnrollModal }) {
                     <Footer />
                 </Route>
                 <Route exact path="/mypage/wishlist">
-                    <Header openSignup={openSignup} openLogin={openLogin} />
+                    <Header user={user} onLogout={onLogout} openSignup={openSignup} openLogin={openLogin} />
                     <div id="main_container">
                         <MypageMenu />
                         <Wishlist />
@@ -80,7 +80,7 @@ function WebRouter({ openSignup, openLogin, openDestinationEnrollModal }) {
                     <Footer />
                 </Route>
                 <Route exact path="/mypage/service_center">
-                    <Header openSignup={openSignup} openLogin={openLogin} />
+                    <Header user={user} onLogout={onLogout}  openSignup={openSignup} openLogin={openLogin} />
                     <div id="main_container">
                         <MypageMenu />
                         <Cs />
@@ -88,7 +88,7 @@ function WebRouter({ openSignup, openLogin, openDestinationEnrollModal }) {
                     <Footer />
                 </Route>
                 <Route exact path="/mypage">
-                    <Mypage openSignup={openSignup} openLogin={openLogin} />
+                    <Mypage user={user} onLogout={onLogout}  openSignup={openSignup} openLogin={openLogin} />
                 </Route>
                 <Route exact path="/manage">
                     <Managerpage
@@ -97,7 +97,7 @@ function WebRouter({ openSignup, openLogin, openDestinationEnrollModal }) {
                     />
                 </Route>
                 <Route path="/">
-                    <Mainpage openSignup={openSignup} openLogin={openLogin} />
+                    <Mainpage user={user} onLogout={onLogout}  openSignup={openSignup} openLogin={openLogin} />
                 </Route>
             </Switch>
         </Router>
