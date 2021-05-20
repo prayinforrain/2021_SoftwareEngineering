@@ -50,7 +50,7 @@ function App() {
         setUser('');
     }
     return (
-        <div className="App" onClick={requestUserInfo}>
+        <div className="App">
             <WebRouter
                 user={user}
                 onLogout={onLogout} 
