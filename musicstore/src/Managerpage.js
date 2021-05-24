@@ -2,10 +2,10 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import ManagerSection from "./components/ManagerSection";
 
-function App({ openSignup, openLogin }) {
+function App({ user, onLogout,})  {
     return (
         <div className="App">
-            <Header openSignup={openSignup} openLogin={openLogin} />
+            <Header user={user} onLogout={onLogout} />
             <ManagerSection />
             <Footer />
         </div>

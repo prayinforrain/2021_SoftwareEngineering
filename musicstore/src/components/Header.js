@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
 import "../style/common.css";
 import axios from 'axios';
@@ -14,16 +14,22 @@ const Header = ({ user, onLogout, openSignup, openLogin }) => {
     }
     return (
         <header>
-            <div className="header_container" onClick={()=>{ console.log(user); }}>
+            <div className="header_container" >
                 <div id="logo">
                     <Link to="/" className="logo_link" />
                 </div>
-                <div id="search">
+                <div id="search" style={user.userID==='admin'?{display:'none'}:{}}>
                     <input type="text" placeholder="앨범, 가수, 제작사..." />
                     <button>검색</button>
                 </div>
                 {(typeof user === 'object') ? 
-                    (<div className="menu">
+                    (user.userID === 'admin' ? (
+                        <div className="menu">
+                            <div>관리자님 환영합니다.</div>
+                            <div onClick={onLogout}>관리자 로그아웃 </div>
+                        </div>
+                    ) : (
+                        <div className="menu">
                         <div id="welcome">{user.name}님 환영합니다.</div>
                         <div id="mapage">
                             <Link to="/mypage">마이페이지</Link>
@@ -33,7 +39,7 @@ const Header = ({ user, onLogout, openSignup, openLogin }) => {
                         </div>
                         <div id="logout" onClick={logout}>로그아웃</div>
                     </div>
-                    ) : (
+                    )) : (
                         <div className="menu">
                             <div id="login" onClick={openLogin}>로그인</div>
                             <div id="signup" onClick={openSignup}>회원가입</div>

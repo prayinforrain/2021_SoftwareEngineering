@@ -10,7 +10,7 @@ function Mypage({ user, onLogout, openSignup, openLogin }) {
             <Header user={user} onLogout={onLogout} openSignup={openSignup} openLogin={openLogin} />
             <div id="main_container">
                 <MypageMenu />
-                <Myinfo />
+                <Myinfo user={user}/>
             </div>
             <Footer />
         </div>

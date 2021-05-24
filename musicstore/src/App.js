@@ -1,13 +1,31 @@
 import "./App.css";
 import WebRouter from "./components/Router";
+import { BrowserRouter } from 'react-router-dom';
 import { useState, useEffect } from "react";
 import ModalPortal from "./ModalPortal";
 import SignUp from "./components/SignUp";
 import Login from "./components/Login";
 import DestinationEnroll from "./components/DestinationEnroll";
 import axios from "axios";
+import Manage from './Managerpage'
 
 function App() {
+    const id = window.sessionStorage.id;
+    console.log(id);
+    useEffect(() => {
+        if(id){
+            axios({ method:'post', url : 'http://localhost:3001/userInfo', data:{ userID : id}})
+                .then(response => {
+                    console.log(response.data);
+                    if(!user){
+                        setUser(response.data);
+                    }
+                }).catch(err => {
+                    console.log('in App useEffect');
+                    console.error(err);
+                });
+        }
+    })
     const [login_modal, set_login_modal] = useState(false);
     const [signup_modal, set_signup_modal] = useState(false);
     const [destination_enroll_modal, set_destination_enroll_modal] = useState(
@@ -29,13 +47,6 @@ function App() {
     const requestUserInfo = () => {
         console.log('user');
         console.log(user);
-        axios.get('http://localhost:3001/login')
-        .then(function(response) {
-            console.log(response.data);
-        }).catch(function(err){
-            console.log('requestUserInfo axios error');
-            console.error(err);
-        })
     }
     const openDestinationEnrollModal = () => {
         set_destination_enroll_modal(true);
@@ -47,18 +58,27 @@ function App() {
         setUser(data);
     }
     const onLogout=()=>{
+        window.sessionStorage.clear();
         setUser('');
+
     }
     
     return (
         <div className="App">
-            <WebRouter
+            {user.userID === 'admin' ? (
+                <BrowserRouter>
+                    <Manage user={user} onLogout={onLogout}/>
+                </BrowserRouter>
+            ):(
+                <WebRouter
                 user={user}
                 onLogout={onLogout} 
                 openLogin={openLoginModal}
                 openSignup={openSignupModal}
                 openDestinationEnrollModal={openDestinationEnrollModal}
             />
+            )}
+            
             {login_modal && (
                 <ModalPortal>
                     <Login onLogin={onLogin} onClose={closeLoginModal} />
@@ -74,6 +94,8 @@ function App() {
                     <DestinationEnroll onClose={closeDestinationEnrollModal} />
                 </ModalPortal>
             )}
+            <div style={{width:'100px', height:'100px', border:'5px solid black', position:'absolute', left:'0', top:'50%'}} onClick={requestUserInfo}>Test</div>
+            <div style={{width:'100px', height:'100px', border:'5px solid red', position:'absolute', left:'0', top:'70%'}} onClick={()=>{ console.log(window.sessionStorage.id); }}>Test2</div>
         </div>
     );
 }

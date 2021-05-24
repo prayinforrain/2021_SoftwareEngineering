@@ -3,12 +3,13 @@ import axios from 'axios';
 import { useState, useEffect } from "react";
 import {useHistory} from "react-router-dom"
 
-const Myinfo = () => {
+const Myinfo = ({user}) => {
     /*
         수정 가능한 정보가 생긴다면 userInfo State의 구조를 바꿔주어야 함
         물론 백엔드에서도 쿼리문 바꿔야함
     */
-
+    console.log('in myinfo');
+    console.log(user);
 
     //비로그인시 메인페이지로 리디렉션 시키기 위한 페이지
     const history = useHistory();
@@ -27,30 +28,23 @@ const Myinfo = () => {
     const [userPassword, setUserPassword] = useState("");
     const [userPwConfirm, setUserPwConfirm] = useState("");
     const [userCurrentPassword, setUserCurrentPassword] = useState("");
-
-    const fetchUserInfo = async() => {
-        const res = await axios.get('http://localhost:3001/login');
-        //console.log(res.data);
-        if (res.data !== "not logged in") {
+    useEffect(()=>{
+        if (user) {
             setUserInfo({
-                Key: res.data.id,
-                ID: res.data.userID,
-                Name: res.data.name,
-                Email: res.data.email,
-                isAdult: res.data.isAdult,
-                Sex: res.data.gender,
-                Birth: res.data.birth
+                Key: user.id,
+                ID: user.userID,
+                Name: user.name,
+                Email:user.email,
+                isAdult: user.isAdult,
+                Sex: user.gender,
+                Birth: user.birth
             });
         } else {
             //로그인 정보가 없으면 메인페이지로 리다이렉트
             alert("로그인이 필요합니다.");
             history.push('/');
         }
-    };
-
-    useEffect(() => {
-        fetchUserInfo();
-    }, [])
+    },[user])
 
     const onSubmit = async(e) => {
         e.preventDefault();
@@ -70,8 +64,7 @@ const Myinfo = () => {
             if(infoChange.status === 200) {
                 //정상 처리됨
                 alert('정보가 성공적으로 변경되었습니다.');
-                fetchUserInfo();
-                setUserCurrentPassword("");
+                  setUserCurrentPassword("");
                 setUserPassword("");
                 setUserPwConfirm("");
             } else if(infoChange.status === 202) {

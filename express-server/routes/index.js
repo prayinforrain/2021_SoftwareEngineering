@@ -170,4 +170,15 @@ router.get("/test", function(req, res, next) {
     res.render("index", { title: "Test" });
 })
 
+router.post('/userInfo', function(req, res, next) {
+    User.findOne({where: {userID : req.body.userID}})
+        .then(response => {
+            console.log('in userInfo')
+            res.send(response);
+        })
+        .catch(err =>{
+            console.error(err);
+        })
+})
+
 module.exports = router;

@@ -29,12 +29,8 @@ const Login = ({ user, onLogin, onClose }) => {
                     console.log(data);
                     onLogin(data);
                     alert(data.name +'님 환영합니다!');
-                    onClose();
-                    if(data.userID==='admin'){
-                        history.push({
-                            pathname:'/manage',
-                        });
-                    }
+                    window.sessionStorage.setItem('id',data.userID);
+                    window.location.href='http://localhost:3000';
                 }else{
                     alert("로그인 정보가 일치하지 않습니다");
                     id.value='';
