@@ -4,7 +4,7 @@ import "../style/common.css";
 import axios from 'axios';
 const Header = ({ user, onLogout, openSignup, openLogin }) => {
     function logout() {
-        axios.defaults.withCredentials = true;
+        axios.withCredentials = true;
         axios.get('http://localhost:3001/logout')
             .then(res =>{
                 alert('logout 되었습니다');

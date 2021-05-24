@@ -1,10 +1,12 @@
 import React, {useState} from "react";
 import axios from 'axios';
 import "../style/modal.css";
+import { useHistory } from 'react-router-dom';
 
 
-const Login = ({ onLogin, onClose }) => {
-
+const Login = ({ user, onLogin, onClose }) => {
+    const history=useHistory();
+    console.log(history);
     const LoginHandler =(e) => {
         e.preventDefault();
 
@@ -28,6 +30,11 @@ const Login = ({ onLogin, onClose }) => {
                     onLogin(data);
                     alert(data.name +'님 환영합니다!');
                     onClose();
+                    if(data.userID==='admin'){
+                        history.push({
+                            pathname:'/manage',
+                        });
+                    }
                 }else{
                     alert("로그인 정보가 일치하지 않습니다");
                     id.value='';
