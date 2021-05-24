@@ -111,7 +111,20 @@ header .header_container .menu {
   height: 100%;
   border: 1px solid black;
 }
-
+#info{
+  border:1px solid black;
+  width: 90%;
+  height:30%;
+  margin:0 auto;
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+}
+.main_manage{
+  width:30%;
+  height:95%;
+  border:1px solid black;
+}
 #content_container {
   width: 1000px;
   height: 100%;
