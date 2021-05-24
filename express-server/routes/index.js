@@ -13,6 +13,52 @@ router.get("/", function (req, res, next) {
     }
 });
 
+router.post("/changeinfo", function (req, res, next) {
+    User.findAll({
+        where :{
+            id : req.body.userID
+        }
+    }).then(result => {
+        if(result[0].dataValues.password === req.body.current) {
+            if(req.body.new !== "") {
+                //비밀번호 변경하는 경우
+                User.update({
+                    password: req.body.new,
+                    name: req.body.name,
+                    email: req.body.email,
+                    gender: req.body.gender,
+                    birth: req.body.birth
+                }, {
+                    where: { id : req.body.userID}
+                }).then((result) => {
+                    res.status(200).json(result);
+                }).catch((err) =>{
+                    console.error(err);
+                    next(err);
+                });
+            } else {
+                //비밀번호는 바꾸지 않는 경우
+                User.update({
+                    name: req.body.name,
+                    email: req.body.email,
+                    gender: req.body.gender,
+                    birth: req.body.birth
+                }, {
+                    where: { id : req.body.userID}
+                }).then((result) => {
+                    res.status(200).json(result);
+                }).catch((err) =>{
+                    console.error(err);
+                    next(err);
+                });
+            }
+        } else res.status(202).send("current password incorrect");
+    }).catch((err) => {
+        console.error(err);
+        next(err);
+    });
+});
+
 router.post("/signup", function (req, res, next) {
     console.log("in post req, /signup");
     console.log(User);

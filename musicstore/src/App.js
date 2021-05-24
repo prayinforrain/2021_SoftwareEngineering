@@ -52,7 +52,6 @@ function App() {
     
     return (
         <div className="App">
-            <div id="loginCheck" style={{width:"100px", height:"100px", border:"5px solid black", position:"absolute", left:"0", top:"50%"}}  onClick={requestUserInfo}>테스트</div>
             <WebRouter
                 user={user}
                 onLogout={onLogout} 

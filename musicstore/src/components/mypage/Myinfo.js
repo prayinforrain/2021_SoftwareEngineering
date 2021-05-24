@@ -1,41 +1,90 @@
 import React from "react";
 import axios from 'axios';
 import { useState, useEffect } from "react";
+import {useHistory} from "react-router-dom"
 
-const Myinfo = ( {userToken} ) => {
+const Myinfo = () => {
     /*
-    필요한 것 : Router를 통해 로그인한 사용자의 고유번호라던지
-    그런 인자를 받을 필요가 있음
+        수정 가능한 정보가 생긴다면 userInfo State의 구조를 바꿔주어야 함
+        물론 백엔드에서도 쿼리문 바꿔야함
     */
+
+
+    //비로그인시 메인페이지로 리디렉션 시키기 위한 페이지
+    const history = useHistory();
     //서버로부터 기존 정보를 받아오기 위한 State
     const [userInfo, setUserInfo] = useState({
+        Key: 0,
         ID : "null",
         Name : "null",
         Email : "null@null",
-        Veryfied : false,
-        Sex : "M", //M, F
+        isAdult : false,
+        Sex : "male", //male, female
         Birth : "1970-01-01"
     })
-    //const {ID, Name, Email, Veryfied, Sex, Birth} = userInfo;
+    //const {ID, Name, Email, isAdult, Sex, Birth} = userInfo;
     //유저가 수정한 정보를 담을 State
     const [userPassword, setUserPassword] = useState("");
     const [userPwConfirm, setUserPwConfirm] = useState("");
+    const [userCurrentPassword, setUserCurrentPassword] = useState("");
 
     const fetchUserInfo = async() => {
-        const res = await axios.post('http://localhost:3001/user_info/', {
-            userToken
-        });
-        setUserInfo(res.data);
-        console.log(userInfo);
+        const res = await axios.get('http://localhost:3001/login');
+        //console.log(res.data);
+        if (res.data !== "not logged in") {
+            setUserInfo({
+                Key: res.data.id,
+                ID: res.data.userID,
+                Name: res.data.name,
+                Email: res.data.email,
+                isAdult: res.data.isAdult,
+                Sex: res.data.gender,
+                Birth: res.data.birth
+            });
+        } else {
+            //로그인 정보가 없으면 메인페이지로 리다이렉트
+            alert("로그인이 필요합니다.");
+            history.push('/');
+        }
     };
+
     useEffect(() => {
         fetchUserInfo();
     }, [])
+
     const onSubmit = async(e) => {
         e.preventDefault();
         if(userPwConfirm === userPassword) {
-            console.log("clicked");
-        } else console.log("비밀번호");
+            //비밀번호 변경 칸이 비어있는 경우
+            //백엔드에서 "new"값이 empty string인 경우를 처리하도록 해서 비밀번호는 바뀌지 않음
+            const infoChange = await axios.post('http://localhost:3001/changeinfo', {
+                userID: userInfo.Key,
+                current: userCurrentPassword,
+                new : userPassword,
+                name: userInfo.Name,
+                email: userInfo.Email,
+                gender: userInfo.Sex,
+                birth: userInfo.Birth
+            });
+            //console.log(infoChange);
+            if(infoChange.status === 200) {
+                //정상 처리됨
+                alert('정보가 성공적으로 변경되었습니다.');
+                fetchUserInfo();
+                setUserCurrentPassword("");
+                setUserPassword("");
+                setUserPwConfirm("");
+            } else if(infoChange.status === 202) {
+                //현재 패스워드를 잘못 입력
+                alert('현재 비밀번호가 정확하지 않습니다.');
+            } else {
+                alert('오류가 발생하였습니다');
+                console.log("error occured");
+                console.log(infoChange);
+            }
+        } else {
+            alert("변경할 비밀번호를 정확히 입력해주세요");
+        }
     }
     
     const onChange = (e) => {
@@ -45,6 +94,8 @@ const Myinfo = ( {userToken} ) => {
             setUserPassword(value);
         } else if(name === "PasswordConfirm") {
             setUserPwConfirm(value);
+        } else if(name === "CurrentPassword") {
+            setUserCurrentPassword(value);
         } else {
             setUserInfo({
                 ...userInfo,
@@ -68,6 +119,12 @@ const Myinfo = ( {userToken} ) => {
                                     value= {userInfo.ID}
                                     disabled
                                 />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td className="profile_label">현재 비밀번호 : </td>
+                            <td>
+                                <input name="CurrentPassword" type="password" placeholder="현재 비밀번호" value={userCurrentPassword} onChange={onChange}/>
                             </td>
                         </tr>
                         <tr>
@@ -108,7 +165,7 @@ const Myinfo = ( {userToken} ) => {
                         <tr>
                             <td className="profile_label">성인 인증 여부 : </td>
                             <td>
-                                <input type="checkbox" value={userInfo.Veryfied} disabled />{" "}
+                                <input type="checkbox" value={userInfo.isAdult} disabled />{" "}
                                 <button disabled>성인인증</button>
                             </td>
                         </tr>
@@ -119,15 +176,15 @@ const Myinfo = ( {userToken} ) => {
                                     <input
                                         type="radio"
                                         name="sex"
-                                        value="M"
-                                        checked={userInfo.Sex === "M"}
+                                        value="male"
+                                        checked={userInfo.Sex === "male"}
                                         onChange={onChange}
                                     />
                                     남성
                                 </label>
                                 <label>
-                                    <input type="radio" name="sex" value="F"
-                                    checked={userInfo.Sex === "F"} onChange={onChange} /> 여성
+                                    <input type="radio" name="sex" value="female"
+                                    checked={userInfo.Sex === "female"} onChange={onChange} /> 여성
                                 </label>
                             </td>
                         </tr>
