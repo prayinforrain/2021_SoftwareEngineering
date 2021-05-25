@@ -2,51 +2,56 @@ import React from "react";
 import { useState, useEffect } from "react";
 import axios from 'axios';
 
-const Cart = ( {userToken} ) => {
+const Cart = ( {user} ) => {
     /*
     ItemInfo의 상품 정보 DB 구조에 갯수인 count가 추가되었음
     */
     const [totalPrice, setTotalPrice] = useState(0);
-    const [cart, setCart] = useState([
-        {
-            id : 0,
-            album : "Lilac",
-            singer : "IU",
-            price : 14900,
-            supply : "kakoEnt",
-            category : "k-pop",
-            detail: "detail text test",
-            count: 1
-        },
-        {
-            id : 1,
-            album : "Lilaaaaaac",
-            singer : "IU",
-            price : 12000,
-            supply : "kakoEnt",
-            category : "k-pop",
-            detail: "detail text test",
-            count: 1
-        }
-    ]);
+    const [cart, setCart] = useState([]);
+
     const [checkItems, setCheckItems] = useState([]);
 
     const fetchCart = async() => {
-        const res = await axios.post('http://localhost:3001/user_cart/', {
-            userToken
+        /*const res = await axios.get('http://localhost:3001/getcart/', {
+            userID: user.id
+        });*/
+        axios({
+            method:"POST",
+            url:"http://localhost:3001/getcart/",
+            data: {
+                userID: user.id
+            }
+        }).then(res => {
+            console.log(res.data);
+            setCart(res.data);
+        }).catch(err => {
+            console.log(err);
         });
-        setCart(res.data);
     };
 
-    useEffect(() => {
-        fetchCart();
-    }, [])
 
-    const onChange = (e, id) => {
+    useEffect(() => {
+        if(user) fetchCart();
+    }, [user]);
+
+
+    const onChange = async(e, id) => {
         const {target : {name, value}} = e;
         //console.log(id, " ", Number(value));
         if(name === "product_count") {
-            setCart(cart.map(i => i.id === id ? {...i, count: value} : i));
+            const changeItem = cart.filter(i => i.id === id);
+            console.log(changeItem);
+            setCart(cart.map(i => i.id === id ? {...i, quantity: value} : i));
+            axios({
+                method:"POST",
+                url:"http://localhost:3001/editcart/",
+                data: {
+                    quantity : value,
+                    cartID : changeItem[0].id
+                }
+            }).then(res => {
+                console.log(res);
+            })
         }
     }
 
@@ -77,10 +82,26 @@ const Cart = ( {userToken} ) => {
         let total = 0;
         cart.map((item) => {
             if(checkItems.indexOf(item.id) !== -1) {
-                total += item.count * item.price;
+                total += item.quantity * item.price;
             }
         });
         setTotalPrice(total);
+    }
+
+    const handleDelete = async() => {
+        for(var n=0; n<checkItems.length; n++) {
+            console.log(checkItems[n]);
+            await axios({
+                method:"POST",
+                url:"http://localhost:3001/deletecart/",
+                data: {
+                    cartID : checkItems[n]
+                }
+            });
+        }
+        setCheckItems([]);
+        fetchCart();
+        alert("삭제되었습니다.");
     }
 
     return (
@@ -108,7 +129,7 @@ const Cart = ( {userToken} ) => {
                         <div className="cart_artist">{i.singer}</div>
                         <div className="cart_publish">{i.supply}</div>
                         <div className="cart_count">
-                            <input type="number" name="product_count" value={i.count} onChange={(e) => onChange(e, i.id)} />
+                            <input type="number" name="product_count" value={i.quantity} onChange={(e) => onChange(e, i.id)} />
                         </div>
                         <div className="cart_price">{i.price}</div>
                     </div>
@@ -120,7 +141,7 @@ const Cart = ( {userToken} ) => {
                 </div>
                 <div className="cart_button">
                     선택한 상품을: <button>구매</button>
-                    <button>삭제</button>
+                    <button onClick={handleDelete}>삭제</button>
                 </div>
             </div>
         </div>

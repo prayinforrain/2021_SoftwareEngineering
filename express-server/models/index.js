@@ -19,5 +19,6 @@ db.Banner = require('./banner')(sequelize, Sequelize);
 db.Item = require('./item')(sequelize, Sequelize);
 db.Genre = require('./genre')(sequelize, Sequelize);
 db.ItemGenre = require('./itemGenre')(sequelize, Sequelize);
+db.Cart = require('./cart')(sequelize, Sequelize);
 
 module.exports = db;

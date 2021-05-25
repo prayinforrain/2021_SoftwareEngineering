@@ -7,25 +7,21 @@ import axios from 'axios';
 
 import test_img from "../img/01.jpg"; // 테스트용
 
-const ItemInfo = ( ) => {
+const ItemInfo = ( {user} ) => {
     const params = useParams();
     const [itemCount, setItemCount] = useState(1);
     const [item, setItem] = useState({
         album : "",
         singer : "",
-        price : "",
+        price : 0,
         supply : "",
         detail : "",
-        cover : ""
+        cover : "",
     });
     const [genres, setGenres] = useState([]);
-    //console.log('parsing album ID : ' + queryID);
     
     // 아이템 데이터 가져오기
     const fetchItem = async() => {
-        /*const res = await axios.get('http://localhost:3001/item_detail/', {
-            queryID : params.itemID
-        });*/
         axios({
             method:"POST",
             url:"http://localhost:3001/item_detail/",
@@ -49,8 +45,11 @@ const ItemInfo = ( ) => {
                 itemID : params.itemID
             }
         }).then(res => {
-            setGenres(res.data);
-            console.log(res.data);
+            let tempArr = [];
+            res.data.map(el => {
+                tempArr.push(el.name)
+            });
+            setGenres(tempArr);
         }).catch((err) => {
             console.log(err);
         });
@@ -88,6 +87,22 @@ const ItemInfo = ( ) => {
         fetchItem();
     }, [])
     
+    const submitCart = () => {
+        axios({
+            method:"POST",
+            url:"http://localhost:3001/addcart",
+            data: {
+                userID : user.id,
+                itemID : params.itemID,
+                quantity : itemCount
+            }
+        }).then(res => {
+            console.log(res);
+            alert('장바구니에 담았습니다.');
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
     
     return (
         <div id="main">
@@ -131,7 +146,7 @@ const ItemInfo = ( ) => {
                                 </button>
                             </div>
                             <div id="item_header_buy">
-                                <button id="item_add_wishlist">장바구니</button>
+                                <button id="item_add_wishlist" onClick={submitCart}>장바구니</button>
                                 <button id="item_buy">구매</button>
                             </div>
                         </div>

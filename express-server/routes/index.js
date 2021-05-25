@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+
 var User = require('../models').User;
 var Notice = require('../models').Notice;
 var Banner = require('../models').Banner;
@@ -9,10 +10,14 @@ var Destination = require('../models').Destination;
 var Item = require('../models').Item;
 var Genre = require('../models').Genre;
 var ItemGenre = require('../models').ItemGenre;
+var Cart = require('../models').Cart;
+
 const passport = require('passport');
 
 var multer = require('multer'); // express에 multer모듈 적용 (for 파일업로드)
 var upload = multer({ dest: 'routes/uploads/' })
+
+const mysqldb = require('../mysql/mysqldb');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -31,24 +36,63 @@ router.get('/uploads/:img_id', function(req, res) {
 router.post('/upload', upload.single('cover'), function(req, res){
 	res.send(req.file.path); 
 	console.log(req.file.path);
-	/*Item.create({
-		album: req.body.album,
-		singer: req.body.singer,
-		price: req.body.price,
-		supply: req.body.supply,
-		detail: req.body.detail,
-		cover: req.file.path
-	}).then(result => {
-		console.log(result);
-		res.status(201).json(result);
-	}).catch(err => {
-		console.log('error while adding item');
-		console.error(err);
-		next(err);
-	});*/
 });
 
+router.post('/getcart', function(req, res, next) {
+	/*
+	SELECT * FROM musicstore.carts
+	left outer join musicstore.items
+	on musicstore.carts.itemID = musicstore.items.id where userID=?;
+	를 할수 있으면 얼마나 좋을까?
+	*/
+	console.log("받아온거 : " , req.body.userID);
+	mysqldb.connectiond.query(`SELECT * FROM musicstore.carts
+	left outer join musicstore.items
+	on musicstore.carts.itemID = musicstore.items.id where userID=?`, [req.body.userID], function(err, rows, fields) {
+		if(err) {
+			console.log(err);
+		} else {
+			res.send(rows);
+		}
+	})
+});
+
+router.post('/editcart', function(req, res, next) {
+	mysqldb.connectiond.query(`UPDATE musicstore.carts SET quantity=? WHERE id=?`,
+	[req.body.quantity, req.body.cartID], function(err, rows, fields) {
+		if(err) {
+			console.log(err);
+		} else {
+			res.send(rows);
+		}
+	})
+})
+
+router.post('/deletecart', function(req, res, next) {
+	mysqldb.connectiond.query(`DELETE FROM musicstore.carts WHERE id=?`,
+	[req.body.cartID], function(err, rows, fields) {
+		if(err) {
+			console.log(err);
+		} else {
+			res.send(rows);
+		}
+	})
+})
+
+router.post('/addcart', function(req, res, next) {
+	Cart.create({
+		itemID: req.body.itemID,
+		userID: req.body.userID,
+		quantity: req.body.quantity
+	}).then(result => {
+		res.send(result);
+	}).catch(err => {
+		console.error(err);
+	});
+})
+
 router.post('/item_detail', function(req, res, next) {
+	console.log('finding Item Information with id = ', req.body.que)
 	Item.findOne({
 		where: {
 			id: req.body.queryID
