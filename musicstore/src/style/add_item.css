@@ -24,6 +24,10 @@
     background-color: white;
 }
 
+#item_delete_btn {
+    margin-left: 90%;
+}
+
 .item_row {
     display: flex;
     flex-direction: row;

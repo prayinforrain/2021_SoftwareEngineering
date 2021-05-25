@@ -218,11 +218,35 @@ const Additem = ( {closePopup, closeEdit, editStatus = -1} ) => {
         }
     }
 
+    const deleteItem = async(e) => {
+        e.preventDefault();
+        axios({
+            method: "POST",
+            url: "http://localhost:3001/deleteitem",
+            data: {
+                itemID: editStatus
+            }
+        }).then((res) => {
+            console.log(res);
+            alert('성공');
+            closeEdit(-1);
+            closePopup(false);
+        }).catch(err=>{
+            console.log("err occured while edititem : ");
+            console.log(err);
+            alert("Error occured");
+            return;
+        })
+    }
+
     return (
         <div id="item_manage_container">
             <form action="http://localhost3001/upload" method="post" id="add_item_form" enctype="multipart/form-data">
                 <div className="item_row">
-                    <h1>상품 추가</h1>
+                    <h1>상품 관리</h1>
+                </div>
+                <div className="item_row">
+                    {editStatus !== -1 && (<><button id="item_delete_btn" onClick={deleteItem}>삭제</button></>)}
                 </div>
                 <div className="item_row">
                     <div className="item_row_name">
