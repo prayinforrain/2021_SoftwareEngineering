@@ -154,40 +154,7 @@ const ManagerSection = () => {
 					</div>
 				</form>
 			</div>
-			<div className="product_modify_popup">
-				<form id="product_modify_form" onSubmit={onSubmit}>
-					<div className="product_popup_singer_area">
-						<div className="product_popup_text">가수</div>
-						<input type="text" id="product_popup_singer" />
-					</div>
-					<div className="product_popup_title_area">
-						<div className="product_popup_text">앨범명</div>
-						<input type="text" id="product_popup_title" />
-					</div>
-					<div className="product_popup_genre_area">
-						<div className="product_popup_text">장르</div>
-						<input type="text" id="product_popup_genre" />
-					</div>
-					<div className="product_popup_release_date_area">
-						<div className="product_popup_text">발매일</div>
-						<input type="text" id="product_popup_release_date" />
-					</div>
-					<div className="product_popup_publish_area">
-						<div className="product_popup_text">유통사</div>
-						<input type="text" id="product_popup_publish" />
-					</div>
-					<div className="product_popup_picture_area">
-						<div className="product_popup_text">앨범사진</div>
-						<input type="file" id="product_popup_picture" />
-					</div>
-					<div className="product_popup_ox">
-						<button type="submit">입력하기</button>
-						<button onClick={closePopup}>취소하기</button>
-					</div>
-				</form>
-			</div>
 		</div>
 	);
 };
-
 export default ManagerSection;

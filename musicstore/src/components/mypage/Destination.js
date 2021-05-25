@@ -4,8 +4,13 @@ import "../../style/destination.css";
 
 const Destination = ({ openDestinationEnrollModal }) => {
     const [items, setItems] = useState([]);
+    const [modalStatus, setModalStatus] = useState(0);
 
     useEffect(() => {
+        fetchDestination()
+    }, [])
+
+    const fetchDestination = async () => {
         axios({
             method:"POST",
             url:"http://localhost:3001/destination",
@@ -17,8 +22,17 @@ const Destination = ({ openDestinationEnrollModal }) => {
             //console.log(res.data);
             setItems(res.data);
         })
-    }, [])
+    }
 
+    useEffect(() => {
+        let checkModal = document.getElementsByClassName("destination_enroll_container");
+        if(checkModal.length !== modalStatus) {
+            setModalStatus(checkModal.length);
+            if(checkModal.length === 0) {
+                fetchDestination();
+            }
+        }
+    })
 
     return (
         <div id="content_container" className="destination_container">
