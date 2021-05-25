@@ -130,6 +130,43 @@ router.post('/add_destination', function (req, res, next) {
 		});
 });
 
+router.post('/edit_destination', function (req, res, next) {
+	console.log('in post req, /edit_destination');
+	console.log(Destination);
+	Destination.update(
+		{
+			customerName : req.body.customerName,
+			customerContact : req.body.customerContact,
+			postcode: req.body.postcode,
+			roadAddress: req.body.roadAddress,
+			jibunAddress1: req.body.jibunAddress1,
+			jibunAddress2: req.body.jibunAddress2,
+			extraAddress: req.body.extraAddress,
+			addressOwner: req.body.addressOwner
+		}, {
+			where: { id : req.body.id }
+		}
+	).then(result => {
+		res.status(200).json(result);
+	}).catch(err => {
+		console.log(err);
+		next(err);
+	});
+});
+
+router.post('/delete_destination', function (req, res, next) {
+	console.log('in post req, /delete_destination');
+	console.log(Destination);
+	Destination.destroy({
+		where: {id : req.body.id}
+	}).then(result => {
+		res.status(200).json(result);
+	}).catch(err => {
+		console.log(err);
+		next(err);
+	});
+});
+
 router.post('/destination', function (req, res, next) {
 	console.log('in /destination POST req');
 	console.log(req.body.id);

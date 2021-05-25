@@ -4,7 +4,29 @@ import "../style/modal.css";
 import "../style/destination.css";
 import axios from "axios";
 
-const DestinationEnroll = ({ onClose, user }) => {
+const DestinationEnroll = ({ setModalStatus, user, editInfo }) => {
+    useEffect(() => {
+        if(editInfo) {
+            const form = document.getElementById("destination_form");
+            const {
+                postcode,
+                roadAddress,
+                jibunAddress1,
+                jibunAddress2,
+                extraAddress,
+                customerName,
+                customerContact
+            } = form;
+            postcode.value = editInfo.postcode;
+            roadAddress.value = editInfo.roadAddress;
+            jibunAddress1.value = editInfo.jibunAddress1;
+            jibunAddress2.value = editInfo.jibunAddress2;
+            extraAddress.value = editInfo.extraAddress;
+            customerName.value = editInfo.customerName;
+            customerContact.value = editInfo.customerContact;
+        }
+    }, [])
+
     const formCheck = (e) => {
         e.preventDefault();
         const form = document.getElementById("destination_form");
@@ -33,29 +55,61 @@ const DestinationEnroll = ({ onClose, user }) => {
         }
         console.log(user.id + typeof(user.id));
 
-        axios({
-            method: "POST",
-            url: "http://localhost:3001/add_destination",
-            data: {
-                postcode: postcode.value,
-                roadAddress: roadAddress.value,
-                jibunAddress1: jibunAddress1.value,
-                jibunAddress2: jibunAddress2.value,
-                extraAddress: extraAddress.value,
-                //addressOwner : 로그인 세션에서 유저ID의 데이터베이스상 인덱스번호(id)를 숫자형태로 기입
-                addressOwner: user.id,
-                customerName: customerName.value,
-                customerContact: customerContact.value
-            },
-        }).then((res) => {
-            console.log(res);
-            onClose();
-            alert('등록 완료');
-        }).catch(err=>{
-            console.log("err occured : " + err);
-            alert("Error occured");
-            return;
-        })
+        if(!editInfo) {
+            axios({
+                method: "POST",
+                url: "http://localhost:3001/add_destination",
+                data: {
+                    postcode: postcode.value,
+                    roadAddress: roadAddress.value,
+                    jibunAddress1: jibunAddress1.value,
+                    jibunAddress2: jibunAddress2.value,
+                    extraAddress: extraAddress.value,
+                    //addressOwner : 로그인 세션에서 유저ID의 데이터베이스상 인덱스번호(id)를 숫자형태로 기입
+                    addressOwner: user.id,
+                    customerName: customerName.value,
+                    customerContact: customerContact.value
+                },
+            }).then((res) => {
+                console.log(res);
+                modalCloseHandler();
+                alert('등록 완료');
+            }).catch(err=>{
+                console.log("err occured : " + err);
+                alert("Error occured");
+                return;
+            })
+        } else {
+            axios({
+                method: "POST",
+                url: "http://localhost:3001/edit_destination",
+                data: {
+                    id : editInfo.id,
+                    postcode: postcode.value,
+                    roadAddress: roadAddress.value,
+                    jibunAddress1: jibunAddress1.value,
+                    jibunAddress2: jibunAddress2.value,
+                    extraAddress: extraAddress.value,
+                    //addressOwner : 로그인 세션에서 유저ID의 데이터베이스상 인덱스번호(id)를 숫자형태로 기입
+                    addressOwner: user.id,
+                    customerName: customerName.value,
+                    customerContact: customerContact.value
+                },
+            }).then((res) => {
+                console.log(res);
+                modalCloseHandler();
+                alert('수정 완료');
+            }).catch(err=>{
+                console.log("err occured : " + err);
+                alert("Error occured");
+                return;
+            })
+        }
+    }
+
+    const modalCloseHandler = (e) => {
+        if(e) e.preventDefault();
+        setModalStatus(0);
     }
 
     async function execDaumPostcode() {
@@ -108,10 +162,36 @@ const DestinationEnroll = ({ onClose, user }) => {
             },
         }).open();
     }
+
+    const deleteHandler = () => {
+        axios({
+            method: "POST",
+            url: "http://localhost:3001/delete_destination",
+            data: {
+                id : editInfo.id
+            },
+        }).then((res) => {
+            console.log(res);
+            modalCloseHandler();
+            alert('삭제 완료');
+        }).catch(err=>{
+            console.log("err occured : " + err);
+            alert("Error occured");
+            return;
+        })
+    }
+
     return (
         <div id="member_container">
             <div className="destination_enroll_container">
-                <div className="title">배송지 등록</div>
+                <div className="title">배송지 {editInfo ? ("수정") : ("등록")}</div>
+                {editInfo ? (
+                    <>
+                    <div className="destination_delete">
+                        <div id="destination_delete_btn" onClick={deleteHandler}></div>
+                    </div>
+                    </>
+                ) : (<></>)}
                 <form action="#" id="destination_form">
                     <div className="input_box">
                         <span className="form_span">수령인 이름</span>
@@ -182,8 +262,8 @@ const DestinationEnroll = ({ onClose, user }) => {
                     </div>
                     <div className="button_box">
                         <button type="submit"
-                        onClick={formCheck}>등록하기</button>
-                        <button onClick={onClose}>취소하기</button>
+                        onClick={formCheck}>{editInfo ? ("수정") : ("등록")}하기</button>
+                        <button onClick={modalCloseHandler}>취소하기</button>
                     </div>
                     {
                         useEffect(() => {
