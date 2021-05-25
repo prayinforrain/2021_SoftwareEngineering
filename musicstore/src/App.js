@@ -91,7 +91,7 @@ function App() {
             )}
             {destination_enroll_modal && (
                 <ModalPortal>
-                    <DestinationEnroll onClose={closeDestinationEnrollModal} />
+                    <DestinationEnroll onClose={closeDestinationEnrollModal} user={user} />
                 </ModalPortal>
             )}
             <div style={{width:'100px', height:'100px', border:'5px solid black', position:'absolute', left:'0', top:'50%'}} onClick={requestUserInfo}>Test</div>

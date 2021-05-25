@@ -2,11 +2,11 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import "../../style/destination.css";
 
-const Destination = ({ openDestinationEnrollModal }) => {
+const Destination = ({ openDestinationEnrollModal, user }) => {
     const [items, setItems] = useState([]);
     const [modalStatus, setModalStatus] = useState(0);
-
     useEffect(() => {
+        console.log(user.id);
         fetchDestination()
     }, [])
 
@@ -16,10 +16,10 @@ const Destination = ({ openDestinationEnrollModal }) => {
             url:"http://localhost:3001/destination",
             //로그인중인 사용자 ID의 데이터베이스상 id (user.id) 번호
             data:{
-                id:1,
+                id:user.id,
             }
         }).then(res => {
-            //console.log(res.data);
+            console.log(res.data);
             setItems(res.data);
         })
     }
@@ -64,19 +64,19 @@ const Destination = ({ openDestinationEnrollModal }) => {
                             <div className = "destination">
                                 <div className="receiver">
                                     <span className="bold">수령인</span>
-                                    <span className="name">아맞다이름</span>
+                                    <span className="name">{i.customerName}</span>
                                 </div>
                                 <div className="receiver_destinaion">
                                     <span className="bold">수령지</span>
                                     <span className="address">
-                                        {i.jibunAddress1} {i.jibunAddress2}<br/>
-                                        {i.postcode}
+                                        {i.postcode}<br/>
+                                        {i.jibunAddress1} {i.jibunAddress2} {i.extraAddress}<br/>
                                     </span>
                                 </div>
                                 <div className="contact">
                                     <span className="bold">연락처</span>
                                     <span className="receiver_contact">
-                                        아맞다연락처
+                                        {i.customerContact}
                                     </span>
                                 </div>
                             </div>

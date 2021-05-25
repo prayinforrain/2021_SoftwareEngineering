@@ -110,6 +110,8 @@ router.post('/add_destination', function (req, res, next) {
 	console.log('in post req, /add_destination');
 	console.log(Destination);
 	Destination.create({
+		customerName : req.body.customerName,
+		customerContact : req.body.customerContact,
 		postcode: req.body.postcode,
 		roadAddress: req.body.roadAddress,
 		jibunAddress1: req.body.jibunAddress1,

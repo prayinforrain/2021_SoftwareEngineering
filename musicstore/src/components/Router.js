@@ -43,6 +43,7 @@ function WebRouter({ user, onLogout, openSignup, openLogin, openDestinationEnrol
                             openDestinationEnrollModal={
                                 openDestinationEnrollModal
                             }
+                            user= {user}
                         />
                     </div>
                     <Footer />
