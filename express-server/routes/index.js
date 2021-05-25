@@ -7,10 +7,12 @@ var Qna = require('../models').Qna;
 var Faq = require('../models').Faq;
 var Destination = require('../models').Destination;
 var Item = require('../models').Item;
+var Genre = require('../models').Genre;
+var ItemGenre = require('../models').ItemGenre;
 const passport = require('passport');
 
 var multer = require('multer'); // express에 multer모듈 적용 (for 파일업로드)
-var upload = multer({ dest: 'uploads/' })
+var upload = multer({ dest: 'routes/uploads/' })
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -19,6 +21,13 @@ router.get('/', function (req, res, next) {
 	} else {
 		res.status(403).send('로그인 필요');
 	}
+});
+
+router.get('/uploads/:img_id', function(req, res) {
+	console.log(`../uploads/${req.params.img_id}`);
+	console.log(`${__dirname}/${req.params.img_id}`);
+	res.sendFile(`${__dirname}/uploads/${req.params.img_id}`)
+	//res.sendfile(path.resolve(__dirname,))
 });
 
 router.post('/upload', upload.single('cover'), function(req, res){
@@ -41,8 +50,60 @@ router.post('/upload', upload.single('cover'), function(req, res){
 	});*/
 });
 
-router.post('/additem', function(req, res, next) {
+router.post('/item_detail', function(req, res, next) {
+	console.log('---------');
 	console.log(req.body);
+	Item.findOne({
+		where: {
+			id: req.body.queryID
+		}
+	}).then((result) => {
+		res.send(result);
+	})
+})
+
+router.get('/getgenres', function(req, res, next) {
+	//console.log("ddddddddddddddddd" + req.body.itemID);
+	Genre.findAll()
+	.then(result => {
+		res.send(result);	
+	})
+	.catch(err => {
+		console.error(err);
+	});
+});
+
+router.post('/getgenres', function(req, res, next) {
+	Genre.findAll()
+	.then(result => {
+		if(req.body.itemID) {
+			let listofGenres = [];
+			ItemGenre.findAll({
+				where: {
+					itemID: req.body.itemID
+				}
+			}).then(genRes => {
+				/*console.log("genRes");
+				console.log(genRes);*/
+				genRes.forEach((g) => {
+					console.log("------dsdsadsd");
+					console.log(g.dataValues);
+					listofGenres.push(result.find(value => value.id === g.dataValues.genreID+1).dataValues.name);
+				})
+				console.log("----------sssssss----");
+				console.log(listofGenres);
+				res.send(listofGenres);
+			})
+		} else {
+			res.send(result);	
+		}
+	})
+	.catch(err => {
+		console.error(err);
+	});
+});
+
+router.post('/additem', function(req, res, next) {
 	Item.create({
 		album: req.body.album,
 		singer: req.body.singer,
@@ -51,7 +112,15 @@ router.post('/additem', function(req, res, next) {
 		detail: req.body.detail,
 		cover: req.body.cover
 	}).then(result => {
-		console.log(result);
+		console.log('------------------');
+		//console.log(result.dataValues.id);
+		//장르 추가할 것
+		req.body.genre.forEach(el => {
+			ItemGenre.create({
+				itemID: result.dataValues.id,
+				genreID: el-1
+			});
+		})
 		res.status(201).json(result);
 	}).catch(err => {
 		console.log('error while adding item');

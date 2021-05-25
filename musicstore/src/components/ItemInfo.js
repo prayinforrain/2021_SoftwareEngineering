@@ -15,20 +15,46 @@ const ItemInfo = ( ) => {
         singer : "",
         price : "",
         supply : "",
-        category : "",
-        detail : ""
+        detail : "",
+        cover : ""
     });
+    const [genres, setGenres] = useState([]);
     //console.log('parsing album ID : ' + queryID);
     
     // 아이템 데이터 가져오기
     const fetchItem = async() => {
-        const res = await axios.post('http://localhost:3001/item_detail/', {
+        /*const res = await axios.get('http://localhost:3001/item_detail/', {
             queryID : params.itemID
+        });*/
+        axios({
+            method:"POST",
+            url:"http://localhost:3001/item_detail/",
+            data: {
+                queryID : params.itemID
+            }
+        }).then(res => {
+            setItem(res.data);
+            fetchGenre();
+        }).catch((err) => {
+            console.log(err);
         });
-        setItem(res.data);
-        console.log(item);
-        
     };
+
+    //장르 가져오기
+    const fetchGenre = async() => {
+        axios({
+            method:"POST",
+            url:"http://localhost:3001/getgenres",
+            data: {
+                itemID : params.itemID
+            }
+        }).then(res => {
+            setGenres(res.data);
+            console.log(res.data);
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
 
     // 수량 state 조절하는 부분
     function onCountChange(event) {
@@ -73,7 +99,7 @@ const ItemInfo = ( ) => {
                                 홈 &gt; 최신음악
                             </div>
                             <div id="item_img">
-                                <img src={test_img} alt="test" />
+                                <img src={"http://localhost:3001/" + item.cover} alt="test" />
                             </div>
                         </div>
                         <div id="item_header_info">
@@ -116,8 +142,16 @@ const ItemInfo = ( ) => {
                         가수 : {item.singer} <br/>
                         가격 : {item.price} <br/>
                         배급사 : {item.supply} <br/>
-                        장르 : {item.category} <br/>
-                        상세설명 : {item.detail} <br/>
+                        장르 : {genres.map((e) => (
+                            <>{e} </>
+                        ))} <br/>
+                        상세설명 : {item.detail.split("\n").map((line) => {
+                            return (
+                                <>
+                                <span>{line}<br/></span>
+                                </>
+                            )
+                        })} <br/>
                     </div>
                 </div>
             </div>

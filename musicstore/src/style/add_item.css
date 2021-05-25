@@ -1,0 +1,4 @@
+#item_genre_list {
+    display: flex;
+    flex-direction: column;
+}
