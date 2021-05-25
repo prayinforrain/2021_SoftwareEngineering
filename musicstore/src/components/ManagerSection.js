@@ -8,28 +8,14 @@ const ManagerSection = () => {
 	const [board, setBoard] = useState('notice');
 	const [boardData, setBoardData] = useState([]);
 	const [loading, setLoading] = useState(false);
-
 	// 렌더링할 때 default 게시판인 notice의 db 값을 불러와 board에 저장
-	useEffect(() => {
-		const fetchData = () => {
-			setLoading(true);
-			axios({
-				method: 'GET',
-				url: `http://localhost:3001/${board}`,
-			})
-				.then(res => {
-					return res;
-				})
-				.then(res => {
-					setBoardData(res.data.reverse());
-				})
-				.then(() => {
-					setLoading(false);
-				});
-		};
-		fetchData();
-	}, []);
 
+	useEffect(() => {
+		axios.get(`http://localhost:3001/${board}`).then(res => {
+			console.log(res.data);
+			setBoardData(res.data.reverse());
+		});
+	}, [board]);
 	// 게시판 메뉴 선택 함수
 	const chooseMenu = e => {
 		const targetBoard = e.target.className.split('_')[1];
@@ -127,7 +113,7 @@ const ManagerSection = () => {
 							<div className="product_posts"></div>
 						</div>
 					) : (
-						<Board loading={loading} board={board} boardData={boardData} />
+						<Board board={board} boardData={boardData} />
 					)}
 				</div>
 			</div>
@@ -136,6 +122,46 @@ const ManagerSection = () => {
 				<div className="right"></div>
 			</div>
 			<div className="popup_background"></div>
+			{board === 'banner' ? ( // 배너 게시물 추가 팝업
+				<div className="board_modify_popup">
+					<form id="board_modify_form" onSubmit={onSubmit}>
+						<div className="board_popup_title_area">
+							<div className="board_popup_text">{board} 제목</div>
+							<input type="text" id="board_popup_title" />
+						</div>
+						<div className="board_popup_detail_area">
+							<div className="board_popup_text">내용</div>
+							<textarea name="board_popup_detail" id="board_popup_detail"></textarea>
+						</div>
+						<div className="board_popup_ox">
+							<button type="submit">입력하기</button>
+							<button type="button" onClick={closePopup}>
+								취소하기
+							</button>
+						</div>
+					</form>
+				</div>
+			) : (
+				// 공지, QnA, FAQ 추가 팝업
+				<div className="board_modify_popup">
+					<form id="board_modify_form" onSubmit={onSubmit}>
+						<div className="board_popup_title_area">
+							<div className="board_popup_text">{board} 제목</div>
+							<input type="text" id="board_popup_title" />
+						</div>
+						<div className="board_popup_detail_area">
+							<div className="board_popup_text">내용</div>
+							<textarea name="board_popup_detail" id="board_popup_detail"></textarea>
+						</div>
+						<div className="board_popup_ox">
+							<button type="submit">입력하기</button>
+							<button type="button" onClick={closePopup}>
+								취소하기
+							</button>
+						</div>
+					</form>
+				</div>
+			)}
 			<div className="board_modify_popup">
 				<form id="board_modify_form" onSubmit={onSubmit}>
 					<div className="board_popup_title_area">

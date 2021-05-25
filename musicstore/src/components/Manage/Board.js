@@ -1,23 +1,25 @@
 import Post from './Post';
 import { useState, useEffect } from 'react';
-const Board = ({ loading, board, boardData }) => {
+import axios from 'axios';
+
+const Board = ({ board, boardData }) => {
 	const totalPage = boardData ? Math.ceil(boardData.length / 10) : 0;
-	const [data, setData] = useState([]);
 	const [page, setPage] = useState(1);
+	const [loading, setLoading] = useState(false);
+	console.log('in board.js');
+	console.log(boardData);
 
-	useEffect(() => {
-		setData(createArray(boardData));
-	}, []);
-
-	const createArray = arr => {
+	const createArray = () => {
 		const newArray = [];
-		const num = Math.ceil(arr.length / 10);
+		const num = Math.ceil(boardData.length / 10);
 		for (let i = 0; i < num; i++) {
-			newArray.push(arr.slice(10 * i, 10 * (i + 1)));
+			newArray.push(boardData.slice(10 * i, 10 * (i + 1)));
 		}
 		return newArray;
 	};
 	const changePage = e => {
+		console.log('clicked', e.target.innerText);
+		console.log('origin page', page);
 		if (parseInt(e.target.innerText) !== page) {
 			setPage(parseInt(e.target.innerText));
 		}
@@ -31,9 +33,9 @@ const Board = ({ loading, board, boardData }) => {
 				<div className="board_contents"></div>
 				<div className="board_date">날짜</div>
 			</div>
-			{loading ? (
+			{!boardData ? (
 				<div>로딩중...</div>
-			) : !boardData ? null : totalPage <= 1 ? (
+			) : boardData.length === 0 ? null : totalPage <= 1 ? (
 				<div className="board_posts">
 					{boardData.map(el => (
 						<Post key={el.id} board={board} data={el} />
@@ -41,11 +43,11 @@ const Board = ({ loading, board, boardData }) => {
 				</div>
 			) : (
 				<div className="board_posts">
-					{data[page - 1].map(data => (
-						<Post key={data.id} board={board} data={data} />
+					{createArray(boardData)[page - 1].map(data => (
+						<Post key={boardData.id} board={board} data={data} />
 					))}
 					<div className="pagination">
-						{data.map((el, idx) => (
+						{createArray(boardData).map((el, idx) => (
 							<div key={idx} className={idx + 1 === page ? 'page page_active' : 'page'} onClick={changePage}>
 								{idx + 1}
 							</div>

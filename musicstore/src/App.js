@@ -23,7 +23,7 @@ function App() {
 					console.error(err);
 				});
 		}
-	});
+	}, []);
 	const [login_modal, set_login_modal] = useState(false);
 	const [signup_modal, set_signup_modal] = useState(false);
 	const [user, setUser] = useState('');
@@ -58,12 +58,7 @@ function App() {
 					<Manage user={user} onLogout={onLogout} />
 				</BrowserRouter>
 			) : (
-				<WebRouter
-					user={user}
-					onLogout={onLogout}
-					openLogin={openLoginModal}
-					openSignup={openSignupModal}
-				/>
+				<WebRouter user={user} onLogout={onLogout} openLogin={openLoginModal} openSignup={openSignupModal} />
 			)}
 
 			{login_modal && (

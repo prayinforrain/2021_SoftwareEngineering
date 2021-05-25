@@ -15,6 +15,10 @@ const Qna = () => {
 			.catch(err => {
 				console.error(err);
 			});
+
+		return () => {
+			setLoading(false);
+		};
 	}, []);
 	if (loading) {
 		return <div>로딩중</div>;
