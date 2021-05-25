@@ -1,12 +1,14 @@
 import React from "react";
 import "../style/item_info.css";
+import {useParams} from "react-router-dom"
 import { useState, useEffect } from "react";
 import axios from 'axios';
 
 
 import test_img from "../img/01.jpg"; // 테스트용
 
-const ItemInfo = ( {queryID} ) => {
+const ItemInfo = ( ) => {
+    const params = useParams();
     const [itemCount, setItemCount] = useState(1);
     const [item, setItem] = useState({
         album : "",
@@ -21,7 +23,7 @@ const ItemInfo = ( {queryID} ) => {
     // 아이템 데이터 가져오기
     const fetchItem = async() => {
         const res = await axios.post('http://localhost:3001/item_detail/', {
-            queryID
+            queryID : params.itemID
         });
         setItem(res.data);
         console.log(item);

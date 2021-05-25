@@ -12,6 +12,7 @@ import Wishlist from "./Mypage/Wishlist";
 import ItemInfo from "./ItemInfo";
 import Destination from "./Mypage/Destination";
 import MypageMenu from "./Mypage/MypageMenu";
+import Additem from "./Manage/Additem";
 
 /*
 트리 상 가장 위에 있는 페이지(가장 넓은 범주)를 아래로 넣을 것!
@@ -28,10 +29,12 @@ function WebRouter({ user, onLogout, openSignup, openLogin  }) {
         <Router>
             <Switch>
                 <Route exact path="/test">
+                    <Additem/>
+                </Route>
+                <Route exact path="/itemInfo/:itemID">
                     <Header user={user} onLogout={onLogout} openSignup={openSignup} openLogin={openLogin} />
                     <div id="main_container">
-                        <ItemInfo 
-                         queryID = {1}/>
+                        <ItemInfo />
                     </div>
                     <Footer />
                 </Route>

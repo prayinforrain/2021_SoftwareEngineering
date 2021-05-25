@@ -8,6 +8,9 @@ var Faq = require('../models').Faq;
 var Destination = require('../models').Destination;
 const passport = require('passport');
 
+var multer = require('multer'); // express에 multer모듈 적용 (for 파일업로드)
+var upload = multer({ dest: 'uploads/' })
+
 /* GET home page. */
 router.get('/', function (req, res, next) {
 	if (req.isAuthenticated()) {
@@ -16,6 +19,11 @@ router.get('/', function (req, res, next) {
 		res.status(403).send('로그인 필요');
 	}
 });
+
+router.post('/upload', upload.single('cover'), function(req, res){
+	res.send('Uploaded! : '+req.file); 
+	console.log(req.file);
+  });
 
 router.post('/changeinfo', function (req, res, next) {
 	User.findAll({
