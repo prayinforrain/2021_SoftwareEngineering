@@ -16,7 +16,6 @@ const Qna = () => {
 				console.error(err);
 			});
 	}, []);
-	console.log(qna);
 	if (loading) {
 		return <div>로딩중</div>;
 	}
@@ -25,9 +24,12 @@ const Qna = () => {
 	} else {
 		return (
 			<div id="qna" className="main_manage">
-				{qna.map(el => {
-					return <div className="qna">{el.title}</div>;
-				})}
+				<h3>자주 묻는 질문</h3>
+				<div className="qna_container">
+					{qna.map(el => {
+						return <div className="qna">{el.title}</div>;
+					})}
+				</div>
 			</div>
 		);
 	}

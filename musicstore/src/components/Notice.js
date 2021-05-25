@@ -16,7 +16,6 @@ const Notice = () => {
 				console.error(err);
 			});
 	}, []);
-	console.log(notice);
 	if (loading) {
 		return <div>로딩중</div>;
 	}
@@ -25,9 +24,12 @@ const Notice = () => {
 	} else {
 		return (
 			<div id="notice" className="main_manage">
-				{notice.map(el => {
-					return <div className="notice">{el.title}</div>;
-				})}
+				<h3>공지사항</h3>
+				<div className="notice_container">
+					{notice.map(el => {
+						return <div className="notice">{el.title}</div>;
+					})}
+				</div>
 			</div>
 		);
 	}

@@ -157,5 +157,4 @@ const ManagerSection = () => {
 		</div>
 	);
 };
-
 export default ManagerSection;
