@@ -10,12 +10,10 @@ const Destination = ({ user }) => {
     
     
     useEffect(() => {
-        console.log("테스트");
-        console.log(user);
         if(modalStatus === 0) {
             fetchDestination();
         }
-    }, [modalStatus]);
+    }, [modalStatus, user]);
 
     const fetchDestination = async () => {
         axios({
@@ -26,8 +24,6 @@ const Destination = ({ user }) => {
                 id:user.id,
             }
         }).then(res => {
-            console.log("fetch Destination");
-            console.log(res.data);
             setItems(res.data);
         })
     }
@@ -107,10 +103,6 @@ const Destination = ({ user }) => {
                         >
                             배송지 추가
                         </div>
-                    </div>
-                    <div className="button_box">
-                        <button>확인</button>
-                        <button>취소</button>
                     </div>
                 </div>
             </div>
