@@ -18,20 +18,53 @@ const Additem = () => {
             detail,
             cover
         } = form;
-        const file = cover.files[0];
-        console.log(file);
-        axios({
-            method: "POST",
-            url: "http://localhost:3001/upload",
-            data: {
-                cover: file
-            },
-            //headers: {'content-type' : 'multipart/form-data'},
+        const fileForm = new FormData();
+        fileForm.append('cover', cover.files[0]);
+        /*fileForm.append('album', album.value);
+        fileForm.append('singer', singer.value);
+        fileForm.append('supply', supply.value);
+        fileForm.append('price', price.value);
+        fileForm.append('detail', detail.value);
+        axios.post('http://localhost:3001/upload', fileForm, {
+            headers : {
+                'Content-Type': 'multipart/form-data'
+            }
         }).then((res) => {
             console.log(res);
-            alert('등록 완료');
+            alert('성공')
         }).catch(err=>{
-            console.log("err occured : " + err);
+            console.log("err occured while upload : " + err);
+            alert("Error occured");
+            return;
+        });*/
+        axios.post('http://localhost:3001/upload', fileForm, {
+            headers : {
+                'Content-Type': 'multipart/form-data'
+            }
+        }).then((coverPath) => {
+            console.log(coverPath);
+            axios({
+                method: "POST",
+                url: "http://localhost:3001/additem",
+                data: {
+                    album: album.value,
+                    singer: singer.value,
+                    supply: supply.value,
+                    price: parseInt(price.value),
+                    detail: detail.value,
+                    cover: coverPath.data
+                }
+            }).then((res) => {
+                console.log(res);
+                alert('성공')
+            }).catch(err=>{
+                console.log("err occured while additem : ");
+                console.log(err);
+                alert("Error occured");
+                return;
+            })
+        }).catch(err=>{
+            console.log("err occured while upload : " + err);
             alert("Error occured");
             return;
         });
@@ -56,7 +89,7 @@ const Additem = () => {
 
     return (
         <div >
-            <form id="add_item_form" encType="multipart/form-data">
+            <form action="http://localhost:3001/upload" method="post" id="add_item_form" enctype="multipart/form-data">
                 <div className="item_row">
                     <div className="item_row_name">
                         앨범명
@@ -65,6 +98,7 @@ const Additem = () => {
                         <input
                         type="text"
                         id="album"
+                        name="album"
                         placeholder="앨범명"/>
                     </div>
                 </div>
@@ -76,6 +110,7 @@ const Additem = () => {
                         <input
                         type="text"
                         id="singer"
+                        name="singer"
                         placeholder="아티스트"/>
                     </div>
                 </div>
@@ -87,6 +122,7 @@ const Additem = () => {
                         <input
                         type="text"
                         id="supply"
+                        name="supply"
                         placeholder="배급사"/>
                     </div>
                 </div>
@@ -98,6 +134,7 @@ const Additem = () => {
                         <input
                         type="number"
                         id="price"
+                        name="price"
                         placeholder="가격"/>
                     </div>
                 </div>
@@ -109,6 +146,7 @@ const Additem = () => {
                         <textarea
                         type="text"
                         id="detail"
+                        name="detail"
                         placeholder="상세설명"/>
                     </div>
                 </div>
@@ -129,7 +167,7 @@ const Additem = () => {
                         </>)}
                     </div>
                 </div>
-                <button type="submit" onClick={submitHandler}>등록</button>
+                <button type="submit" onClick={submitHandler} >등록</button>
             </form>
         </div>
     );

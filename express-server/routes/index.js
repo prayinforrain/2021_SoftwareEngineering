@@ -6,6 +6,7 @@ var Banner = require('../models').Banner;
 var Qna = require('../models').Qna;
 var Faq = require('../models').Faq;
 var Destination = require('../models').Destination;
+var Item = require('../models').Item;
 const passport = require('passport');
 
 var multer = require('multer'); // express에 multer모듈 적용 (for 파일업로드)
@@ -21,9 +22,43 @@ router.get('/', function (req, res, next) {
 });
 
 router.post('/upload', upload.single('cover'), function(req, res){
-	res.send('Uploaded! : '+req.file); 
-	console.log(req.file);
-  });
+	res.send(req.file.path); 
+	console.log(req.file.path);
+	/*Item.create({
+		album: req.body.album,
+		singer: req.body.singer,
+		price: req.body.price,
+		supply: req.body.supply,
+		detail: req.body.detail,
+		cover: req.file.path
+	}).then(result => {
+		console.log(result);
+		res.status(201).json(result);
+	}).catch(err => {
+		console.log('error while adding item');
+		console.error(err);
+		next(err);
+	});*/
+});
+
+router.post('/additem', function(req, res, next) {
+	console.log(req.body);
+	Item.create({
+		album: req.body.album,
+		singer: req.body.singer,
+		price: req.body.price,
+		supply: req.body.supply,
+		detail: req.body.detail,
+		cover: req.body.cover
+	}).then(result => {
+		console.log(result);
+		res.status(201).json(result);
+	}).catch(err => {
+		console.log('error while adding item');
+		console.error(err);
+		next(err);
+	});
+});
 
 router.post('/changeinfo', function (req, res, next) {
 	User.findAll({
@@ -127,15 +162,15 @@ router.post('/add_destination', function (req, res, next) {
 		extraAddress: req.body.extraAddress,
 		addressOwner: req.body.addressOwner,
 	})
-		.then(result => {
-			console.log(result);
-			res.status(201).json(result);
-		})
-		.catch(err => {
-			console.log('error while destination add');
-			console.error(err);
-			next(err);
-		});
+	.then(result => {
+		console.log(result);
+		res.status(201).json(result);
+	})
+	.catch(err => {
+		console.log('error while destination add');
+		console.error(err);
+		next(err);
+	});
 });
 
 router.post('/edit_destination', function (req, res, next) {
@@ -220,17 +255,6 @@ router.get('/logout', (req, res) => {
 //     })(req, res, next);
 
 // })
-
-router.get('/test', function (req, res, next) {
-	Destination.findAll({
-		where: {
-			addressOwner: 1,
-		},
-	}).then(result => {
-		console.log(result);
-	});
-	res.render('index', { title: 'Test' });
-});
 
 router.post('/userInfo', function (req, res, next) {
 	User.findOne({ where: { userID: req.body.userID } })
