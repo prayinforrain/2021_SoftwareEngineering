@@ -41,8 +41,8 @@ const Myinfo = ({user}) => {
             });
         } else {
             //로그인 정보가 없으면 메인페이지로 리다이렉트
-            alert("로그인이 필요합니다.");
             history.push('/');
+            alert("로그인이 필요합니다.");
         }
     },[user])
 
@@ -100,100 +100,102 @@ const Myinfo = ({user}) => {
         <div id="content_container">
             <h1>회원정보 수정</h1>
             <hr />
-            <form id="my_profile" onSubmit={onSubmit}>
-                <table>
-                    <tbody>
-                        <tr>
-                            <td className="profile_label">아이디 : </td>
-                            <td>
-                                <input
-                                    type="text"
-                                    placeholder="ID"
-                                    value= {userInfo.ID}
-                                    disabled
-                                />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td className="profile_label">현재 비밀번호 : </td>
-                            <td>
-                                <input name="CurrentPassword" type="password" placeholder="현재 비밀번호" value={userCurrentPassword} onChange={onChange}/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td className="profile_label">비밀번호 변경 : </td>
-                            <td>
-                                <input name="Password" type="password" placeholder="새 비밀번호" value={userPassword} onChange={onChange}/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td className="profile_label">비밀번호 확인 : </td>
-                            <td>
-                                <input
-                                    type="password"
-                                    name="PasswordConfirm"
-                                    placeholder="새 비밀번호 확인"
-                                    value={userPwConfirm}
-                                    onChange={onChange}
-                                />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td className="profile_label">이름 : </td>
-                            <td>
-                                <input type="text" name="Name" placeholder="이름" value={userInfo.Name} onChange={onChange}/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td className="profile_label">E-mail : </td>
-                            <td>
-                                <input type="email" name="Email" placeholder="E-mail" value={userInfo.Email} onChange = {onChange} />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colSpan="2" style={{ textAlign: "center" }}>
-                                추가 정보
-                            </td>
-                        </tr>
-                        <tr>
-                            <td className="profile_label">성인 인증 여부 : </td>
-                            <td>
-                                <input type="checkbox" value={userInfo.isAdult} disabled />{" "}
-                                <button disabled>성인인증</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td className="profile_label">성별 : </td>
-                            <td>
-                                <label>
+            {user && (
+                <form id="my_profile" onSubmit={onSubmit}>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td className="profile_label">아이디 : </td>
+                                <td>
                                     <input
-                                        type="radio"
-                                        name="sex"
-                                        value="male"
-                                        checked={userInfo.Sex === "male"}
+                                        type="text"
+                                        placeholder="ID"
+                                        value= {userInfo.ID}
+                                        disabled
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="profile_label">현재 비밀번호 : </td>
+                                <td>
+                                    <input name="CurrentPassword" type="password" placeholder="현재 비밀번호" value={userCurrentPassword} onChange={onChange}/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="profile_label">비밀번호 변경 : </td>
+                                <td>
+                                    <input name="Password" type="password" placeholder="새 비밀번호" value={userPassword} onChange={onChange}/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="profile_label">비밀번호 확인 : </td>
+                                <td>
+                                    <input
+                                        type="password"
+                                        name="PasswordConfirm"
+                                        placeholder="새 비밀번호 확인"
+                                        value={userPwConfirm}
                                         onChange={onChange}
                                     />
-                                    남성
-                                </label>
-                                <label>
-                                    <input type="radio" name="sex" value="female"
-                                    checked={userInfo.Sex === "female"} onChange={onChange} /> 여성
-                                </label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td className="profile_label">생년월일 : </td>
-                            <td>
-                                <input type="date" name="Birth" value={userInfo.Birth} onChange = {onChange}/>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div className="profile_button">
-                    <input type="submit" value="수정"/>
-                    <button>취소</button>
-                </div>
-            </form>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="profile_label">이름 : </td>
+                                <td>
+                                    <input type="text" name="Name" placeholder="이름" value={userInfo.Name} onChange={onChange}/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="profile_label">E-mail : </td>
+                                <td>
+                                    <input type="email" name="Email" placeholder="E-mail" value={userInfo.Email} onChange = {onChange} />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colSpan="2" style={{ textAlign: "center" }}>
+                                    추가 정보
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="profile_label">성인 인증 여부 : </td>
+                                <td>
+                                    <input type="checkbox" value={userInfo.isAdult} disabled />{" "}
+                                    <button disabled>성인인증</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="profile_label">성별 : </td>
+                                <td>
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            name="sex"
+                                            value="male"
+                                            checked={userInfo.Sex === "male"}
+                                            onChange={onChange}
+                                        />
+                                        남성
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="sex" value="female"
+                                        checked={userInfo.Sex === "female"} onChange={onChange} /> 여성
+                                    </label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="profile_label">생년월일 : </td>
+                                <td>
+                                    <input type="date" name="Birth" value={userInfo.Birth} onChange = {onChange}/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div className="profile_button">
+                        <input type="submit" value="수정"/>
+                        <button>취소</button>
+                    </div>
+                </form>
+            )}
         </div>
     );
 };
