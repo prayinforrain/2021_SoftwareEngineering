@@ -23,7 +23,7 @@ import MypageMenu from "./Mypage/MypageMenu";
 
 // '/test' 주소에 들어간 ItemInfo의 queryID를 백엔드에 보내서 요청하는 상품의 ID를 지정
 
-function WebRouter({ user, onLogout, openSignup, openLogin,  }) {
+function WebRouter({ user, onLogout, openSignup, openLogin  }) {
     return (
         <Router>
             <Switch>

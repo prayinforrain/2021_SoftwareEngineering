@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react';
 import ModalPortal from './ModalPortal';
 import SignUp from './components/SignUp';
 import Login from './components/Login';
-import DestinationEnroll from './components/DestinationEnroll';
 import axios from 'axios';
 import Manage from './Managerpage';
 
@@ -27,7 +26,6 @@ function App() {
 	});
 	const [login_modal, set_login_modal] = useState(false);
 	const [signup_modal, set_signup_modal] = useState(false);
-	const [destination_enroll_modal, set_destination_enroll_modal] = useState(false);
 	const [user, setUser] = useState('');
 	const openSignupModal = () => {
 		set_signup_modal(true);
@@ -44,12 +42,6 @@ function App() {
 	const requestUserInfo = () => {
 		console.log('user');
 		console.log(user);
-	};
-	const openDestinationEnrollModal = () => {
-		set_destination_enroll_modal(true);
-	};
-	const closeDestinationEnrollModal = () => {
-		set_destination_enroll_modal(false);
 	};
 	const onLogin = data => {
 		setUser(data);
@@ -71,7 +63,6 @@ function App() {
 					onLogout={onLogout}
 					openLogin={openLoginModal}
 					openSignup={openSignupModal}
-					openDestinationEnrollModal={openDestinationEnrollModal}
 				/>
 			)}
 
@@ -83,11 +74,6 @@ function App() {
 			{signup_modal && (
 				<ModalPortal>
 					<SignUp onClose={closeSignupModal} />
-				</ModalPortal>
-			)}
-			{destination_enroll_modal && (
-				<ModalPortal>
-					<DestinationEnroll onClose={closeDestinationEnrollModal} />
 				</ModalPortal>
 			)}
 			<div
