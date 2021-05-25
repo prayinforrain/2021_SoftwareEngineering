@@ -4,8 +4,7 @@ import "../style/modal.css";
 import "../style/destination.css";
 import axios from "axios";
 
-const DestinationEnroll = ({ onClose }) => {
-
+const DestinationEnroll = ({ onClose, user }) => {
     const formCheck = (e) => {
         e.preventDefault();
         const form = document.getElementById("destination_form");
@@ -15,6 +14,8 @@ const DestinationEnroll = ({ onClose }) => {
             jibunAddress1,
             jibunAddress2,
             extraAddress,
+            customerName,
+            customerContact
         } = form;
         if(
             !(
@@ -22,12 +23,15 @@ const DestinationEnroll = ({ onClose }) => {
                 roadAddress.value &&
                 jibunAddress1.value &&
                 jibunAddress2.value &&
-                extraAddress.value
+                extraAddress.value &&
+                customerName.value &&
+                customerContact.value
             )
         ) {
             alert("정보를 모두 채워주세요.");
             return;
         }
+        console.log(user.id + typeof(user.id));
 
         axios({
             method: "POST",
@@ -39,14 +43,16 @@ const DestinationEnroll = ({ onClose }) => {
                 jibunAddress2: jibunAddress2.value,
                 extraAddress: extraAddress.value,
                 //addressOwner : 로그인 세션에서 유저ID의 데이터베이스상 인덱스번호(id)를 숫자형태로 기입
-                addressOwner: 1,
+                addressOwner: user.id,
+                customerName: customerName.value,
+                customerContact: customerContact.value
             },
         }).then((res) => {
             console.log(res);
             onClose();
             alert('등록 완료');
         }).catch(err=>{
-            console.log("err occured");
+            console.log("err occured : " + err);
             alert("Error occured");
             return;
         })
@@ -107,6 +113,22 @@ const DestinationEnroll = ({ onClose }) => {
             <div className="destination_enroll_container">
                 <div className="title">배송지 등록</div>
                 <form action="#" id="destination_form">
+                    <div className="input_box">
+                        <span className="form_span">수령인 이름</span>
+                        <input
+                            type="text"
+                            id="customerName"
+                            placeholder="수령인 이름"
+                        />
+                    </div>
+                    <div className="input_box">
+                        <span className="form_span">수령인 연락처</span>
+                        <input
+                            type="text"
+                            id="customerContact"
+                            placeholder="수령인 연락처"
+                        />
+                    </div>
                     <div className="input_box">
                         <span className="form_span">우편번호</span>
                         <input
