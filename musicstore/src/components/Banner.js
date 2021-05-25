@@ -16,7 +16,6 @@ const Banner = () => {
 				console.error(err);
 			});
 	}, []);
-	console.log(banner);
 	if (loading) {
 		return <div>로딩중</div>;
 	}
@@ -26,7 +25,11 @@ const Banner = () => {
 		return (
 			<div id="banner" className="main_manage">
 				{banner.map(el => {
-					return <div className="banner">{el.title}</div>;
+					return (
+						<div key={el.id} className="banner">
+							{el.title}
+						</div>
+					);
 				})}
 			</div>
 		);

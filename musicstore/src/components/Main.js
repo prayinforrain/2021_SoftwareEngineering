@@ -1,5 +1,4 @@
 import React from 'react';
-import img01 from '../img/01.jpg';
 import Notice from './Notice';
 import Banner from './Banner';
 import Qna from './Qna';
@@ -24,21 +23,17 @@ const Main = () => {
 					</ul>
 				</div>
 				<div id="content_container">
-					<div id="event_banner">
-						<img
-							src={img01}
-							id="main_image"
-							alt="main"
-							style={{
-								width: '500px',
-								height: '500px',
-							}}
-						/>
+					<div className="upper_container">
+						<div id="event_banner"></div>
+						<div className="upper_right_container">
+							<Notice />
+							<Qna />
+						</div>
 					</div>
-					<div id="info">
-						<Notice />
-						<Banner />
-						<Qna />
+					<div id="product_container">
+						<div className="dummy_product"></div>
+						<div className="dummy_product"></div>
+						<div className="dummy_product"></div>
 					</div>
 				</div>
 			</div>
