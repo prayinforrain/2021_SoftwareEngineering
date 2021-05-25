@@ -24,8 +24,6 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/uploads/:img_id', function(req, res) {
-	console.log(`../uploads/${req.params.img_id}`);
-	console.log(`${__dirname}/${req.params.img_id}`);
 	res.sendFile(`${__dirname}/uploads/${req.params.img_id}`)
 	//res.sendfile(path.resolve(__dirname,))
 });
@@ -51,8 +49,6 @@ router.post('/upload', upload.single('cover'), function(req, res){
 });
 
 router.post('/item_detail', function(req, res, next) {
-	console.log('---------');
-	console.log(req.body);
 	Item.findOne({
 		where: {
 			id: req.body.queryID
@@ -63,7 +59,6 @@ router.post('/item_detail', function(req, res, next) {
 })
 
 router.get('/getgenres', function(req, res, next) {
-	//console.log("ddddddddddddddddd" + req.body.itemID);
 	Genre.findAll()
 	.then(result => {
 		res.send(result);	
@@ -86,12 +81,8 @@ router.post('/getgenres', function(req, res, next) {
 				/*console.log("genRes");
 				console.log(genRes);*/
 				genRes.forEach((g) => {
-					console.log("------dsdsadsd");
-					console.log(g.dataValues);
-					listofGenres.push(result.find(value => value.id === g.dataValues.genreID+1).dataValues.name);
+					listofGenres.push(result.find(value => value.id === g.dataValues.genreID+1).dataValues);
 				})
-				console.log("----------sssssss----");
-				console.log(listofGenres);
 				res.send(listofGenres);
 			})
 		} else {
@@ -112,8 +103,6 @@ router.post('/additem', function(req, res, next) {
 		detail: req.body.detail,
 		cover: req.body.cover
 	}).then(result => {
-		console.log('------------------');
-		//console.log(result.dataValues.id);
 		//장르 추가할 것
 		req.body.genre.forEach(el => {
 			ItemGenre.create({
@@ -127,6 +116,61 @@ router.post('/additem', function(req, res, next) {
 		console.error(err);
 		next(err);
 	});
+});
+
+router.post('/edititem', function(req, res, next) {
+	Item.update({
+		album: req.body.album,
+		singer: req.body.singer,
+		price: req.body.price,
+		supply: req.body.supply,
+		detail: req.body.detail,
+		cover: req.body.cover
+	},{
+		where : { id : req.body.id }
+	}).catch(err => {
+		console.log('error while adding item');
+		console.error(err);
+		next(err);
+	});
+
+	ItemGenre.findAll({
+		where: {
+			itemID : req.body.id,
+		}
+	}).then(tempGenres => {
+		tempGenres.forEach((g) => {
+			if(req.body.genre.indexOf(g.dataValues.genreID) === -1) {
+				ItemGenre.destroy({
+					where: {id : g.dataValues.id}
+				});
+			}
+		})
+	});
+	req.body.genre.forEach((g) => {
+		ItemGenre.findAll({
+			where: {
+				itemID : req.body.id,
+				genreID : g
+			}
+		}).then((result) => {
+			if(result.length === 0) {
+				ItemGenre.create({
+					itemID: req.body.id,
+					genreID : g
+			});
+		}})
+	})
+
+	res.status(201).send("success");
+	/*Item.findOne({
+		where : {id: req.body.id}
+	}).then(result => {
+		req.body.genre.forEach(el => {
+			
+		})
+		res.status(201).json(result);
+	})*/
 });
 
 router.post('/changeinfo', function (req, res, next) {
@@ -426,6 +470,16 @@ router.get('/qna', function (req, res, next) {
 
 router.get('/banner', function (req, res, next) {
 	Banner.findAll()
+		.then(result => {
+			res.send(result);
+		})
+		.catch(err => {
+			console.error(err);
+		});
+});
+
+router.get('/product', function (req, res, next) {
+	Item.findAll()
 		.then(result => {
 			res.send(result);
 		})

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import '../style/manager_page.css';
 import axios from 'axios';
 import Board from './Manage/Board';
+import Additem from './Manage/Additem';
+import ProductPost from './Manage/ProductPost';
 
 const ManagerSection = () => {
 	// notice, banner, product, qna, faq  순, default 는 notice
@@ -9,13 +11,15 @@ const ManagerSection = () => {
 	const [boardData, setBoardData] = useState([]);
 	const [loading, setLoading] = useState(false);
 	// 렌더링할 때 default 게시판인 notice의 db 값을 불러와 board에 저장
+	const [productPopup, setProductPopup] = useState(false);
+	const [productStatus, setProductStatus] = useState(-1);
 
 	useEffect(() => {
 		axios.get(`http://localhost:3001/${board}`).then(res => {
 			console.log(res.data);
 			setBoardData(res.data.reverse());
 		});
-	}, [board]);
+	}, [board, productPopup]);
 	// 게시판 메뉴 선택 함수
 	const chooseMenu = e => {
 		const targetBoard = e.target.className.split('_')[1];
@@ -30,10 +34,15 @@ const ManagerSection = () => {
 		}
 	};
 	const openPopup = () => {
-		const background = document.querySelector('.popup_background');
-		const popup = document.querySelector(`.board_modify_popup`);
-		background.style.display = 'block';
-		popup.style.display = 'block';
+		if(board !== "product") {
+			const background = document.querySelector('.popup_background');
+			const popup = document.querySelector(`.board_modify_popup`);
+			background.style.display = 'block';
+			popup.style.display = 'block';
+		} else {
+			setProductPopup(true);
+			setProductStatus(-1);
+		}
 	};
 	const closePopup = () => {
 		const background = document.querySelector(`.popup_background`);
@@ -43,6 +52,11 @@ const ManagerSection = () => {
 		background.style.display = 'none';
 		popup.style.display = 'none';
 	};
+
+	const onProductClick = (e, id) => {
+		setProductPopup(true);
+		setProductStatus(id);
+	}
 
 	const onSubmit = e => {
 		e.preventDefault();
@@ -110,7 +124,13 @@ const ManagerSection = () => {
 								<div className="product_release_date">발매일</div>
 								<div className="product_publish">유통사</div>
 							</div>
-							<div className="product_posts"></div>
+							<div className="product_posts">
+								{boardData.map((i) => (
+									<div className="inner_board" onClick={(e) => onProductClick(e, i.id)}>
+										<ProductPost data={i}/>
+									</div>
+								))}
+							</div>
 						</div>
 					) : (
 						<Board board={board} boardData={boardData} />
@@ -180,6 +200,9 @@ const ManagerSection = () => {
 					</div>
 				</form>
 			</div>
+			{productPopup && (
+				<Additem closePopup={setProductPopup} closeEdit = {setProductStatus} editStatus = {productStatus}/>
+			)}
 		</div>
 	);
 };
