@@ -7,7 +7,7 @@ const Banner = () => {
 	useEffect(() => {
 		setLoading(true);
 		axios
-			.get('http://localhost:3001/banner')
+			.get('http://localhost:3001/bannerImage')
 			.then(res => setBanner(res.data.reverse().slice(0, 5)))
 			.then(() => {
 				setLoading(false);

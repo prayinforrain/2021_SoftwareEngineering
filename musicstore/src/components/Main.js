@@ -1,9 +1,23 @@
-import React from 'react';
+import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 import Notice from './Notice';
-import Banner from './Banner';
 import Qna from './Qna';
 
 const Main = () => {
+	const [banner, setBanner] = useState('');
+	const [banners, setBanners] = useState('');
+	useEffect(() => {
+		axios
+			.get('http://localhost:3001/bannerImage')
+			.then(res => {
+				console.log(res.data);
+				setBanners(res.data);
+			})
+			.catch(err => {
+				console.log('in main');
+				console.error(err);
+			});
+	}, []);
 	return (
 		<div id="main">
 			<div id="main_container">
@@ -24,7 +38,7 @@ const Main = () => {
 				</div>
 				<div id="content_container">
 					<div className="upper_container">
-						<div id="event_banner"></div>
+						{banners === '' ? <div>로딩중</div> : <img src={`data:image/png;base64,${banners[1]}`} id="event_banner" />}
 						<div className="upper_right_container">
 							<Notice />
 							<Qna />

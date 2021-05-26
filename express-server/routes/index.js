@@ -7,9 +7,19 @@ var Qna = require('../models').Qna;
 var Faq = require('../models').Faq;
 var Destination = require('../models').Destination;
 const passport = require('passport');
+var fs = require('fs');
 
 var multer = require('multer'); // express에 multer모듈 적용 (for 파일업로드)
-var upload = multer({ dest: 'uploads/' })
+var upload = multer({ dest: 'uploads/' });
+var bannerStorage = multer.diskStorage({
+	destination: (req, file, cb) => {
+		cb(null, 'banner/');
+	},
+	filename: (req, file, cb) => {
+		cb(null, `banner_${Date.now()}`);
+	},
+});
+var banner = multer({ storage: bannerStorage });
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -20,10 +30,11 @@ router.get('/', function (req, res, next) {
 	}
 });
 
-router.post('/upload', upload.single('cover'), function(req, res){
-	res.send('Uploaded! : '+req.file); 
+router.post('/upload', upload.single('cover'), function (req, res) {
 	console.log(req.file);
-  });
+
+	res.send('Uploaded! : ' + req.file);
+});
 
 router.post('/changeinfo', function (req, res, next) {
 	User.findAll({
@@ -118,8 +129,8 @@ router.post('/add_destination', function (req, res, next) {
 	console.log('in post req, /add_destination');
 	console.log(Destination);
 	Destination.create({
-		customerName : req.body.customerName,
-		customerContact : req.body.customerContact,
+		customerName: req.body.customerName,
+		customerContact: req.body.customerContact,
 		postcode: req.body.postcode,
 		roadAddress: req.body.roadAddress,
 		jibunAddress1: req.body.jibunAddress1,
@@ -143,36 +154,41 @@ router.post('/edit_destination', function (req, res, next) {
 	console.log(Destination);
 	Destination.update(
 		{
-			customerName : req.body.customerName,
-			customerContact : req.body.customerContact,
+			customerName: req.body.customerName,
+			customerContact: req.body.customerContact,
 			postcode: req.body.postcode,
 			roadAddress: req.body.roadAddress,
 			jibunAddress1: req.body.jibunAddress1,
 			jibunAddress2: req.body.jibunAddress2,
 			extraAddress: req.body.extraAddress,
-			addressOwner: req.body.addressOwner
-		}, {
-			where: { id : req.body.id }
+			addressOwner: req.body.addressOwner,
+		},
+		{
+			where: { id: req.body.id },
 		}
-	).then(result => {
-		res.status(200).json(result);
-	}).catch(err => {
-		console.log(err);
-		next(err);
-	});
+	)
+		.then(result => {
+			res.status(200).json(result);
+		})
+		.catch(err => {
+			console.log(err);
+			next(err);
+		});
 });
 
 router.post('/delete_destination', function (req, res, next) {
 	console.log('in post req, /delete_destination');
 	console.log(Destination);
 	Destination.destroy({
-		where: {id : req.body.id}
-	}).then(result => {
-		res.status(200).json(result);
-	}).catch(err => {
-		console.log(err);
-		next(err);
-	});
+		where: { id: req.body.id },
+	})
+		.then(result => {
+			res.status(200).json(result);
+		})
+		.catch(err => {
+			console.log(err);
+			next(err);
+		});
 });
 
 router.post('/destination', function (req, res, next) {
@@ -286,19 +302,14 @@ router.post('/qna', function (req, res, next) {
 			console.error(err);
 		});
 });
-router.post('/banner', function (req, res, next) {
-	const { title, contents } = req.body;
+router.post('/banner', banner.single('banner'), function (req, res, next) {
 	Banner.create({
-		title,
-		contents,
-	})
-		.then(response => {
-			console.log('배너 등록 성공');
-			res.send('배너 등록 성공');
-		})
-		.catch(err => {
-			console.error(err);
-		});
+		title: req.body.title,
+		path: req.file.path,
+		start: req.body.start,
+		end: req.body.end,
+	});
+	res.send('banner 값 전송 성공' + req.file);
 });
 
 router.get('/notice', function (req, res, next) {
@@ -331,14 +342,42 @@ router.get('/qna', function (req, res, next) {
 		});
 });
 
-router.get('/banner', function (req, res, next) {
-	Banner.findAll()
-		.then(result => {
-			res.send(result);
-		})
-		.catch(err => {
-			console.error(err);
+router.get('/banner', function (req, res) {
+	Banner.findAll().then(result => {
+		res.send(result);
+	});
+});
+
+router.get('/bannerImage', function (req, res, next) {
+	// Banner.findAll()
+	// 	.then(result => {
+	// 		res.send(
+	// 			result
+	// 				.filter(el => {
+	// 					const temp = new Date();
+	// 					const today = temp.setHours(temp.getHours() + 9);
+	// 					const target = new Date(el.end);
+	// 					if (today < target) {
+	// 						return el;
+	// 					}
+	// 				})
+	// 				.reverse()
+	// 				.slice(0, 5)
+	// 				.map(el => el.path)
+	// 				.map(el => {
+	// 				})
+	// 				.reverse()
+	// 		);
+	// 	})
+	// 	.catch(err => {
+	// 		console.error(err);
+	// 	});
+	Banner.findOne({ where: { id: 1 } }).then(result => {
+		fs.readFile(result.path, function (error, data) {
+			res.writeHead(200, { 'Content-Type': 'text/html' });
+			res.end(data);
 		});
+	});
 });
 
 router.get('/main', function (req, res) {

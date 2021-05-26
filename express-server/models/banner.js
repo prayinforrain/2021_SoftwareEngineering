@@ -6,8 +6,16 @@ module.exports = (sequelize, DataTypes) => {
 				type: DataTypes.STRING(30),
 				allowNull: false,
 			},
-			contents: {
-				type: DataTypes.TEXT,
+			path: {
+				type: DataTypes.BLOB('long'),
+				allowNull: false,
+			},
+			start: {
+				type: DataTypes.STRING(10),
+				allowNull: false,
+			},
+			end: {
+				type: DataTypes.STRING(10),
 				allowNull: false,
 			},
 		},

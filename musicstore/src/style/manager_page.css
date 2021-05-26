@@ -58,7 +58,7 @@ textarea:focus {
 .popup_background {
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.4);
+    background: (0, 0, 0, 0.4);
     position: absolute;
     left: 0;
     top: 0;
@@ -70,6 +70,10 @@ textarea:focus {
     border: 1px solid black;
     display: flex;
     align-items: center;
+}
+.expired{
+    color:#bbbbbb;
+    text-decoration:line-through
 }
 .board_posts {
     width: 100%;
@@ -105,7 +109,14 @@ textarea:focus {
     text-align: center;
     width: 10%;
 }
-
+.board_start_date{
+    width:20%;
+    text-align: center;
+}
+.board_end_date{
+    width:20%;
+    text-align: center;
+}
 .board_modify_popup {
     position: absolute;
     width: 1000px;
@@ -167,6 +178,41 @@ textarea:focus {
     font-size: 1.2rem;
 }
 
+.banner_popup_detail_area {
+    width: 100%;
+    height: 70%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+#preview {
+    border:1px solid black;
+    width:60%;
+    height:90%;
+}
+.input_section{
+    width:30%;
+    height:100%;
+    display:flex;
+    justify-content:space-between;
+    flex-direction:column;
+    align-items:center;
+}
+.input_file{
+    width:100%;
+    height:40%;
+    display:flex;
+    justify-content:space-around;
+    flex-direction:column;
+}
+.input_date{
+    width:70%;
+    height:40%;
+    display:flex;
+    justify-content:space-around;
+    flex-direction:column;
+    align-items:center;
+}
 .product {
     width: 100%;
     height: 9%;
