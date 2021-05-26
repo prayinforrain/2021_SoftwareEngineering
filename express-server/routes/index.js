@@ -51,6 +51,7 @@ router.post('/upload', upload.single('cover'), function (req, res) {
 });
 
 router.post('/search', function (req, res, next) {
+	// 통합 제목 가수 배급사 장르 0~4
 	var searchGenre = 0;
 	mysqldb.connectiond.query(
 		`SELECT * FROM musicstore.genres where name like concat('%', ?, '%')`,
@@ -67,17 +68,55 @@ router.post('/search', function (req, res, next) {
 					searchGenre = -1;
 					console.log("없음");
 				}
-				console.log(searchGenre + "번 장르도 같이 찾는준");
-				mysqldb.connectiond.query(
-					`SELECT * FROM musicstore.items
+				//console.log("검색옵션 : " + req.body.searchOption + typeof(req.body.searchOption));
+				if(req.body.searchOption === "0") {
+					var queryString = `SELECT * FROM musicstore.items
 					join musicstore.itemgenres
 					on musicstore.items.id = musicstore.itemgenres.itemID
 					where musicstore.itemgenres.genreID = ? or
-				musicstore.items.album like concat('%', ?, '%') or
-				musicstore.items.singer like concat('%', ?, '%') or
-				musicstore.items.supply like concat('%', ?, '%')
-				group by musicstore.items.id;`,
-					[searchGenre, req.body.keyword, req.body.keyword, req.body.keyword],
+					musicstore.items.album like concat('%', ?, '%') or
+					musicstore.items.singer like concat('%', ?, '%') or
+					musicstore.items.supply like concat('%', ?, '%')
+					group by musicstore.items.id;`;
+					var queryParam = [searchGenre, req.body.keyword, req.body.keyword, req.body.keyword];
+				}
+				if(req.body.searchOption === "1") {
+					var queryString = `SELECT * FROM musicstore.items
+					join musicstore.itemgenres
+					on musicstore.items.id = musicstore.itemgenres.itemID
+					where musicstore.items.album like concat('%', ?, '%')
+					group by musicstore.items.id;`;
+					var queryParam = [req.body.keyword];
+				}
+				if(req.body.searchOption === "2") {
+					var queryString = `SELECT * FROM musicstore.items
+					join musicstore.itemgenres
+					on musicstore.items.id = musicstore.itemgenres.itemID
+					where musicstore.items.singer like concat('%', ?, '%') or
+					group by musicstore.items.id;`;
+					var queryParam = [req.body.keyword];
+				}
+				if(req.body.searchOption === "3") {
+					var queryString = `SELECT * FROM musicstore.items
+					join musicstore.itemgenres
+					on musicstore.items.id = musicstore.itemgenres.itemID
+					where musicstore.items.supply like concat('%', ?, '%')
+					group by musicstore.items.id;`;
+					var queryParam = [sreq.body.keyword];
+				}
+				if(req.body.searchOption === "4") {
+					var queryString = `SELECT * FROM musicstore.items
+					join musicstore.itemgenres
+					on musicstore.items.id = musicstore.itemgenres.itemID
+					where musicstore.itemgenres.genreID = ?
+					group by musicstore.items.id;`;
+					var queryParam = [searchGenre];
+				}
+				/*console.log("쿼리 정보:");
+				console.log(queryString);
+				console.log(queryParam);*/
+				mysqldb.connectiond.query(
+					queryString, queryParam,
 					function (err, rows, fields) {
 						if (err) {
 							console.log(err);

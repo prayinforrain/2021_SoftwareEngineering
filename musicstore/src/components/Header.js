@@ -6,16 +6,21 @@ const Header = ({ user, onLogout, openSignup, openLogin }) => {
 	
 	async function onSearch() {
 		var keyword = document.getElementById("search_keyword").value;
-		console.log(keyword);
-		axios({
-			method: 'POST',
-			url: 'http://localhost:3001/search',
-			data: {
-				keyword
-			}
-		}).then(res => {
-			console.log(res);
-		})
+		var searchOption = document.getElementById("search_option").value;
+		if(keyword !== "") {
+			axios({
+				method: 'POST',
+				url: 'http://localhost:3001/search',
+				data: {
+					keyword,
+					searchOption
+				}
+			}).then(res => {
+				console.log(res);
+			})
+		} else {
+			alert('검색어를 입력해주세요.');
+		}
 	}
 
 	function logout() {
@@ -33,6 +38,13 @@ const Header = ({ user, onLogout, openSignup, openLogin }) => {
 					<Link to="/" className="logo_link" />
 				</div>
 				<div id="search" style={user.userID === 'admin' ? { display: 'none' } : {}}>
+					<select id="search_option">
+						<option value="0">통합검색</option>
+						<option value="1">제목</option>
+						<option value="2">가수</option>
+						<option value="3">배급사</option>
+						<option value="4">장르</option>
+					</select>
 					<input type="text" placeholder="앨범, 가수, 제작사..." id="search_keyword" />
 					<button onClick={onSearch}>검색</button>
 				</div>
