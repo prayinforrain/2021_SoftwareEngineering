@@ -53,7 +53,7 @@ router.post('/upload', upload.single('cover'), function (req, res) {
 router.post('/search', function (req, res, next) {
 	var searchGenre = 0;
 	mysqldb.connectiond.query(
-		`SELECT * FROM musicstore.genres where name like ?`,
+		`SELECT * FROM musicstore.genres where name like concat('%', ?, '%')`,
 		[req.body.keyword],
 		function (err, rows, fields) {
 			if (err) {
