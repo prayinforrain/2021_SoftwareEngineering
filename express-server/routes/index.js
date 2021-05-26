@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-
+var path = require('path');
 var User = require('../models').User;
 var Notice = require('../models').Notice;
 var Banner = require('../models').Banner;
@@ -17,6 +17,8 @@ var fs = require('fs');
 
 var multer = require('multer'); // express에 multer모듈 적용 (for 파일업로드)
 var upload = multer({ dest: 'uploads/' });
+const rootPath = path.normalize(__dirname + '/..');
+
 const mysqldb = require('../mysql/mysqldb');
 var bannerStorage = multer.diskStorage({
 	destination: (req, file, cb) => {
@@ -36,13 +38,14 @@ router.get('/', function (req, res, next) {
 		res.status(403).send('로그인 필요');
 	}
 });
-
 router.get('/uploads/:img_id', function (req, res) {
-	res.sendFile(`${__dirname}/uploads/${req.params.img_id}`);
+	console.log('req.params.img_id : ', req.params.img_id);
+	res.sendFile(`${rootPath}/uploads/${req.params.img_id}`);
 	//res.sendfile(path.resolve(__dirname,))
 });
 
 router.post('/upload', upload.single('cover'), function (req, res) {
+	console.log('in post /upload');
 	res.send(req.file.path);
 	console.log(req.file.path);
 });
@@ -510,11 +513,11 @@ router.post('/qna', function (req, res, next) {
 router.post('/banner', banner.single('banner'), function (req, res, next) {
 	Banner.create({
 		title: req.body.title,
-		path: req.file.path,
+		bannerPath: req.file.path,
 		start: req.body.start,
 		end: req.body.end,
 	});
-	res.send('banner 값 전송 성공' + req.file);
+	res.send(req.file.path);
 });
 
 router.get('/notice', function (req, res, next) {
@@ -553,36 +556,45 @@ router.get('/banner', function (req, res) {
 	});
 });
 
-router.get('/bannerImage', function (req, res, next) {
-	// Banner.findAll()
-	// 	.then(result => {
-	// 		res.send(
-	// 			result
-	// 				.filter(el => {
-	// 					const temp = new Date();
-	// 					const today = temp.setHours(temp.getHours() + 9);
-	// 					const target = new Date(el.end);
-	// 					if (today < target) {
-	// 						return el;
-	// 					}
-	// 				})
-	// 				.reverse()
-	// 				.slice(0, 5)
-	// 				.map(el => el.path)
-	// 				.map(el => {
-	// 				})
-	// 				.reverse()
-	// 		);
-	// 	})
-	// 	.catch(err => {
-	// 		console.error(err);
-	// 	});
-	Banner.findOne({ where: { id: 1 } }).then(result => {
-		fs.readFile(result.path, function (error, data) {
-			res.writeHead(200, { 'Content-Type': 'text/html' });
-			res.end(data);
+router.get('/banner/:banner', (req, res) => {
+	console.log('in banner/:banner ', req.params.banner);
+	console.log(path.join(rootPath, 'banner', req.params.banner));
+	res.sendFile(path.join(rootPath, 'banner', req.params.banner));
+});
+
+router.get('/main_contents', function (req, res, next) {
+	const data = {};
+	Banner.findAll()
+		.then(result => {
+			const b_path = result
+				.filter(el => {
+					const temp = new Date();
+					const today = temp.setHours(temp.getHours() + 9);
+					const target = new Date(el.end);
+					if (today < target) {
+						return el;
+					}
+				})
+				.reverse()
+				.slice(0, 5)
+				.map(el => el.bannerPath);
+
+			data.bannerInfo = b_path;
+		})
+		.then(() => {
+			Item.findAll()
+				.then(result => {
+					const i_path = result.reverse().slice(0, 3);
+
+					data.itemInfo = i_path;
+				})
+				.then(() => {
+					res.json(JSON.stringify(data));
+				});
+		})
+		.catch(err => {
+			console.error(err);
 		});
-	});
 });
 
 router.get('/product', function (req, res, next) {

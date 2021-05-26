@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../../style/add_item.css';
 
-const Additem = ({ closePopup, closeEdit, editStatus = -1 }) => {
+const Additem = ({ closePopup, closeEdit, editStatus }) => {
 	const [attach, setAttach] = useState();
 	const [checkItems, setCheckItems] = useState([]);
 	const [genres, setGenres] = useState([]);
@@ -58,6 +58,8 @@ const Additem = ({ closePopup, closeEdit, editStatus = -1 }) => {
 				},
 			})
 				.then(res => {
+					console.log('onclick');
+					console.log(res.data.cover);
 					album.value = res.data.album;
 					singer.value = res.data.singer;
 					supply.value = res.data.supply;
@@ -93,8 +95,6 @@ const Additem = ({ closePopup, closeEdit, editStatus = -1 }) => {
 					},
 				})
 				.then(coverPath => {
-					const splitPath = coverPath.data.split('\\');
-					const realPath = splitPath[1] + '\\' + splitPath[2];
 					axios({
 						method: 'POST',
 						url: 'http://localhost:3001/additem',
@@ -104,7 +104,7 @@ const Additem = ({ closePopup, closeEdit, editStatus = -1 }) => {
 							supply: supply.value,
 							price: parseInt(price.value),
 							detail: detail.value,
-							cover: realPath,
+							cover: coverPath.data,
 							genre: checkItems,
 						},
 					})
@@ -136,6 +136,10 @@ const Additem = ({ closePopup, closeEdit, editStatus = -1 }) => {
 						},
 					})
 					.then(coverPath => {
+						console.log('coverpath', coverPath);
+
+						console.log('coverPath', coverPath);
+
 						const splitPath = coverPath.data.split('\\');
 						const realPath = splitPath[1] + '\\' + splitPath[2];
 						axios({

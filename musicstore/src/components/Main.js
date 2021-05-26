@@ -2,16 +2,30 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import Notice from './Notice';
 import Qna from './Qna';
+import Item_Mainpage from './Item_Mainpage';
 
 const Main = () => {
 	const [banner, setBanner] = useState('');
 	const [banners, setBanners] = useState('');
+	const [items, setItems] = useState('');
+
+	const bannerAutoChange = banners => {
+		let count = 1;
+		setInterval(() => {
+			setBanner(`http://localhost:3001/${banners[count % 5]}`);
+			count++;
+		}, 30000);
+	};
 	useEffect(() => {
 		axios
-			.get('http://localhost:3001/bannerImage')
+			.get('http://localhost:3001/main_contents')
 			.then(res => {
-				console.log(res.data);
-				setBanners(res.data);
+				const data = JSON.parse(res.data);
+				console.log(data);
+				setBanner(`http://localhost:3001/${data.bannerInfo[0]}`);
+				setBanners(data.bannerInfo);
+				setItems(data.itemInfo);
+				bannerAutoChange(data.bannerInfo);
 			})
 			.catch(err => {
 				console.log('in main');
@@ -38,17 +52,19 @@ const Main = () => {
 				</div>
 				<div id="content_container">
 					<div className="upper_container">
-						{banners === '' ? <div>로딩중</div> : <img src={`data:image/png;base64,${banners[1]}`} id="event_banner" />}
+						{banners === '' ? (
+							<div>로딩중</div>
+						) : (
+							<div className="banner_container">
+								<img src={banner} id="event_banner" alt="배너" />
+							</div>
+						)}
 						<div className="upper_right_container">
 							<Notice />
 							<Qna />
 						</div>
 					</div>
-					<div id="product_container">
-						<div className="dummy_product"></div>
-						<div className="dummy_product"></div>
-						<div className="dummy_product"></div>
-					</div>
+					<div id="product_container">{items ? items.map(item => <Item_Mainpage data={item} />) : ''}</div>
 				</div>
 			</div>
 		</div>

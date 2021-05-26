@@ -61,7 +61,7 @@ const ManagerSection = () => {
 	};
 
 	const openPopup = () => {
-		if(board !== "product") {
+		if (board !== 'product') {
 			const background = document.querySelector('.popup_background');
 			const popup = document.querySelector(`.board_modify_popup`);
 			background.style.display = 'block';
@@ -99,7 +99,7 @@ const ManagerSection = () => {
 	const onProductClick = (e, id) => {
 		setProductPopup(true);
 		setProductStatus(id);
-	}
+	};
 
 	const onSubmit = e => {
 		e.preventDefault();
@@ -115,22 +115,33 @@ const ManagerSection = () => {
 					return;
 				}
 				const form = new FormData();
+				console.log(banner);
 				form.append('title', title);
 				form.append('banner', banner);
 				form.append('start', start);
 				form.append('end', end);
-				axios.post('http://localhost:3001/banner', form, { headers: { 'Content-Type': 'multipart/form-data' } }).then(() => {
-					axios({
-						method: 'GET',
-						url: `http://localhost:3001/${board}`,
+				axios
+					.post('http://localhost:3001/banner', form, { headers: { 'Content-Type': 'multipart/form-data' } })
+					.then(res => {
+						console.log(res);
+						setBoardData(axios.get(`http://localhost:3001/${board}`).data);
+						closePopup();
 					})
-						.then(res => {
-							setBoardData(res.data.reverse());
+					.then(() => {
+						axios({
+							method: 'GET',
+							url: `http://localhost:3001/${board}`,
 						})
-						.catch(err => {
-							console.error(err);
-						});
-				});
+							.then(res => {
+								setBoardData(res.data.reverse());
+							})
+							.catch(err => {
+								console.error(err);
+							});
+					})
+					.catch(err => {
+						console.error(err);
+					});
 				closeBannerPopup();
 			} else {
 				alert('내용을 입력해주세요!');
@@ -200,9 +211,9 @@ const ManagerSection = () => {
 								<div className="product_publish">유통사</div>
 							</div>
 							<div className="product_posts">
-								{boardData.map((i) => (
-									<div className="inner_board" onClick={(e) => onProductClick(e, i.id)}>
-										<ProductPost data={i}/>
+								{boardData.map(i => (
+									<div className="inner_board" onClick={e => onProductClick(e, i.id)}>
+										<ProductPost data={i} />
 									</div>
 								))}
 							</div>
@@ -286,9 +297,7 @@ const ManagerSection = () => {
 					</div>
 				</form>
 			</div>
-			{productPopup && (
-				<Additem closePopup={setProductPopup} closeEdit = {setProductStatus} editStatus = {productStatus}/>
-			)}
+			{productPopup && <Additem closePopup={setProductPopup} closeEdit={setProductStatus} editStatus={productStatus} />}
 		</div>
 	);
 };

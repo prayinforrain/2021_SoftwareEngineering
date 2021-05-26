@@ -10,7 +10,6 @@ var sequelize = require('./models').sequelize;
 var session = require('express-session');
 var passport = require('passport');
 var passportConfig = require('./passport');
-var multer = require('multer');
 
 var app = express();
 sequelize.sync();

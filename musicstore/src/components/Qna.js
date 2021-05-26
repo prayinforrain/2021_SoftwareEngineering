@@ -30,8 +30,12 @@ const Qna = () => {
 			<div id="qna" className="main_manage">
 				<h3>자주 묻는 질문</h3>
 				<div className="qna_container">
-					{qna.map(el => {
-						return <div className="qna">{el.title}</div>;
+					{qna.map((el, idx) => {
+						return (
+							<div key={idx} className="qna">
+								{el.title}
+							</div>
+						);
 					})}
 				</div>
 			</div>

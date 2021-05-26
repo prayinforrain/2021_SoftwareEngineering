@@ -6,8 +6,8 @@ module.exports = (sequelize, DataTypes) => {
 				type: DataTypes.STRING(30),
 				allowNull: false,
 			},
-			path: {
-				type: DataTypes.BLOB('long'),
+			bannerPath: {
+				type: DataTypes.STRING(40),
 				allowNull: false,
 			},
 			start: {

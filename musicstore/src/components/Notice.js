@@ -29,8 +29,12 @@ const Notice = () => {
 			<div id="notice" className="main_manage">
 				<h3>공지사항</h3>
 				<div className="notice_container">
-					{notice.map(el => {
-						return <div className="notice">{el.title}</div>;
+					{notice.map((el, idx) => {
+						return (
+							<div key={idx} className="notice">
+								{el.title}
+							</div>
+						);
 					})}
 				</div>
 			</div>

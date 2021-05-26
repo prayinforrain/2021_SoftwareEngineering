@@ -39,10 +39,6 @@ function App() {
 	const closeLoginModal = () => {
 		set_login_modal(false);
 	};
-	const requestUserInfo = () => {
-		console.log('user');
-		console.log(user);
-	};
 	const onLogin = data => {
 		setUser(data);
 	};
@@ -71,20 +67,6 @@ function App() {
 					<SignUp onClose={closeSignupModal} />
 				</ModalPortal>
 			)}
-			<div
-				style={{ width: '100px', height: '100px', border: '5px solid black', position: 'absolute', left: '0', top: '50%' }}
-				onClick={requestUserInfo}
-			>
-				Test
-			</div>
-			<div
-				style={{ width: '100px', height: '100px', border: '5px solid red', position: 'absolute', left: '0', top: '70%' }}
-				onClick={() => {
-					console.log(window.sessionStorage.id);
-				}}
-			>
-				Test2
-			</div>
 		</div>
 	);
 }
