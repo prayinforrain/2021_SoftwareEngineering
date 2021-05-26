@@ -34,7 +34,7 @@ function WebRouter({ user, onLogout, openSignup, openLogin  }) {
                 <Route exact path="/itemInfo/:itemID">
                     <Header user={user} onLogout={onLogout} openSignup={openSignup} openLogin={openLogin} />
                     <div id="main_container">
-                        <ItemInfo />
+                        <ItemInfo user = {user} />
                     </div>
                     <Footer />
                 </Route>
@@ -52,7 +52,7 @@ function WebRouter({ user, onLogout, openSignup, openLogin  }) {
                     <Header user={user} onLogout={onLogout}  openSignup={openSignup} openLogin={openLogin} />
                     <div id="main_container">
                         <MypageMenu />
-                        <Cart />
+                        <Cart user = {user}/>
                     </div>
                     <Footer />
                 </Route>

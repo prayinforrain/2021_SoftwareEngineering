@@ -1,16 +1,23 @@
 var express = require('express');
 var router = express.Router();
+
 var User = require('../models').User;
 var Notice = require('../models').Notice;
 var Banner = require('../models').Banner;
 var Qna = require('../models').Qna;
 var Faq = require('../models').Faq;
 var Destination = require('../models').Destination;
+var Item = require('../models').Item;
+var Genre = require('../models').Genre;
+var ItemGenre = require('../models').ItemGenre;
+var Cart = require('../models').Cart;
+
 const passport = require('passport');
 var fs = require('fs');
 
 var multer = require('multer'); // express에 multer모듈 적용 (for 파일업로드)
 var upload = multer({ dest: 'uploads/' });
+const mysqldb = require('../mysql/mysqldb');
 var bannerStorage = multer.diskStorage({
 	destination: (req, file, cb) => {
 		cb(null, 'banner/');
@@ -30,10 +37,219 @@ router.get('/', function (req, res, next) {
 	}
 });
 
-router.post('/upload', upload.single('cover'), function (req, res) {
-	console.log(req.file);
+router.get('/uploads/:img_id', function (req, res) {
+	res.sendFile(`${__dirname}/uploads/${req.params.img_id}`);
+	//res.sendfile(path.resolve(__dirname,))
+});
 
-	res.send('Uploaded! : ' + req.file);
+router.post('/upload', upload.single('cover'), function (req, res) {
+	res.send(req.file.path);
+	console.log(req.file.path);
+});
+
+router.post('/getcart', function (req, res, next) {
+	/*
+	SELECT * FROM musicstore.carts
+	left outer join musicstore.items
+	on musicstore.carts.itemID = musicstore.items.id where userID=?;
+	를 할수 있으면 얼마나 좋을까?
+	*/
+	console.log('받아온거 : ', req.body.userID);
+	mysqldb.connectiond.query(
+		`SELECT * FROM musicstore.carts
+	left outer join musicstore.items
+	on musicstore.carts.itemID = musicstore.items.id where userID=?`,
+		[req.body.userID],
+		function (err, rows, fields) {
+			if (err) {
+				console.log(err);
+			} else {
+				res.send(rows);
+			}
+		}
+	);
+});
+
+router.post('/editcart', function (req, res, next) {
+	mysqldb.connectiond.query(
+		`UPDATE musicstore.carts SET quantity=? WHERE id=?`,
+		[req.body.quantity, req.body.cartID],
+		function (err, rows, fields) {
+			if (err) {
+				console.log(err);
+			} else {
+				res.send(rows);
+			}
+		}
+	);
+});
+
+router.post('/deletecart', function (req, res, next) {
+	mysqldb.connectiond.query(`DELETE FROM musicstore.carts WHERE id=?`, [req.body.cartID], function (err, rows, fields) {
+		if (err) {
+			console.log(err);
+		} else {
+			res.send(rows);
+		}
+	});
+});
+
+router.post('/addcart', function (req, res, next) {
+	Cart.create({
+		itemID: req.body.itemID,
+		userID: req.body.userID,
+		quantity: req.body.quantity,
+	})
+		.then(result => {
+			res.send(result);
+		})
+		.catch(err => {
+			console.error(err);
+		});
+});
+
+router.post('/item_detail', function (req, res, next) {
+	console.log('finding Item Information with id = ', req.body.que);
+	Item.findOne({
+		where: {
+			id: req.body.queryID,
+		},
+	}).then(result => {
+		res.send(result);
+	});
+});
+
+router.get('/getgenres', function (req, res, next) {
+	Genre.findAll()
+		.then(result => {
+			res.send(result);
+		})
+		.catch(err => {
+			console.error(err);
+		});
+});
+
+router.post('/getgenres', function (req, res, next) {
+	Genre.findAll()
+		.then(result => {
+			if (req.body.itemID) {
+				let listofGenres = [];
+				ItemGenre.findAll({
+					where: {
+						itemID: req.body.itemID,
+					},
+				}).then(genRes => {
+					/*console.log("genRes");
+				console.log(genRes);*/
+					genRes.forEach(g => {
+						listofGenres.push(result.find(value => value.id === g.dataValues.genreID + 1).dataValues);
+					});
+					res.send(listofGenres);
+				});
+			} else {
+				res.send(result);
+			}
+		})
+		.catch(err => {
+			console.error(err);
+		});
+});
+
+router.post('/additem', function (req, res, next) {
+	Item.create({
+		album: req.body.album,
+		singer: req.body.singer,
+		price: req.body.price,
+		supply: req.body.supply,
+		detail: req.body.detail,
+		cover: req.body.cover,
+	})
+		.then(result => {
+			//장르 추가할 것
+			req.body.genre.forEach(el => {
+				ItemGenre.create({
+					itemID: result.dataValues.id,
+					genreID: el - 1,
+				});
+			});
+			res.status(201).json(result);
+		})
+		.catch(err => {
+			console.log('error while adding item');
+			console.error(err);
+			next(err);
+		});
+});
+
+router.post('/edititem', function (req, res, next) {
+	Item.update(
+		{
+			album: req.body.album,
+			singer: req.body.singer,
+			price: req.body.price,
+			supply: req.body.supply,
+			detail: req.body.detail,
+			cover: req.body.cover,
+		},
+		{
+			where: { id: req.body.id },
+		}
+	).catch(err => {
+		console.log('error while adding item');
+		console.error(err);
+		next(err);
+	});
+
+	ItemGenre.findAll({
+		where: {
+			itemID: req.body.id,
+		},
+	}).then(tempGenres => {
+		tempGenres.forEach(g => {
+			if (req.body.genre.indexOf(g.dataValues.genreID) === -1) {
+				ItemGenre.destroy({
+					where: { id: g.dataValues.id },
+				});
+			}
+		});
+	});
+	req.body.genre.forEach(g => {
+		ItemGenre.findAll({
+			where: {
+				itemID: req.body.id,
+				genreID: g,
+			},
+		}).then(result => {
+			if (result.length === 0) {
+				ItemGenre.create({
+					itemID: req.body.id,
+					genreID: g,
+				});
+			}
+		});
+	});
+
+	res.status(201).send('success');
+	/*Item.findOne({
+		where : {id: req.body.id}
+	}).then(result => {
+		req.body.genre.forEach(el => {
+			
+		})
+		res.status(201).json(result);
+	})*/
+});
+
+router.post('/deleteitem', function (req, res, next) {
+	mysqldb.connectiond.query(`DELETE FROM musicstore.items WHERE id=?`, [req.body.itemID], function (err, rows, fields) {
+		if (err) {
+			console.log(err);
+		} else {
+			mysqldb.connectiond.query(`DELETE musicstore.itemgenres WHERE itemID=?`, [req.body.itemID], function (err, rows, fields) {
+				res.send(rows);
+			});
+		}
+	});
 });
 
 router.post('/changeinfo', function (req, res, next) {
@@ -237,17 +453,6 @@ router.get('/logout', (req, res) => {
 
 // })
 
-router.get('/test', function (req, res, next) {
-	Destination.findAll({
-		where: {
-			addressOwner: 1,
-		},
-	}).then(result => {
-		console.log(result);
-	});
-	res.render('index', { title: 'Test' });
-});
-
 router.post('/userInfo', function (req, res, next) {
 	User.findOne({ where: { userID: req.body.userID } })
 		.then(response => {
@@ -378,6 +583,16 @@ router.get('/bannerImage', function (req, res, next) {
 			res.end(data);
 		});
 	});
+});
+
+router.get('/product', function (req, res, next) {
+	Item.findAll()
+		.then(result => {
+			res.send(result);
+		})
+		.catch(err => {
+			console.error(err);
+		});
 });
 
 router.get('/main', function (req, res) {

@@ -1,0 +1,61 @@
+#item_genre_list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+#item_manage_container {
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+
+#add_item_form {
+    padding: 3vh;
+    width:40%;
+    border:1px solid black;
+    margin: 0 auto;
+    background-color: white;
+}
+
+#item_delete_btn {
+    margin-left: 90%;
+}
+
+.item_row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.item_row h1 {
+    margin: 6px auto 30px auto;
+}
+
+.item_row_name {
+    text-align: right;
+    width: 50%;
+    margin-right: 5%;
+    margin-left: -5%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+.item_row_field {
+    display: flex;
+    width: 50%;
+    align-content: flex-start;
+    justify-content: flex-start;
+}
+
+.item_submit_btn {
+    margin-top: 5%;
+    width: 40%;
+}

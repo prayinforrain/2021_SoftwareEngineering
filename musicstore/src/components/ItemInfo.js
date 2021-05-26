@@ -7,28 +7,53 @@ import axios from 'axios';
 
 import test_img from "../img/01.jpg"; // 테스트용
 
-const ItemInfo = ( ) => {
+const ItemInfo = ( {user} ) => {
     const params = useParams();
     const [itemCount, setItemCount] = useState(1);
     const [item, setItem] = useState({
         album : "",
         singer : "",
-        price : "",
+        price : 0,
         supply : "",
-        category : "",
-        detail : ""
+        detail : "",
+        cover : "",
     });
-    //console.log('parsing album ID : ' + queryID);
+    const [genres, setGenres] = useState([]);
     
     // 아이템 데이터 가져오기
     const fetchItem = async() => {
-        const res = await axios.post('http://localhost:3001/item_detail/', {
-            queryID : params.itemID
+        axios({
+            method:"POST",
+            url:"http://localhost:3001/item_detail/",
+            data: {
+                queryID : params.itemID
+            }
+        }).then(res => {
+            setItem(res.data);
+            fetchGenre();
+        }).catch((err) => {
+            console.log(err);
         });
-        setItem(res.data);
-        console.log(item);
-        
     };
+
+    //장르 가져오기
+    const fetchGenre = async() => {
+        axios({
+            method:"POST",
+            url:"http://localhost:3001/getgenres",
+            data: {
+                itemID : params.itemID
+            }
+        }).then(res => {
+            let tempArr = [];
+            res.data.map(el => {
+                tempArr.push(el.name)
+            });
+            setGenres(tempArr);
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
 
     // 수량 state 조절하는 부분
     function onCountChange(event) {
@@ -62,6 +87,22 @@ const ItemInfo = ( ) => {
         fetchItem();
     }, [])
     
+    const submitCart = () => {
+        axios({
+            method:"POST",
+            url:"http://localhost:3001/addcart",
+            data: {
+                userID : user.id,
+                itemID : params.itemID,
+                quantity : itemCount
+            }
+        }).then(res => {
+            console.log(res);
+            alert('장바구니에 담았습니다.');
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
     
     return (
         <div id="main">
@@ -73,7 +114,7 @@ const ItemInfo = ( ) => {
                                 홈 &gt; 최신음악
                             </div>
                             <div id="item_img">
-                                <img src={test_img} alt="test" />
+                                <img src={"http://localhost:3001/" + item.cover} alt="test" />
                             </div>
                         </div>
                         <div id="item_header_info">
@@ -105,7 +146,7 @@ const ItemInfo = ( ) => {
                                 </button>
                             </div>
                             <div id="item_header_buy">
-                                <button id="item_add_wishlist">장바구니</button>
+                                <button id="item_add_wishlist" onClick={submitCart}>장바구니</button>
                                 <button id="item_buy">구매</button>
                             </div>
                         </div>
@@ -116,8 +157,16 @@ const ItemInfo = ( ) => {
                         가수 : {item.singer} <br/>
                         가격 : {item.price} <br/>
                         배급사 : {item.supply} <br/>
-                        장르 : {item.category} <br/>
-                        상세설명 : {item.detail} <br/>
+                        장르 : {genres.map((e) => (
+                            <>{e} </>
+                        ))} <br/>
+                        상세설명 : {item.detail.split("\n").map((line) => {
+                            return (
+                                <>
+                                <span>{line}<br/></span>
+                                </>
+                            )
+                        })} <br/>
                     </div>
                 </div>
             </div>

@@ -144,7 +144,6 @@ header .header_container .menu {
   border: 1px solid black;
   display: flex;
   flex-direction: column;
-  justify-content:space-between
 }
 
 #event_banner{
