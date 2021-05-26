@@ -68,65 +68,105 @@ router.post('/search', function (req, res, next) {
 					searchGenre = -1;
 					console.log("없음");
 				}
+				var queryString = [];
+				var queryParam = [];
 				//console.log("검색옵션 : " + req.body.searchOption + typeof(req.body.searchOption));
-				if(req.body.searchOption === "0") {
-					var queryString = `SELECT * FROM musicstore.items
-					join musicstore.itemgenres
-					on musicstore.items.id = musicstore.itemgenres.itemID
-					where musicstore.itemgenres.genreID = ? or
-					musicstore.items.album like concat('%', ?, '%') or
-					musicstore.items.singer like concat('%', ?, '%') or
-					musicstore.items.supply like concat('%', ?, '%')
-					group by musicstore.items.id;`;
-					var queryParam = [searchGenre, req.body.keyword, req.body.keyword, req.body.keyword];
-				}
-				if(req.body.searchOption === "1") {
-					var queryString = `SELECT * FROM musicstore.items
-					join musicstore.itemgenres
-					on musicstore.items.id = musicstore.itemgenres.itemID
-					where musicstore.items.album like concat('%', ?, '%')
-					group by musicstore.items.id;`;
-					var queryParam = [req.body.keyword];
-				}
-				if(req.body.searchOption === "2") {
-					var queryString = `SELECT * FROM musicstore.items
-					join musicstore.itemgenres
-					on musicstore.items.id = musicstore.itemgenres.itemID
-					where musicstore.items.singer like concat('%', ?, '%') or
-					group by musicstore.items.id;`;
-					var queryParam = [req.body.keyword];
-				}
-				if(req.body.searchOption === "3") {
-					var queryString = `SELECT * FROM musicstore.items
-					join musicstore.itemgenres
-					on musicstore.items.id = musicstore.itemgenres.itemID
-					where musicstore.items.supply like concat('%', ?, '%')
-					group by musicstore.items.id;`;
-					var queryParam = [sreq.body.keyword];
-				}
-				if(req.body.searchOption === "4") {
-					var queryString = `SELECT * FROM musicstore.items
-					join musicstore.itemgenres
-					on musicstore.items.id = musicstore.itemgenres.itemID
-					where musicstore.itemgenres.genreID = ?
-					group by musicstore.items.id;`;
-					var queryParam = [searchGenre];
-				}
+				queryString[0] = `SELECT * FROM musicstore.items
+				join musicstore.itemgenres
+				on musicstore.items.id = musicstore.itemgenres.itemID
+				where musicstore.itemgenres.genreID = ? or
+				musicstore.items.album like concat('%', ?, '%') or
+				musicstore.items.singer like concat('%', ?, '%') or
+				musicstore.items.supply like concat('%', ?, '%')
+				group by musicstore.items.id;`;
+				queryParam[0] = [searchGenre, req.body.keyword, req.body.keyword, req.body.keyword];
+				queryString[1] = `SELECT * FROM musicstore.items
+				join musicstore.itemgenres
+				on musicstore.items.id = musicstore.itemgenres.itemID
+				where musicstore.items.album like concat('%', ?, '%')
+				group by musicstore.items.id;`;
+				queryParam[1] = [req.body.keyword];
+				queryString[2] = `SELECT * FROM musicstore.items
+				join musicstore.itemgenres
+				on musicstore.items.id = musicstore.itemgenres.itemID
+				where musicstore.items.singer like concat('%', ?, '%')
+				group by musicstore.items.id;`;
+				queryParam[2] = [req.body.keyword];
+				queryString[3] = `SELECT * FROM musicstore.items
+				join musicstore.itemgenres
+				on musicstore.items.id = musicstore.itemgenres.itemID
+				where musicstore.items.supply like concat('%', ?, '%')
+				group by musicstore.items.id;`;
+				queryParam[3] = [req.body.keyword];
+				queryString[4] = `SELECT * FROM musicstore.items
+				join musicstore.itemgenres
+				on musicstore.items.id = musicstore.itemgenres.itemID
+				where musicstore.itemgenres.genreID = ?
+				group by musicstore.items.id;`;
+				queryParam[4] = [searchGenre];
 				/*console.log("쿼리 정보:");
 				console.log(queryString);
 				console.log(queryParam);*/
-				mysqldb.connectiond.query(
-					queryString, queryParam,
-					function (err, rows, fields) {
-						if (err) {
-							console.log(err);
-						} else {
-							console.log("검색결과:");
-							console.log(rows);
-							res.send(rows);
+				if(req.body.searchOption === "0") {
+					mysqldb.connectiond.query(
+						queryString[1], queryParam[1],
+						function (err, rows1, fields) {
+							if (err) {
+								console.log(err);
+							} else {
+								console.log("row1 : ");
+								console.log(rows1);
+								mysqldb.connectiond.query(
+									queryString[2], queryParam[2],
+									function (err, rows2, fields) {
+										if (err) {
+											console.log(err);
+										} else {
+											console.log("row2 : ");
+											console.log(rows2);
+											mysqldb.connectiond.query(
+												queryString[3], queryParam[3],
+												function (err, rows3, fields) {
+													if (err) {
+														console.log(err);
+													} else {
+														mysqldb.connectiond.query(
+															queryString[4], queryParam[4],
+															function (err, rows4, fields) {
+																if (err) {
+																	console.log(err);
+																} else {
+																	console.log("row4 : ");
+																	console.log(rows4);
+																	var resultrows = [rows1, rows2, rows3, rows4];
+																	console.log(resultrows);
+																	res.send(resultrows);
+																}
+															}
+														);
+													}
+												}
+											);
+										}
+									}
+								);
+							}
 						}
-					}
-				);
+					);
+				} else {
+					mysqldb.connectiond.query(
+						queryString[req.body.searchOption], queryParam[req.body.searchOption],
+						function (err, rows, fields) {
+							if (err) {
+								console.log(err);
+							} else {
+								console.log("검색결과:");
+								console.log(rows);
+								res.send(rows);
+							}
+						}
+					);
+				}
 			}
 		}
 	);
