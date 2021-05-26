@@ -64,7 +64,7 @@ const Main = () => {
 							<Qna />
 						</div>
 					</div>
-					<div id="product_container">{items ? items.map(item => <Item_Mainpage data={item} />) : ''}</div>
+					<div id="product_container">{items ? items.map(item => <Item_Mainpage key={item.id} data={item} />) : ''}</div>
 				</div>
 			</div>
 		</div>

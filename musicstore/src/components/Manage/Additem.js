@@ -39,7 +39,7 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 				.then(res => {
 					let tempArr = [];
 					res.data.map(d => {
-						tempArr.push(d.id - 1);
+						tempArr.push(d.id);
 					});
 					setCheckItems(tempArr);
 				})

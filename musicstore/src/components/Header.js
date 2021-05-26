@@ -3,6 +3,21 @@ import { Link } from 'react-router-dom';
 import '../style/common.css';
 import axios from 'axios';
 const Header = ({ user, onLogout, openSignup, openLogin }) => {
+	
+	async function onSearch() {
+		var keyword = document.getElementById("search_keyword").value;
+		console.log(keyword);
+		axios({
+			method: 'POST',
+			url: 'http://localhost:3001/search',
+			data: {
+				keyword
+			}
+		}).then(res => {
+			console.log(res);
+		})
+	}
+
 	function logout() {
 		axios.withCredentials = true;
 		axios.get('http://localhost:3001/logout').then(res => {
@@ -18,8 +33,8 @@ const Header = ({ user, onLogout, openSignup, openLogin }) => {
 					<Link to="/" className="logo_link" />
 				</div>
 				<div id="search" style={user.userID === 'admin' ? { display: 'none' } : {}}>
-					<input type="text" placeholder="앨범, 가수, 제작사..." />
-					<button>검색</button>
+					<input type="text" placeholder="앨범, 가수, 제작사..." id="search_keyword" />
+					<button onClick={onSearch}>검색</button>
 				</div>
 				{typeof user === 'object' ? (
 					user.userID === 'admin' ? (

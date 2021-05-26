@@ -50,6 +50,49 @@ router.post('/upload', upload.single('cover'), function (req, res) {
 	console.log(req.file.path);
 });
 
+router.post('/search', function (req, res, next) {
+	var searchGenre = 0;
+	mysqldb.connectiond.query(
+		`SELECT * FROM musicstore.genres where name like ?`,
+		[req.body.keyword],
+		function (err, rows, fields) {
+			if (err) {
+				console.log(err);
+			} else {
+				console.log("장르 검색결과:");
+				if(rows.length > 0) {
+					searchGenre = rows[0].id;
+					console.log(searchGenre);
+				} else {
+					searchGenre = -1;
+					console.log("없음");
+				}
+				console.log(searchGenre + "번 장르도 같이 찾는준");
+				mysqldb.connectiond.query(
+					`SELECT * FROM musicstore.items
+					join musicstore.itemgenres
+					on musicstore.items.id = musicstore.itemgenres.itemID
+					where musicstore.itemgenres.genreID = ? or
+				musicstore.items.album like concat('%', ?, '%') or
+				musicstore.items.singer like concat('%', ?, '%') or
+				musicstore.items.supply like concat('%', ?, '%')
+				group by musicstore.items.id;`,
+					[searchGenre, req.body.keyword, req.body.keyword, req.body.keyword],
+					function (err, rows, fields) {
+						if (err) {
+							console.log(err);
+						} else {
+							console.log("검색결과:");
+							console.log(rows);
+							res.send(rows);
+						}
+					}
+				);
+			}
+		}
+	);
+});
+
 router.post('/getcart', function (req, res, next) {
 	/*
 	SELECT * FROM musicstore.carts
@@ -142,11 +185,13 @@ router.post('/getgenres', function (req, res, next) {
 						itemID: req.body.itemID,
 					},
 				}).then(genRes => {
-					/*console.log("genRes");
-				console.log(genRes);*/
+					console.log(req.body.itemID + "번 아이템에 대한 장르 연결 정보:");
+					console.log(genRes);
 					genRes.forEach(g => {
-						listofGenres.push(result.find(value => value.id === g.dataValues.genreID + 1).dataValues);
+						listofGenres.push(result.find(value => value.id === g.dataValues.genreID).dataValues);
 					});
+					console.log(req.body.itemID + "번 아이템에 대한 장르:");
+					console.log(listofGenres);
 					res.send(listofGenres);
 				});
 			} else {
@@ -170,10 +215,23 @@ router.post('/additem', function (req, res, next) {
 		.then(result => {
 			//장르 추가할 것
 			req.body.genre.forEach(el => {
-				ItemGenre.create({
+				mysqldb.connectiond.query(
+					`insert into musicstore.itemgenres (itemID, genreID)
+					select * from (select ?, ?) as tmp
+					where not exists (
+					select itemID, genreID from musicstore.itemgenres where itemID=? and genreID=?
+					) LIMIT 1;`,
+					[result.dataValues.id, el, result.dataValues.id, el],
+					function (err, rows, fields) {
+						if(err) {
+							console.log("error occured while /additem /additemgenres");
+							console.log(err);
+						}	
+					});
+				/*ItemGenre.create({
 					itemID: result.dataValues.id,
-					genreID: el - 1,
-				});
+					genreID: el,
+				});*/
 			});
 			res.status(201).json(result);
 		})
