@@ -212,7 +212,7 @@ const ManagerSection = () => {
 							</div>
 							<div className="product_posts">
 								{boardData.map(i => (
-									<div className="inner_board" onClick={e => onProductClick(e, i.id)}>
+									<div className="inner_board" key={i.id} onClick={e => onProductClick(e, i.id)}>
 										<ProductPost data={i} />
 									</div>
 								))}
