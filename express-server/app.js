@@ -25,7 +25,7 @@ passportConfig(passport);
 
 app.use(
 	cors({
-		origin: 'http://localhost:3000',
+		origin: 'http://ec2-3-36-91-222.ap-northeast-2.compute.amazonaws.com:3000',
 		credentials: true,
 	})
 );
