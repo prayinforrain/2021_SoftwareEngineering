@@ -437,3 +437,12 @@ footer .footer_container {
   align-items: center;
   margin: 0 auto;
 }
+
+#result_container {
+  margin-top: 1vh;
+  height: 100%;
+}
+
+.result_section {
+  height: 25%;
+}

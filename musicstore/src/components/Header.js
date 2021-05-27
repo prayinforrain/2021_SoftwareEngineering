@@ -1,25 +1,16 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import '../style/common.css';
 import axios from 'axios';
 import * as config from './Config';
 
 const Header = ({ user, onLogout, openSignup, openLogin }) => {
-	
+	const history = useHistory();
 	async function onSearch() {
 		var keyword = document.getElementById("search_keyword").value;
 		var searchOption = document.getElementById("search_option").value;
 		if(keyword !== "") {
-			axios({
-				method: 'POST',
-				url: `${config.BACKEND_URL}/search`,
-				data: {
-					keyword,
-					searchOption
-				}
-			}).then(res => {
-				console.log(res);
-			})
+			history.push('/search/' + searchOption + '/' + keyword);
 		} else {
 			alert('검색어를 입력해주세요.');
 		}

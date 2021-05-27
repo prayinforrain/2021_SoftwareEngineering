@@ -14,8 +14,6 @@ const ProductPost = ({ data }) => {
             }
         }).then(res => {
             setGenres(res.data);
-            console.log(data.id + "번 아이템 장르 정보");
-            console.log(res.data);
         }).catch((err) => {
             console.log(err);
         });

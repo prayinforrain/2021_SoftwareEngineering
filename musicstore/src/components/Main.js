@@ -4,6 +4,7 @@ import Notice from './Notice';
 import Qna from './Qna';
 import Item_Mainpage from './Item_Mainpage';
 import * as config from './Config';
+import Menu from './Menu';
 
 const Main = () => {
 	const [banner, setBanner] = useState('');
@@ -36,21 +37,7 @@ const Main = () => {
 	return (
 		<div id="main">
 			<div id="main_container">
-				<div className="menu">
-					<ul>
-						<li valign="top">
-							<a className="active" href="#home">
-								menu
-							</a>
-						</li>
-						<li>
-							<a href="#menu1">menu1</a>
-						</li>
-						<li>
-							<a href="#menu2">menu2</a>
-						</li>
-					</ul>
-				</div>
+				<Menu/>
 				<div id="content_container">
 					<div className="upper_container">
 						{banners === '' ? (

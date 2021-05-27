@@ -26,6 +26,14 @@ module.exports = (sequelize, DataTypes) => {
 				type: DataTypes.STRING(300),
 				allowNull: false,
 			},
+			released: {
+				type: DataTypes.STRING(30),
+				allowNull: false,
+			},
+			available: {
+				type: DataTypes.BOOLEAN,
+				allowNull: false,
+			},
 		},
 		{
 			timestamps: true,

@@ -23,9 +23,13 @@ app.use(passport.initialize());
 app.use(passport.session());
 passportConfig(passport);
 
+let allowdOrigins = [
+	'http://localhost:3000',
+	'http://ec2-52-78-101-149.ap-northeast-2.compute.amazonaws.com:3000'
+];
 app.use(
 	cors({
-		origin: 'http://ec2-52-78-101-149.ap-northeast-2.compute.amazonaws.com:3000',
+		origin: allowdOrigins,
 		credentials: true,
 	})
 );

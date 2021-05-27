@@ -52,6 +52,8 @@ router.post('/upload', upload.single('cover'), function (req, res) {
 
 router.post('/search', function (req, res, next) {
 	// 통합 제목 가수 배급사 장르 0~4
+	console.log("옵션: "+req.body.searchOption);
+	console.log("검색어: "+req.body.keyword);
 	var searchGenre = 0;
 	mysqldb.connectiond.query(
 		`SELECT * FROM musicstore.genres where name like concat('%', ?, '%')`,
@@ -60,48 +62,46 @@ router.post('/search', function (req, res, next) {
 			if (err) {
 				console.log(err);
 			} else {
-				console.log("장르 검색결과:");
 				if(rows.length > 0) {
 					searchGenre = rows[0].id;
-					console.log(searchGenre);
 				} else {
 					searchGenre = -1;
-					console.log("없음");
 				}
 				var queryString = [];
 				var queryParam = [];
 				//console.log("검색옵션 : " + req.body.searchOption + typeof(req.body.searchOption));
-				queryString[0] = `SELECT * FROM musicstore.items
+				queryString[0] = `SELECT  musicstore.items.* FROM musicstore.items
 				join musicstore.itemgenres
 				on musicstore.items.id = musicstore.itemgenres.itemID
-				where musicstore.itemgenres.genreID = ? or
+				where (musicstore.itemgenres.genreID = ? or
 				musicstore.items.album like concat('%', ?, '%') or
 				musicstore.items.singer like concat('%', ?, '%') or
-				musicstore.items.supply like concat('%', ?, '%')
+				musicstore.items.supply like concat('%', ?, '%'))
+				and musicstore.items.available = true
 				group by musicstore.items.id;`;
 				queryParam[0] = [searchGenre, req.body.keyword, req.body.keyword, req.body.keyword];
-				queryString[1] = `SELECT * FROM musicstore.items
+				queryString[1] = `SELECT musicstore.items.* FROM musicstore.items
 				join musicstore.itemgenres
 				on musicstore.items.id = musicstore.itemgenres.itemID
-				where musicstore.items.album like concat('%', ?, '%')
+				where musicstore.items.album like concat('%', ?, '%') and musicstore.items.available = true
 				group by musicstore.items.id;`;
 				queryParam[1] = [req.body.keyword];
-				queryString[2] = `SELECT * FROM musicstore.items
+				queryString[2] = `SELECT musicstore.items.* FROM musicstore.items
 				join musicstore.itemgenres
 				on musicstore.items.id = musicstore.itemgenres.itemID
-				where musicstore.items.singer like concat('%', ?, '%')
+				where musicstore.items.singer like concat('%', ?, '%') and musicstore.items.available = true
 				group by musicstore.items.id;`;
 				queryParam[2] = [req.body.keyword];
-				queryString[3] = `SELECT * FROM musicstore.items
+				queryString[3] = `SELECT musicstore.items.* FROM musicstore.items
 				join musicstore.itemgenres
 				on musicstore.items.id = musicstore.itemgenres.itemID
-				where musicstore.items.supply like concat('%', ?, '%')
+				where musicstore.items.supply like concat('%', ?, '%') and musicstore.items.available = true
 				group by musicstore.items.id;`;
 				queryParam[3] = [req.body.keyword];
-				queryString[4] = `SELECT * FROM musicstore.items
+				queryString[4] = `SELECT musicstore.items.* FROM musicstore.items
 				join musicstore.itemgenres
 				on musicstore.items.id = musicstore.itemgenres.itemID
-				where musicstore.itemgenres.genreID = ?
+				where musicstore.itemgenres.genreID = ? and musicstore.items.available = true
 				group by musicstore.items.id;`;
 				queryParam[4] = [searchGenre];
 				/*console.log("쿼리 정보:");
@@ -114,16 +114,12 @@ router.post('/search', function (req, res, next) {
 							if (err) {
 								console.log(err);
 							} else {
-								console.log("row1 : ");
-								console.log(rows1);
 								mysqldb.connectiond.query(
 									queryString[2], queryParam[2],
 									function (err, rows2, fields) {
 										if (err) {
 											console.log(err);
 										} else {
-											console.log("row2 : ");
-											console.log(rows2);
 											mysqldb.connectiond.query(
 												queryString[3], queryParam[3],
 												function (err, rows3, fields) {
@@ -136,10 +132,8 @@ router.post('/search', function (req, res, next) {
 																if (err) {
 																	console.log(err);
 																} else {
-																	console.log("row4 : ");
-																	console.log(rows4);
 																	var resultrows = [rows1, rows2, rows3, rows4];
-																	console.log(resultrows);
+																	//console.log(resultrows);
 																	res.send(resultrows);
 																}
 															}
@@ -290,6 +284,8 @@ router.post('/additem', function (req, res, next) {
 		supply: req.body.supply,
 		detail: req.body.detail,
 		cover: req.body.cover,
+		available: req.body.available,
+		released: req.body.released
 	})
 		.then(result => {
 			//장르 추가할 것
@@ -330,6 +326,8 @@ router.post('/edititem', function (req, res, next) {
 			supply: req.body.supply,
 			detail: req.body.detail,
 			cover: req.body.cover,
+			available: req.body.available,
+			released: req.body.released
 		},
 		{
 			where: { id: req.body.id },
@@ -719,7 +717,7 @@ router.get('/main_contents', function (req, res, next) {
 			data.bannerInfo = b_path;
 		})
 		.then(() => {
-			Item.findAll()
+			Item.findAll({where: {available: true}}) 
 				.then(result => {
 					const i_path = result.reverse().slice(0, 3);
 

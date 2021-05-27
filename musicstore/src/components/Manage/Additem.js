@@ -50,7 +50,7 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 
 			//폼 채우기
 			const form = document.getElementById('add_item_form');
-			const { album, singer, supply, price, detail, cover } = form;
+			const { album, singer, supply, price, detail, cover, available, released } = form;
 			axios({
 				method: 'POST',
 				url: `${config.BACKEND_URL}/item_detail/`,
@@ -66,6 +66,8 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 					supply.value = res.data.supply;
 					price.value = res.data.price;
 					detail.value = res.data.detail;
+					available.checked = res.data.available;
+					released.value = res.data.released;
 					setAttach(`${config.BACKEND_URL}/` + res.data.cover);
 					setOriginURL(res.data.cover);
 					console.log('테스트용 : ' + cover.value);
@@ -81,10 +83,14 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 		closePopup(false);
 	};
 
+	const onAval = (e) => {
+		console.log(e.target.checked);
+	}
+
 	const submitHandler = e => {
 		e.preventDefault();
 		const form = document.getElementById('add_item_form');
-		const { album, singer, supply, price, detail, cover } = form;
+		const { album, singer, supply, price, detail, cover, available, released } = form;
 		const fileForm = new FormData();
 		fileForm.append('cover', cover.files[0]);
 		if (editStatus === -1) {
@@ -107,6 +113,8 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 							detail: detail.value,
 							cover: coverPath.data,
 							genre: checkItems,
+							available: available.checked,
+							released: released.value
 						},
 					})
 						.then(res => {
@@ -154,6 +162,7 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 								price: parseInt(price.value),
 								detail: detail.value,
 								cover: realPath,
+								released: released.value,
 								genre: checkItems,
 							},
 						})
@@ -188,6 +197,7 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 						detail: detail.value,
 						cover: originURL,
 						genre: checkItems,
+						released: released.value
 					},
 				})
 					.then(res => {
@@ -249,7 +259,7 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 
 	return (
 		<div id="item_manage_container">
-			<form action='${config.BACKEND_URL}/' method="post" id="add_item_form" enctype="multipart/form-data">
+			<form action='${config.BACKEND_URL}/' method="post" id="add_item_form" encType="multipart/form-data">
 				<div className="item_row">
 					<h1>상품 관리</h1>
 				</div>
@@ -278,6 +288,12 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 					<div className="item_row_name">배급사</div>
 					<div className="item_row_field">
 						<input type="text" id="supply" name="supply" placeholder="배급사" />
+					</div>
+				</div>
+				<div className="item_row">
+					<div className="item_row_name">발매일</div>
+					<div className="item_row_field">
+						<input type="date" id="released" name="released" defaultValue="1970-01-01" />
 					</div>
 				</div>
 				<div className="item_row">
@@ -317,6 +333,12 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 								{i.name}
 							</label>
 						))}
+					</div>
+				</div>
+				<div className="item_row">
+					<div className="item_aval">
+						<span>상품을 고객이 볼 수 있게 노출합니다.  </span>
+						<input type="checkbox" id="available" name="available" onClick={onAval} />
 					</div>
 				</div>
 				<button type="submit" onClick={submitHandler} className="item_submit_btn">

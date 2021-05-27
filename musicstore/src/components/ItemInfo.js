@@ -160,13 +160,7 @@ const ItemInfo = ( {user} ) => {
                         장르 : {genres.map((e) => (
                             <>{e} </>
                         ))} <br/>
-                        상세설명 : {item.detail.split("\n").map((line) => {
-                            return (
-                                <>
-                                <span>{line}<br/></span>
-                                </>
-                            )
-                        })} <br/>
+                        상세설명 :  <br/>
                     </div>
                 </div>
             </div>

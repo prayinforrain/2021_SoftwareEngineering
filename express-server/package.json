@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "npm-run-all --parallel start:**",
-    "start:server": "nodemon ./bin/www",
+    "start": "nodemon ./bin/www",
+    "start:server": "node ./bin/www",
     "start:client": "cd ../musicstore && npm start"
   },
   "dependencies": {
