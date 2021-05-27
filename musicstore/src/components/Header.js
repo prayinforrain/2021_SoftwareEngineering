@@ -11,6 +11,7 @@ const Header = ({ user, onLogout, openSignup, openLogin }) => {
 		var searchOption = document.getElementById("search_option").value;
 		if(keyword !== "") {
 			history.push('/search/' + searchOption + '/' + keyword);
+			history.go(0);
 		} else {
 			alert('검색어를 입력해주세요.');
 		}
