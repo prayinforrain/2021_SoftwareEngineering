@@ -12,7 +12,7 @@ const Item_Mainpage = ({ data }) => {
 	return (
 		<div
 			className="mainpage_item"
-			style={{ backgroundImage: `url(${config.BACKEND_URL}/${ad[0]}/${ad[1]})` }}
+			style={{ backgroundImage: `url(${config.BACKEND_URL}/${data.cover})` }}
 			// onMouseEnter={onMouseEnter}
 			// onMouseLeave={onMouseLeave}
 		>

@@ -55,7 +55,7 @@ const Header = ({ user, onLogout, openSignup, openLogin }) => {
 								<Link to="/mypage">마이페이지</Link>
 							</div>
 							<div id="shopping">
-								<Link href="/mypage/cart">장바구니</Link>
+								<Link to="/mypage/cart">장바구니</Link>
 							</div>
 							<div id="logout" onClick={logout}>
 								로그아웃
