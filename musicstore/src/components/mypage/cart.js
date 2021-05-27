@@ -1,6 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import axios from 'axios';
+import * as config from '../Config';
 
 const Cart = ( {user} ) => {
     /*
@@ -17,7 +18,7 @@ const Cart = ( {user} ) => {
         });*/
         axios({
             method:"POST",
-            url:"http://localhost:3001/getcart/",
+            url:`${config.BACKEND_URL}/getcart/`,
             data: {
                 userID: user.id
             }
@@ -44,7 +45,7 @@ const Cart = ( {user} ) => {
             setCart(cart.map(i => i.id === id ? {...i, quantity: value} : i));
             axios({
                 method:"POST",
-                url:"http://localhost:3001/editcart/",
+                url:`${config.BACKEND_URL}/editcart/`,
                 data: {
                     quantity : value,
                     cartID : changeItem[0].id
@@ -93,7 +94,7 @@ const Cart = ( {user} ) => {
             console.log(checkItems[n]);
             await axios({
                 method:"POST",
-                url:"http://localhost:3001/deletecart/",
+                url:`${config.BACKEND_URL}/deletecart/`,
                 data: {
                     cartID : checkItems[n]
                 }

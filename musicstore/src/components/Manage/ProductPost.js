@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import * as config from '../Config';
 
 const ProductPost = ({ data }) => {
     const [genres, setGenres] = useState([]);
@@ -8,7 +8,7 @@ const ProductPost = ({ data }) => {
     const fetchGenre = async() => {
         axios({
             method:"POST",
-            url:"http://localhost:3001/getgenres",
+            url:`${config.BACKEND_URL}/getgenres`,
             data: {
                 itemID : data.id
             }

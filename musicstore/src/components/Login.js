@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import '../style/modal.css';
 import { useHistory } from 'react-router-dom';
+import * as config from './Config';
 
 const Login = ({ user, onLogin, onClose }) => {
 	const history = useHistory();
@@ -14,7 +15,7 @@ const Login = ({ user, onLogin, onClose }) => {
 		axios.defaults.withCredentials = true;
 		axios({
 			method: 'POST',
-			url: 'http://localhost:3001/login',
+			url: `${config.BACKEND_URL}/login`, //'http://localhost:3001/login',
 			data: {
 				id: id.value,
 				password: password.value,
@@ -29,7 +30,7 @@ const Login = ({ user, onLogin, onClose }) => {
 					onLogin(data);
 					alert(data.name + '님 환영합니다!');
 					window.sessionStorage.setItem('id', data.userID);
-					window.location.href = 'http://localhost:3000';
+					window.location.href = '/';
 				} else {
 					alert('로그인 정보가 일치하지 않습니다');
 					id.value = '';

@@ -1,6 +1,7 @@
 import React from "react";
 import "../style/modal.css";
 import axios from "axios";
+import * as config from './Config';
 
 const SignUp = ({ onClose }) => {
     const idCheck = () =>{
@@ -72,7 +73,7 @@ const SignUp = ({ onClose }) => {
         }
         axios({
             method: "POST",
-            url: "http://localhost:3001/signup",
+            url: `${config.BACKEND_URL}/signup`,
             data: {
                 username: username.value,
                 id: id.value,

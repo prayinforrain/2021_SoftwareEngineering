@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import * as config from './Config';
 
 const Notice = () => {
 	const [notice, setNotice] = useState([]);
@@ -7,7 +8,7 @@ const Notice = () => {
 	useEffect(() => {
 		setLoading(true);
 		axios
-			.get('http://localhost:3001/notice')
+			.get(`${config.BACKEND_URL}/notice`)
 			.then(res => setNotice(res.data.reverse().slice(0, 5)))
 			.then(() => {
 				setLoading(false);

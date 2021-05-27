@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import '../style/common.css';
 import axios from 'axios';
+import * as config from './Config';
+
 const Header = ({ user, onLogout, openSignup, openLogin }) => {
 	
 	async function onSearch() {
@@ -10,7 +12,7 @@ const Header = ({ user, onLogout, openSignup, openLogin }) => {
 		if(keyword !== "") {
 			axios({
 				method: 'POST',
-				url: 'http://localhost:3001/search',
+				url: `${config.BACKEND_URL}/search`,
 				data: {
 					keyword,
 					searchOption
@@ -25,7 +27,7 @@ const Header = ({ user, onLogout, openSignup, openLogin }) => {
 
 	function logout() {
 		axios.withCredentials = true;
-		axios.get('http://localhost:3001/logout').then(res => {
+		axios.get(`${config.BACKEND_URL}/logout`).then(res => {
 			alert('logout 되었습니다');
 			console.log(res);
 			onLogout();

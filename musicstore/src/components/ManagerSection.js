@@ -5,6 +5,7 @@ import axios from 'axios';
 import Board from './Manage/Board';
 import Additem from './Manage/Additem';
 import ProductPost from './Manage/ProductPost';
+import * as config from './Config';
 
 const ManagerSection = () => {
 	const getStartDate = () => {
@@ -30,7 +31,7 @@ const ManagerSection = () => {
 	const [preivew, setPreivew] = useState('');
 
 	useEffect(() => {
-		axios.get(`http://localhost:3001/${board}`).then(res => {
+		axios.get(`${config.BACKEND_URL}/${board}`).then(res => {
 			console.log(res.data);
 			setBoardData(res.data.reverse());
 		});
@@ -43,7 +44,7 @@ const ManagerSection = () => {
 			document.querySelector(`.menu_${board}`).classList.remove('active');
 			document.querySelector(`.menu_${targetBoard}`).classList.add('active');
 			setBoard(targetBoard);
-			axios.get(`http://localhost:3001/${targetBoard}`).then(res => {
+			axios.get(`${config.BACKEND_URL}/${targetBoard}`).then(res => {
 				setBoardData(res.data.reverse());
 			});
 		}
@@ -121,16 +122,16 @@ const ManagerSection = () => {
 				form.append('start', start);
 				form.append('end', end);
 				axios
-					.post('http://localhost:3001/banner', form, { headers: { 'Content-Type': 'multipart/form-data' } })
+					.post(`${config.BACKEND_URL}/banner`, form, { headers: { 'Content-Type': 'multipart/form-data' } })
 					.then(res => {
 						console.log(res);
-						setBoardData(axios.get(`http://localhost:3001/${board}`).data);
+						setBoardData(axios.get(`${config.BACKEND_URL}/${board}`).data);
 						closePopup();
 					})
 					.then(() => {
 						axios({
 							method: 'GET',
-							url: `http://localhost:3001/${board}`,
+							url: `${config.BACKEND_URL}/${board}`,
 						})
 							.then(res => {
 								setBoardData(res.data.reverse());
@@ -152,20 +153,20 @@ const ManagerSection = () => {
 
 			axios({
 				method: 'POST',
-				url: `http://localhost:3001/${board}`,
+				url: `${config.BACKEND_URL}/${board}`,
 				data: {
 					title,
 					contents,
 				},
 			})
 				.then(res => {
-					setBoardData(axios.get(`http://localhost:3001/${board}`).data);
+					setBoardData(axios.get(`${config.BACKEND_URL}/${board}`).data);
 					closePopup();
 				})
 				.then(() => {
 					axios({
 						method: 'GET',
-						url: `http://localhost:3001/${board}`,
+						url: `${config.BACKEND_URL}/${board}`,
 					})
 						.then(res => {
 							setBoardData(res.data.reverse());

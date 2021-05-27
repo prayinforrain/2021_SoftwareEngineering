@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import * as config from './Config';
 
 const Banner = () => {
 	const [banner, setBanner] = useState([]);
@@ -7,7 +8,7 @@ const Banner = () => {
 	useEffect(() => {
 		setLoading(true);
 		axios
-			.get('http://localhost:3001/bannerImage')
+			.get(`${config.BACKEND_URL}/bannerImage`)
 			.then(res => setBanner(res.data.reverse().slice(0, 5)))
 			.then(() => {
 				setLoading(false);

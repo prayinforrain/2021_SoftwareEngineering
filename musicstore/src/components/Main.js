@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Notice from './Notice';
 import Qna from './Qna';
 import Item_Mainpage from './Item_Mainpage';
+import * as config from './Config';
 
 const Main = () => {
 	const [banner, setBanner] = useState('');
@@ -12,17 +13,17 @@ const Main = () => {
 	const bannerAutoChange = banners => {
 		let count = 1;
 		setInterval(() => {
-			setBanner(`http://localhost:3001/${banners[count % 5]}`);
+			setBanner(`${config.BACKEND_URL}/${banners[count % 5]}`);
 			count++;
 		}, 30000);
 	};
 	useEffect(() => {
 		axios
-			.get('http://localhost:3001/main_contents')
+			.get(`${config.BACKEND_URL}/main_contents`)
 			.then(res => {
 				const data = JSON.parse(res.data);
 				console.log(data);
-				setBanner(`http://localhost:3001/${data.bannerInfo[0]}`);
+				setBanner(`${config.BACKEND_URL}/${data.bannerInfo[0]}`);
 				setBanners(data.bannerInfo);
 				setItems(data.itemInfo);
 				bannerAutoChange(data.bannerInfo);

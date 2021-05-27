@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import * as config from './Config';
 
 const Qna = () => {
 	const [qna, setQna] = useState([]);
@@ -7,7 +8,7 @@ const Qna = () => {
 	useEffect(() => {
 		setLoading(true);
 		axios
-			.get('http://localhost:3001/qna')
+			.get(`${config.BACKEND_URL}/qna`)
 			.then(res => setQna(res.data.reverse().slice(0, 5)))
 			.then(() => {
 				setLoading(false);

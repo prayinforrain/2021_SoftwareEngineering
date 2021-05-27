@@ -7,12 +7,13 @@ import SignUp from './components/SignUp';
 import Login from './components/Login';
 import axios from 'axios';
 import Manage from './Managerpage';
+import * as config from './components/Config';
 
 function App() {
 	const id = window.sessionStorage.id;
 	useEffect(() => {
 		if (id) {
-			axios({ method: 'post', url: 'http://localhost:3001/userInfo', data: { userID: id } })
+			axios({ method: 'post', url: `${config.BACKEND_URL}/userInfo`, data: { userID: id } })
 				.then(response => {
 					if (!user) {
 						setUser(response.data);

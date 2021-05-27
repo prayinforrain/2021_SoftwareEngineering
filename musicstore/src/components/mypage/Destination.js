@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import "../../style/destination.css";
 import DestinationEnroll from "../DestinationEnroll";
+import * as config from '../Config';
 
 const Destination = ({ user }) => {
     const [items, setItems] = useState([]);
@@ -18,7 +19,7 @@ const Destination = ({ user }) => {
     const fetchDestination = async () => {
         axios({
             method:"POST",
-            url:"http://localhost:3001/destination",
+            url:`${config.BACKEND_URL}/destination`,
             //로그인중인 사용자 ID의 데이터베이스상 id (user.id) 번호
             data:{
                 id:user.id,

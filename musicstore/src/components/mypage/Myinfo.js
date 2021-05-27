@@ -2,6 +2,7 @@ import React from "react";
 import axios from 'axios';
 import { useState, useEffect } from "react";
 import {useHistory} from "react-router-dom"
+import * as config from '../Config';
 
 const Myinfo = ({user}) => {
     /*
@@ -51,7 +52,7 @@ const Myinfo = ({user}) => {
         if(userPwConfirm === userPassword) {
             //비밀번호 변경 칸이 비어있는 경우
             //백엔드에서 "new"값이 empty string인 경우를 처리하도록 해서 비밀번호는 바뀌지 않음
-            const infoChange = await axios.post('http://localhost:3001/changeinfo', {
+            const infoChange = await axios.post(`${config.BACKEND_URL}/changeinfo`, {
                 userID: userInfo.Key,
                 current: userCurrentPassword,
                 new : userPassword,

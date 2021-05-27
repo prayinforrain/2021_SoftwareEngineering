@@ -3,7 +3,7 @@ import "../style/item_info.css";
 import {useParams} from "react-router-dom"
 import { useState, useEffect } from "react";
 import axios from 'axios';
-
+import * as config from './Config';
 
 import test_img from "../img/01.jpg"; // 테스트용
 
@@ -24,7 +24,7 @@ const ItemInfo = ( {user} ) => {
     const fetchItem = async() => {
         axios({
             method:"POST",
-            url:"http://localhost:3001/item_detail/",
+            url:`${config.BACKEND_URL}/item_detail/`,
             data: {
                 queryID : params.itemID
             }
@@ -40,7 +40,7 @@ const ItemInfo = ( {user} ) => {
     const fetchGenre = async() => {
         axios({
             method:"POST",
-            url:"http://localhost:3001/getgenres",
+            url:`${config.BACKEND_URL}/getgenres`,
             data: {
                 itemID : params.itemID
             }
@@ -90,7 +90,7 @@ const ItemInfo = ( {user} ) => {
     const submitCart = () => {
         axios({
             method:"POST",
-            url:"http://localhost:3001/addcart",
+            url:`${config.BACKEND_URL}/addcart`,
             data: {
                 userID : user.id,
                 itemID : params.itemID,
@@ -114,7 +114,7 @@ const ItemInfo = ( {user} ) => {
                                 홈 &gt; 최신음악
                             </div>
                             <div id="item_img">
-                                <img src={"http://localhost:3001/" + item.cover} alt="test" />
+                                <img src={`${config.BACKEND_URL}/` + item.cover} alt="test" />
                             </div>
                         </div>
                         <div id="item_header_info">

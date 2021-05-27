@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import "../style/modal.css";
 import "../style/destination.css";
 import axios from "axios";
+import * as config from './Config';
 
 const DestinationEnroll = ({ setModalStatus, user, editInfo }) => {
     useEffect(() => {
@@ -58,7 +59,7 @@ const DestinationEnroll = ({ setModalStatus, user, editInfo }) => {
         if(!editInfo) {
             axios({
                 method: "POST",
-                url: "http://localhost:3001/add_destination",
+                url: `${config.BACKEND_URL}/add_destination`,
                 data: {
                     postcode: postcode.value,
                     roadAddress: roadAddress.value,
@@ -82,7 +83,7 @@ const DestinationEnroll = ({ setModalStatus, user, editInfo }) => {
         } else {
             axios({
                 method: "POST",
-                url: "http://localhost:3001/edit_destination",
+                url: `${config.BACKEND_URL}/edit_destination`,
                 data: {
                     id : editInfo.id,
                     postcode: postcode.value,
@@ -166,7 +167,7 @@ const DestinationEnroll = ({ setModalStatus, user, editInfo }) => {
     const deleteHandler = () => {
         axios({
             method: "POST",
-            url: "http://localhost:3001/delete_destination",
+            url: `${config.BACKEND_URL}/delete_destination`,
             data: {
                 id : editInfo.id
             },

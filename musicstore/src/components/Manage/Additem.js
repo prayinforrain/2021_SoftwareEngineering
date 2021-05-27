@@ -2,6 +2,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../../style/add_item.css';
+import * as config from '../Config';
 
 const Additem = ({ closePopup, closeEdit, editStatus }) => {
 	const [attach, setAttach] = useState();
@@ -21,7 +22,7 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 	};
 
 	const fetchGenres = async () => {
-		const res = await axios.get('http://localhost:3001/getgenres/', {});
+		const res = await axios.get(`${config.BACKEND_URL}/getgenres/`, {});
 		setGenres(res.data);
 	};
 
@@ -31,7 +32,7 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 			//장르 가져오기
 			axios({
 				method: 'POST',
-				url: 'http://localhost:3001/getgenres',
+				url: `${config.BACKEND_URL}/getgenres`,
 				data: {
 					itemID: editStatus,
 				},
@@ -52,7 +53,7 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 			const { album, singer, supply, price, detail, cover } = form;
 			axios({
 				method: 'POST',
-				url: 'http://localhost:3001/item_detail/',
+				url: `${config.BACKEND_URL}/item_detail/`,
 				data: {
 					queryID: editStatus,
 				},
@@ -65,7 +66,7 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 					supply.value = res.data.supply;
 					price.value = res.data.price;
 					detail.value = res.data.detail;
-					setAttach('http://localhost:3001/' + res.data.cover);
+					setAttach(`${config.BACKEND_URL}/` + res.data.cover);
 					setOriginURL(res.data.cover);
 					console.log('테스트용 : ' + cover.value);
 				})
@@ -89,7 +90,7 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 		if (editStatus === -1) {
 			//신규
 			axios
-				.post('http://localhost:3001/upload', fileForm, {
+				.post(`${config.BACKEND_URL}/upload`, fileForm, {
 					headers: {
 						'Content-Type': 'multipart/form-data',
 					},
@@ -97,7 +98,7 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 				.then(coverPath => {
 					axios({
 						method: 'POST',
-						url: 'http://localhost:3001/additem',
+						url: `${config.BACKEND_URL}/additem`,
 						data: {
 							album: album.value,
 							singer: singer.value,
@@ -130,7 +131,7 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 			//수정
 			if (fileChanged === true) {
 				axios
-					.post('http://localhost:3001/upload', fileForm, {
+					.post(`${config.BACKEND_URL}/upload`, fileForm, {
 						headers: {
 							'Content-Type': 'multipart/form-data',
 						},
@@ -144,7 +145,7 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 						const realPath = splitPath[1] + '\\' + splitPath[2];
 						axios({
 							method: 'POST',
-							url: 'http://localhost:3001/edititem',
+							url: `${config.BACKEND_URL}/edititem`,
 							data: {
 								id: editStatus,
 								album: album.value,
@@ -177,7 +178,7 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 			} else {
 				axios({
 					method: 'POST',
-					url: 'http://localhost:3001/edititem',
+					url: `${config.BACKEND_URL}/edititem`,
 					data: {
 						id: editStatus,
 						album: album.value,
@@ -227,7 +228,7 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 		e.preventDefault();
 		axios({
 			method: 'POST',
-			url: 'http://localhost:3001/deleteitem',
+			url: `${config.BACKEND_URL}/deleteitem`,
 			data: {
 				itemID: editStatus,
 			},
@@ -248,7 +249,7 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 
 	return (
 		<div id="item_manage_container">
-			<form action="http://localhost3001/upload" method="post" id="add_item_form" enctype="multipart/form-data">
+			<form action='${config.BACKEND_URL}/' method="post" id="add_item_form" enctype="multipart/form-data">
 				<div className="item_row">
 					<h1>상품 관리</h1>
 				</div>

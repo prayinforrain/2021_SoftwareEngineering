@@ -1,3 +1,5 @@
+import * as config from './Config';
+
 const Item_Mainpage = ({ data }) => {
 	console.log(data);
 	const ad = data.cover.split('\\');
@@ -10,7 +12,7 @@ const Item_Mainpage = ({ data }) => {
 	return (
 		<div
 			className="mainpage_item"
-			style={{ backgroundImage: `url(http://localhost:3001/${ad[0]}/${ad[1]})` }}
+			style={{ backgroundImage: `url(${config.BACKEND_URL}/${ad[0]}/${ad[1]})` }}
 			// onMouseEnter={onMouseEnter}
 			// onMouseLeave={onMouseLeave}
 		>
