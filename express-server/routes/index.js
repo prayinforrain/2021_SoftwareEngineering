@@ -9,7 +9,7 @@ var Faq = require('../models').Faq;
 var Destination = require('../models').Destination;
 var Item = require('../models').Item;
 var Genre = require('../models').Genre;
-var ItemGenre = require('../models').ItemGenre;
+var Itemgenre = require('../models').Itemgenre;
 var Cart = require('../models').Cart;
 
 const passport = require('passport');
@@ -253,7 +253,7 @@ router.post('/getgenres', function (req, res, next) {
 		.then(result => {
 			if (req.body.itemID) {
 				let listofGenres = [];
-				ItemGenre.findAll({
+				Itemgenre.findAll({
 					where: {
 						itemID: req.body.itemID,
 					},
@@ -303,7 +303,7 @@ router.post('/additem', function (req, res, next) {
 							console.log(err);
 						}	
 					});
-				/*ItemGenre.create({
+				/*Itemgenre.create({
 					itemID: result.dataValues.id,
 					genreID: el,
 				});*/
@@ -338,28 +338,28 @@ router.post('/edititem', function (req, res, next) {
 		next(err);
 	});
 
-	ItemGenre.findAll({
+	Itemgenre.findAll({
 		where: {
 			itemID: req.body.id,
 		},
 	}).then(tempGenres => {
 		tempGenres.forEach(g => {
 			if (req.body.genre.indexOf(g.dataValues.genreID) === -1) {
-				ItemGenre.destroy({
+				Itemgenre.destroy({
 					where: { id: g.dataValues.id },
 				});
 			}
 		});
 	});
 	req.body.genre.forEach(g => {
-		ItemGenre.findAll({
+		Itemgenre.findAll({
 			where: {
 				itemID: req.body.id,
 				genreID: g,
 			},
 		}).then(result => {
 			if (result.length === 0) {
-				ItemGenre.create({
+				Itemgenre.create({
 					itemID: req.body.id,
 					genreID: g,
 				});
