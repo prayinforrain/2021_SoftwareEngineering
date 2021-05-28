@@ -59,8 +59,6 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 				},
 			})
 				.then(res => {
-					console.log('onclick');
-					console.log(res.data.cover);
 					album.value = res.data.album;
 					singer.value = res.data.singer;
 					supply.value = res.data.supply;
@@ -70,7 +68,6 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 					released.value = res.data.released;
 					setAttach(`${config.BACKEND_URL}/` + res.data.cover);
 					setOriginURL(res.data.cover);
-					console.log('테스트용 : ' + cover.value);
 				})
 				.catch(err => {
 					console.log(err);
@@ -83,9 +80,9 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 		closePopup(false);
 	};
 
-	const onAval = (e) => {
+	const onAval = e => {
 		console.log(e.target.checked);
-	}
+	};
 
 	const submitHandler = e => {
 		e.preventDefault();
@@ -114,7 +111,7 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 							cover: coverPath.data,
 							genre: checkItems,
 							available: available.checked,
-							released: released.value
+							released: released.value,
 						},
 					})
 						.then(res => {
@@ -197,7 +194,7 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 						detail: detail.value,
 						cover: originURL,
 						genre: checkItems,
-						released: released.value
+						released: released.value,
 					},
 				})
 					.then(res => {
@@ -259,7 +256,7 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 
 	return (
 		<div id="item_manage_container">
-			<form action='${config.BACKEND_URL}/' method="post" id="add_item_form" encType="multipart/form-data">
+			<form action="${config.BACKEND_URL}/" method="post" id="add_item_form" encType="multipart/form-data">
 				<div className="item_row">
 					<h1>상품 관리</h1>
 				</div>
@@ -337,7 +334,7 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 				</div>
 				<div className="item_row">
 					<div className="item_aval">
-						<span>상품을 고객이 볼 수 있게 노출합니다.  </span>
+						<span>상품을 고객이 볼 수 있게 노출합니다. </span>
 						<input type="checkbox" id="available" name="available" onClick={onAval} />
 					</div>
 				</div>

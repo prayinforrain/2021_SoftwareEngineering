@@ -146,6 +146,9 @@ header .header_container .menu {
   flex-direction: column;
   justify-content:space-between;
 }
+.member_info{
+  display:block !important
+}
 .mainpage_item{
   width:30%;
   height:100%;

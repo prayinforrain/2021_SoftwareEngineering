@@ -1,4 +1,10 @@
-const Post = ({ board, data }) => {
+const Post = ({ board, data, openPopup, setBannerKey }) => {
+	const clickHandler = e => {
+		if (board === 'banner') {
+			setBannerKey(data.id);
+		}
+		openPopup(data);
+	};
 	if (board === 'banner') {
 		const isExpired = () => {
 			if (new Date() > new Date(data.end)) {
@@ -7,7 +13,7 @@ const Post = ({ board, data }) => {
 			return false;
 		};
 		return (
-			<div className={isExpired() ? 'inner_board expired' : 'inner_board'}>
+			<div className={isExpired() ? 'inner_board expired' : 'inner_board'} onClick={clickHandler}>
 				<div className={`board_idx`}>{data.id}</div>
 				<div className={`board_title`}>{data.title}</div>
 				<div className={`board_contents`}>{data.contents}</div>
@@ -17,7 +23,7 @@ const Post = ({ board, data }) => {
 		);
 	}
 	return (
-		<div className="inner_board">
+		<div className="inner_board" onClick={clickHandler}>
 			<div className={`board_idx`}>{data.id}</div>
 			<div className={`board_title`}>{data.title}</div>
 			<div className={`board_contents`}>{data.contents}</div>

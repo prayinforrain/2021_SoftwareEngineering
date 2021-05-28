@@ -39,21 +39,16 @@ router.get('/', function (req, res, next) {
 	}
 });
 router.get('/uploads/:img_id', function (req, res) {
-	console.log('req.params.img_id : ', req.params.img_id);
 	res.sendFile(`${rootPath}/uploads/${req.params.img_id}`);
 	//res.sendfile(path.resolve(__dirname,))
 });
 
 router.post('/upload', upload.single('cover'), function (req, res) {
-	console.log('in post /upload');
 	res.send(req.file.path);
-	console.log(req.file.path);
 });
 
 router.post('/search', function (req, res, next) {
 	// 통합 제목 가수 배급사 장르 0~4
-	console.log("옵션: "+req.body.searchOption);
-	console.log("검색어: "+req.body.keyword);
 	var searchGenre = 0;
 	mysqldb.connectiond.query(
 		`SELECT * FROM musicstore.genres where name like concat('%', ?, '%')`,
@@ -62,7 +57,7 @@ router.post('/search', function (req, res, next) {
 			if (err) {
 				console.log(err);
 			} else {
-				if(rows.length > 0) {
+				if (rows.length > 0) {
 					searchGenre = rows[0].id;
 				} else {
 					searchGenre = -1;
@@ -107,55 +102,42 @@ router.post('/search', function (req, res, next) {
 				/*console.log("쿼리 정보:");
 				console.log(queryString);
 				console.log(queryParam);*/
-				if(req.body.searchOption === "0") {
-					mysqldb.connectiond.query(
-						queryString[1], queryParam[1],
-						function (err, rows1, fields) {
-							if (err) {
-								console.log(err);
-							} else {
-								mysqldb.connectiond.query(
-									queryString[2], queryParam[2],
-									function (err, rows2, fields) {
+				if (req.body.searchOption === '0') {
+					mysqldb.connectiond.query(queryString[1], queryParam[1], function (err, rows1, fields) {
+						if (err) {
+							console.log(err);
+						} else {
+							mysqldb.connectiond.query(queryString[2], queryParam[2], function (err, rows2, fields) {
+								if (err) {
+									console.log(err);
+								} else {
+									mysqldb.connectiond.query(queryString[3], queryParam[3], function (err, rows3, fields) {
 										if (err) {
 											console.log(err);
 										} else {
-											mysqldb.connectiond.query(
-												queryString[3], queryParam[3],
-												function (err, rows3, fields) {
-													if (err) {
-														console.log(err);
-													} else {
-														mysqldb.connectiond.query(
-															queryString[4], queryParam[4],
-															function (err, rows4, fields) {
-																if (err) {
-																	console.log(err);
-																} else {
-																	var resultrows = [rows1, rows2, rows3, rows4];
-																	//console.log(resultrows);
-																	res.send(resultrows);
-																}
-															}
-														);
-													}
+											mysqldb.connectiond.query(queryString[4], queryParam[4], function (err, rows4, fields) {
+												if (err) {
+													console.log(err);
+												} else {
+													var resultrows = [rows1, rows2, rows3, rows4];
+													//console.log(resultrows);
+													res.send(resultrows);
 												}
-											);
+											});
 										}
-									}
-								);
-							}
+									});
+								}
+							});
 						}
-					);
+					});
 				} else {
 					mysqldb.connectiond.query(
-						queryString[req.body.searchOption], queryParam[req.body.searchOption],
+						queryString[req.body.searchOption],
+						queryParam[req.body.searchOption],
 						function (err, rows, fields) {
 							if (err) {
 								console.log(err);
 							} else {
-								console.log("검색결과:");
-								console.log(rows);
 								res.send(rows);
 							}
 						}
@@ -173,7 +155,6 @@ router.post('/getcart', function (req, res, next) {
 	on musicstore.carts.itemID = musicstore.items.id where userID=?;
 	를 할수 있으면 얼마나 좋을까?
 	*/
-	console.log('받아온거 : ', req.body.userID);
 	mysqldb.connectiond.query(
 		`SELECT * FROM musicstore.carts
 	left outer join musicstore.items
@@ -258,12 +239,12 @@ router.post('/getgenres', function (req, res, next) {
 						itemID: req.body.itemID,
 					},
 				}).then(genRes => {
-					console.log(req.body.itemID + "번 아이템에 대한 장르 연결 정보:");
+					console.log(req.body.itemID + '번 아이템에 대한 장르 연결 정보:');
 					console.log(genRes);
 					genRes.forEach(g => {
 						listofGenres.push(result.find(value => value.id === g.dataValues.genreID).dataValues);
 					});
-					console.log(req.body.itemID + "번 아이템에 대한 장르:");
+					console.log(req.body.itemID + '번 아이템에 대한 장르:');
 					console.log(listofGenres);
 					res.send(listofGenres);
 				});
@@ -285,7 +266,7 @@ router.post('/additem', function (req, res, next) {
 		detail: req.body.detail,
 		cover: req.body.cover,
 		available: req.body.available,
-		released: req.body.released
+		released: req.body.released,
 	})
 		.then(result => {
 			//장르 추가할 것
@@ -298,11 +279,12 @@ router.post('/additem', function (req, res, next) {
 					) LIMIT 1;`,
 					[result.dataValues.id, el, result.dataValues.id, el],
 					function (err, rows, fields) {
-						if(err) {
-							console.log("error occured while /additem /additemgenres");
+						if (err) {
+							console.log('error occured while /additem /additemgenres');
 							console.log(err);
-						}	
-					});
+						}
+					}
+				);
 				/*Itemgenre.create({
 					itemID: result.dataValues.id,
 					genreID: el,
@@ -327,7 +309,7 @@ router.post('/edititem', function (req, res, next) {
 			detail: req.body.detail,
 			cover: req.body.cover,
 			available: req.body.available,
-			released: req.body.released
+			released: req.body.released,
 		},
 		{
 			where: { id: req.body.id },
@@ -655,6 +637,26 @@ router.post('/banner', banner.single('banner'), function (req, res, next) {
 	res.send(req.file.path);
 });
 
+router.patch('/banner/:id', banner.single('banner'), function (req, res) {
+	const { id } = req.params;
+	if (req.file) {
+		Banner.findOne({ where: { id: id }, atrributes: ['bannerPath'] }).then(result => {
+			fs.unlink(path.join(__dirname, '..', result.bannerPath), () => {
+				console.log('파일 삭제 성공');
+				console.log(result.bannerPath);
+			});
+			Banner.update(
+				{ title: req.body.title, bannerPath: req.file.path, start: req.body.start, end: req.body.end },
+				{ where: { id } }
+			);
+		});
+	} else {
+		Banner.update({ title: req.body.title, start: req.body.start, end: req.body.end }, { where: { id } });
+	}
+
+	res.send('success');
+});
+
 router.get('/notice', function (req, res, next) {
 	Notice.findAll()
 		.then(result => {
@@ -662,6 +664,66 @@ router.get('/notice', function (req, res, next) {
 		})
 		.catch(err => {
 			console.error(err);
+		});
+});
+router.get('/notice/:id', (req, res) => {
+	const { id } = req.params;
+	Notice.findOne({ where: { id } })
+		.then(result => {
+			res.send(result);
+		})
+		.catch(err => {
+			console.error(err);
+		});
+});
+router.patch('/notice/:id', (req, res) => {
+	const { id } = req.params;
+	const { title, contents } = req.body;
+	Notice.update({ title, contents }, { where: { id } }).then(result => res.send('modify_success'));
+});
+router.delete('/notice/:id', (req, res, next) => {
+	const { id } = req.params;
+	console.log(id);
+	Notice.destroy({
+		where: { id },
+	})
+		.then(result => {
+			Notice.findAll().then(result => res.send(result));
+		})
+		.catch(err => {
+			console.error(err);
+			next(err);
+		});
+});
+router.get('/faq/:id', (req, res) => {
+	const { id } = req.params;
+	Faq.findOne({ where: { id } })
+		.then(result => {
+			res.send(result);
+		})
+		.catch(err => {
+			console.error(err);
+		});
+});
+
+router.patch('/faq/:id', (req, res) => {
+	const { id } = req.params;
+	const { title, contents } = req.body;
+	Faq.update({ title, contents }, { where: { id } }).then(result => res.send('modify_success'));
+});
+
+router.delete('/faq/:id', (req, res, next) => {
+	const { id } = req.params;
+	console.log(id);
+	Faq.destroy({
+		where: { id },
+	})
+		.then(result => {
+			Faq.findAll().then(result => res.send(result));
+		})
+		.catch(err => {
+			console.error(err);
+			next(err);
 		});
 });
 
@@ -685,6 +747,36 @@ router.get('/qna', function (req, res, next) {
 		});
 });
 
+router.get('/qna/:id', (req, res) => {
+	const { id } = req.params;
+	Qna.findOne({ where: { id } })
+		.then(result => {
+			res.send(result);
+		})
+		.catch(err => {
+			console.error(err);
+		});
+});
+
+router.patch('/qna/:id', (req, res) => {
+	const { id } = req.params;
+	const { title, contents } = req.body;
+	Qna.update({ title, contents }, { where: { id } }).then(result => res.send('modify_success'));
+});
+router.delete('/qna/:id', (req, res, next) => {
+	const { id } = req.params;
+	console.log(id);
+	Qna.destroy({
+		where: { id },
+	})
+		.then(result => {
+			Qna.findAll().then(result => res.send(result));
+		})
+		.catch(err => {
+			console.error(err);
+			next(err);
+		});
+});
 router.get('/banner', function (req, res) {
 	Banner.findAll().then(result => {
 		res.send(result);
@@ -692,9 +784,28 @@ router.get('/banner', function (req, res) {
 });
 
 router.get('/banner/:banner', (req, res) => {
-	console.log('in banner/:banner ', req.params.banner);
-	console.log(path.join(rootPath, 'banner', req.params.banner));
 	res.sendFile(path.join(rootPath, 'banner', req.params.banner));
+});
+
+router.delete('/banner/:id', (req, res, next) => {
+	const { id } = req.params;
+	console.log(id);
+	Banner.findOne({ where: { id } }).then(result => {
+		fs.unlink(path.join(__dirname, '..', result.bannerPath), () => {
+			console.log('파일 삭제 성공');
+			console.log(result.bannerPath);
+		});
+	});
+	Banner.destroy({
+		where: { id },
+	})
+		.then(result => {
+			Banner.findAll().then(result => res.send(result));
+		})
+		.catch(err => {
+			console.error(err);
+			next(err);
+		});
 });
 
 router.get('/main_contents', function (req, res, next) {
@@ -717,7 +828,7 @@ router.get('/main_contents', function (req, res, next) {
 			data.bannerInfo = b_path;
 		})
 		.then(() => {
-			Item.findAll({where: {available: true}}) 
+			Item.findAll({ where: { available: true } })
 				.then(result => {
 					const i_path = result.reverse().slice(0, 3);
 
@@ -742,10 +853,4 @@ router.get('/product', function (req, res, next) {
 		});
 });
 
-router.get('/main', function (req, res) {
-	const data = {};
-	Notice.findAll().then(result => {
-		console.log(result);
-	});
-});
 module.exports = router;

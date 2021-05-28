@@ -2,7 +2,7 @@ import Post from './Post';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const Board = ({ board, boardData }) => {
+const Board = ({ board, boardData, openPopup, setBannerKey }) => {
 	const totalPage = boardData ? Math.ceil(boardData.length / 10) : 0;
 	const [page, setPage] = useState(1);
 
@@ -15,8 +15,6 @@ const Board = ({ board, boardData }) => {
 		return newArray;
 	};
 	const changePage = e => {
-		console.log('clicked', e.target.innerText);
-		console.log('origin page', page);
 		if (parseInt(e.target.innerText) !== page) {
 			setPage(parseInt(e.target.innerText));
 		}
@@ -35,14 +33,14 @@ const Board = ({ board, boardData }) => {
 					<div>로딩중...</div>
 				) : boardData.length === 0 ? null : totalPage <= 1 ? (
 					<div className="board_posts">
-						{boardData.map(el => (
-							<Post key={el.id} board={board} data={el} />
+						{boardData.map((el, idx) => (
+							<Post setBannerKey={setBannerKey} key={idx} board={board} data={el} openPopup={openPopup} />
 						))}
 					</div>
 				) : (
 					<div className="board_posts">
-						{createArray(boardData)[page - 1].map(data => (
-							<Post key={boardData.id} board={board} data={data} />
+						{createArray(boardData)[page - 1].map((data, idx) => (
+							<Post key={idx} setBannerKey={setBannerKey} board={board} data={data} openPopup={openPopup} />
 						))}
 						<div className="pagination">
 							{createArray(boardData).map((el, idx) => (
@@ -68,14 +66,14 @@ const Board = ({ board, boardData }) => {
 				<div>로딩중...</div>
 			) : boardData.length === 0 ? null : totalPage <= 1 ? (
 				<div className="board_posts">
-					{boardData.map(el => (
-						<Post key={el.id} board={board} data={el} />
+					{boardData.map((el, idx) => (
+						<Post key={idx} board={board} data={el} openPopup={openPopup} />
 					))}
 				</div>
 			) : (
 				<div className="board_posts">
 					{createArray(boardData)[page - 1].map(data => (
-						<Post key={boardData.id} board={board} data={data} />
+						<Post key={boardData.id} board={board} data={data} openPopup={openPopup} />
 					))}
 					<div className="pagination">
 						{createArray(boardData).map((el, idx) => (
