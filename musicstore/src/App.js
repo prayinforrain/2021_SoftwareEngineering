@@ -65,7 +65,7 @@ function App() {
 			)}
 			{signup_modal && (
 				<ModalPortal>
-					<SignUp onClose={closeSignupModal} />
+					<SignUp onLogin={onLogin} onClose={closeSignupModal} />
 				</ModalPortal>
 			)}
 		</div>

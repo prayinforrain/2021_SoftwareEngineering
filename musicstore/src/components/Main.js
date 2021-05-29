@@ -16,7 +16,7 @@ const Main = () => {
 		setInterval(() => {
 			setBanner(`${config.BACKEND_URL}/${banners[count % 5]}`);
 			count++;
-		}, 30000);
+		}, 10000);
 	};
 	useEffect(() => {
 		axios
@@ -37,7 +37,7 @@ const Main = () => {
 	return (
 		<div id="main">
 			<div id="main_container">
-				<Menu/>
+				<Menu />
 				<div id="content_container">
 					<div className="upper_container">
 						{banners === '' ? (

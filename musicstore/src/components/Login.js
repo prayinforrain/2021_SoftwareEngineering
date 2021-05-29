@@ -31,17 +31,13 @@ const Login = ({ user, onLogin, onClose }) => {
 					alert(data.name + '님 환영합니다!');
 					window.sessionStorage.setItem('id', data.userID);
 					window.location.href = '/';
-				} else {
-					alert('로그인 정보가 일치하지 않습니다');
-					id.value = '';
-					password.value = '';
-					id.focus();
-					return;
 				}
 			})
 			.catch(err => {
-				console.log('login axios 실패');
-				console.error(err);
+				alert('로그인 정보가 일치하지 않습니다');
+				id.value = '';
+				password.value = '';
+				id.focus();
 			});
 	};
 

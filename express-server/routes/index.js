@@ -361,13 +361,17 @@ router.post('/edititem', function (req, res, next) {
 });
 
 router.post('/deleteitem', function (req, res, next) {
-	mysqldb.connectiond.query(`UPDATE musicstore.items SET available = '0' WHERE (id = ?);`, [req.body.itemID], function (err, rows, fields) {
-		if (err) {
-			console.log(err);
-		} else {
-			res.send(rows)
+	mysqldb.connectiond.query(
+		`UPDATE musicstore.items SET available = '0' WHERE (id = ?);`,
+		[req.body.itemID],
+		function (err, rows, fields) {
+			if (err) {
+				console.log(err);
+			} else {
+				res.send(rows);
+			}
 		}
-	});
+	);
 });
 
 router.post('/changeinfo', function (req, res, next) {
@@ -413,7 +417,7 @@ router.post('/changeinfo', function (req, res, next) {
 						}
 					)
 						.then(result => {
-							res.status(200).json(result);
+							res.status(200).send('success');
 						})
 						.catch(err => {
 							console.error(err);
@@ -429,16 +433,6 @@ router.post('/changeinfo', function (req, res, next) {
 });
 
 router.post('/signup', function (req, res, next) {
-	console.log('in post req, /signup');
-	console.log(User);
-	User.findAll({
-		where: {
-			userID: req.body.id,
-		},
-	}).then(result => {
-		console.log('signup id 조회');
-		console.log(result);
-	});
 	User.create({
 		name: req.body.username,
 		userID: req.body.id,
@@ -450,15 +444,46 @@ router.post('/signup', function (req, res, next) {
 	})
 		.then(result => {
 			console.log(result);
-			res.status(201).json(result);
+			res.status(201).send(result);
 		})
 		.catch(err => {
 			console.log('in signup error handler');
-			console.error(err);
-			next(err);
+			console.error(err.fields);
+			next(err.fields);
 		});
 });
+router.post('/signup_check', (req, res) => {
+	let id, email;
+	User.findOne({ where: { userID: req.body.id } }).then(result => {
+		id = !!result;
+		User.findOne({ where: { email: req.body.email } })
+			.then(result => {
+				email = !!result;
+			})
+			.then(() => {
+				if (id && email) {
+					res.send('both');
+				} else if (id) {
+					res.send('id');
+				} else if (email) {
+					res.send('email');
+				} else {
+					res.send('fine');
+				}
+			});
+	});
+});
 
+router.get('/id_check/:id', function (req, res) {
+	const { id } = req.params;
+
+	User.findOne({ where: { userID: id } }).then(result => res.send(result));
+});
+router.get('/email_check/:email', function (req, res) {
+	const { email } = req.params;
+
+	User.findOne({ where: { email } }).then(result => res.send(result));
+});
 router.post('/add_destination', function (req, res, next) {
 	console.log('in post req, /add_destination');
 	console.log(Destination);

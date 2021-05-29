@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www",
+    "start": "node ./bin/www",
     "start:server": "nodemon ./bin/www",
     "start:client": "cd ../musicstore && npm start"
   },
