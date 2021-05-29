@@ -5,7 +5,6 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 var sequelize = require('./models').sequelize;
 var session = require('express-session');
 var passport = require('passport');
@@ -23,10 +22,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 passportConfig(passport);
 
-let allowdOrigins = [
-	'http://localhost:3000',
-	'http://ec2-52-78-101-149.ap-northeast-2.compute.amazonaws.com:3000'
-];
+let allowdOrigins = ['http://localhost:3000', 'http://ec2-52-78-101-149.ap-northeast-2.compute.amazonaws.com:3000'];
 app.use(
 	cors({
 		origin: allowdOrigins,
@@ -40,7 +36,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
