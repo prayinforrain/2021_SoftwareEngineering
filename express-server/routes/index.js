@@ -361,13 +361,11 @@ router.post('/edititem', function (req, res, next) {
 });
 
 router.post('/deleteitem', function (req, res, next) {
-	mysqldb.connectiond.query(`DELETE FROM musicstore.items WHERE id=?`, [req.body.itemID], function (err, rows, fields) {
+	mysqldb.connectiond.query(`UPDATE musicstore.items SET available = '0' WHERE (id = ?);`, [req.body.itemID], function (err, rows, fields) {
 		if (err) {
 			console.log(err);
 		} else {
-			mysqldb.connectiond.query(`DELETE musicstore.itemgenres WHERE itemID=?`, [req.body.itemID], function (err, rows, fields) {
-				res.send(rows);
-			});
+			res.send(rows)
 		}
 	});
 });
