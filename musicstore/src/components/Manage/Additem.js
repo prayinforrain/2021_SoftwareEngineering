@@ -160,6 +160,7 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 								detail: detail.value,
 								cover: realPath,
 								released: released.value,
+								available: available.checked,
 								genre: checkItems,
 							},
 						})
@@ -195,6 +196,7 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 						cover: originURL,
 						genre: checkItems,
 						released: released.value,
+						available: available.checked,
 					},
 				})
 					.then(res => {
