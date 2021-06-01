@@ -38,11 +38,8 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 				},
 			})
 				.then(res => {
-					let tempArr = [];
-					res.data.map(d => {
-						tempArr.push(d.id);
-					});
-					setCheckItems(tempArr);
+					console.log(res.data);
+					setCheckItems(res.data.map(d => d.id));
 				})
 				.catch(err => {
 					console.log(err);

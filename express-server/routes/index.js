@@ -853,7 +853,7 @@ router.get('/main_contents', function (req, res, next) {
 		.then(() => {
 			Item.findAll({ where: { available: true } })
 				.then(result => {
-					const i_path = result.reverse().slice(0, 3);
+					const i_path = result.reverse().slice(0, 10);
 
 					data.itemInfo = i_path;
 				})
@@ -874,6 +874,24 @@ router.get('/product', function (req, res, next) {
 		.catch(err => {
 			console.error(err);
 		});
+});
+
+router.get('/get_items/:genre', (req, res) => {
+	const translate = {
+		ballad: 1,
+		dance: 2,
+		rap: 3,
+		rnb: 4,
+		indi: 5,
+		rock: 6,
+		trot: 7,
+		fork: 8,
+	};
+	const genreNumber = translate[req.params.genre];
+	Itemgenre.findAll({ where: { genreID: genreNumber } }).then(result => {
+		const list = result.map(el => el.itemID);
+		Item.findAll({ where: { id: list } }).then(result => res.send(result));
+	});
 });
 
 module.exports = router;

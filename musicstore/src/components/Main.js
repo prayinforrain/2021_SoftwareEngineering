@@ -6,7 +6,7 @@ import Item_Mainpage from './Item_Mainpage';
 import * as config from './Config';
 import Menu from './Menu';
 
-const Main = () => {
+const Main = ({ openItemModal, closeItemModal }) => {
 	const [banner, setBanner] = useState('');
 	const [banners, setBanners] = useState('');
 	const [items, setItems] = useState('');
@@ -27,7 +27,7 @@ const Main = () => {
 				setBanner(`${config.BACKEND_URL}/${data.bannerInfo[0]}`);
 				setBanners(data.bannerInfo);
 				setItems(data.itemInfo);
-				bannerAutoChange(data.bannerInfo);
+				// bannerAutoChange(data.bannerInfo);
 			})
 			.catch(err => {
 				console.log('in main');
@@ -52,7 +52,20 @@ const Main = () => {
 							<Qna />
 						</div>
 					</div>
-					<div id="product_container">{items ? items.map(item => <Item_Mainpage key={item.id} data={item} />) : ''}</div>
+					<div id="product_container">
+						<div className="product_inner_container" style={{ width: `${330 * items.length}px` }}>
+							{items
+								? items.map(item => (
+										<Item_Mainpage
+											openItemModal={openItemModal}
+											closeItemModal={closeItemModal}
+											key={item.id}
+											data={item}
+										/>
+								  ))
+								: ''}
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

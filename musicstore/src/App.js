@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import ModalPortal from './ModalPortal';
 import SignUp from './components/SignUp';
 import Login from './components/Login';
+import PurchaseItem from './components/PurchaseItem';
 import axios from 'axios';
 import Manage from './Managerpage';
 import * as config from './components/Config';
@@ -27,6 +28,7 @@ function App() {
 	}, []);
 	const [login_modal, set_login_modal] = useState(false);
 	const [signup_modal, set_signup_modal] = useState(false);
+	const [item, setItem] = useState(0);
 	const [user, setUser] = useState('');
 	const openSignupModal = () => {
 		set_signup_modal(true);
@@ -47,6 +49,12 @@ function App() {
 		window.sessionStorage.clear();
 		setUser('');
 	};
+	const openItemModal = num => {
+		setItem(num);
+	};
+	const closeItemModal = () => {
+		setItem(0);
+	};
 
 	return (
 		<div className="App">
@@ -55,7 +63,14 @@ function App() {
 					<Manage user={user} onLogout={onLogout} />
 				</BrowserRouter>
 			) : (
-				<WebRouter user={user} onLogout={onLogout} openLogin={openLoginModal} openSignup={openSignupModal} />
+				<WebRouter
+					user={user}
+					onLogout={onLogout}
+					openLogin={openLoginModal}
+					openSignup={openSignupModal}
+					openItemModal={openItemModal}
+					closeItemModal={closeItemModal}
+				/>
 			)}
 
 			{login_modal && (
@@ -66,6 +81,11 @@ function App() {
 			{signup_modal && (
 				<ModalPortal>
 					<SignUp onLogin={onLogin} onClose={closeSignupModal} />
+				</ModalPortal>
+			)}
+			{item && (
+				<ModalPortal>
+					<PurchaseItem item={item} setItem={setItem} onClose={closeItemModal} />
 				</ModalPortal>
 			)}
 		</div>

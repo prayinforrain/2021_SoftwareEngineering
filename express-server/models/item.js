@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-	return sequelize.define(
+	const Items = sequelize.define(
 		'item',
 		{
 			album: {
@@ -39,4 +39,11 @@ module.exports = (sequelize, DataTypes) => {
 			timestamps: true,
 		}
 	);
+	Items.associate = function (models) {
+		models.Users.hasmany(models.Comments, {
+			foreignKey: 'id',
+			onDelete: 'cacade',
+		});
+	};
+	return Items;
 };
