@@ -33,6 +33,10 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: true,
 				defaultValue: false,
 			},
+			defaultDestination: {
+				type: DataTypes.INTEGER(10),
+				allowNull: true,
+			},
 		},
 		{
 			timestamps: true,

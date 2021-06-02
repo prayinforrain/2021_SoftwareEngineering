@@ -11,6 +11,7 @@ var Item = require('../models').Item;
 var Genre = require('../models').Genre;
 var Itemgenre = require('../models').Itemgenre;
 var Cart = require('../models').Cart;
+var Wishlist = require('../models').Wishlist;
 
 const passport = require('passport');
 var fs = require('fs');
@@ -155,46 +156,54 @@ router.post('/getcart', function (req, res, next) {
 	on musicstore.carts.itemID = musicstore.items.id where userID=?;
 	를 할수 있으면 얼마나 좋을까?
 	*/
-	mysqldb.connectiond.query(
-		`SELECT * FROM musicstore.carts
-	left outer join musicstore.items
-	on musicstore.carts.itemID = musicstore.items.id where userID=?`,
-		[req.body.userID],
-		function (err, rows, fields) {
-			if (err) {
-				console.log(err);
-			} else {
-				res.send(rows);
-			}
-		}
-	);
+	// mysqldb.connectiond.query(
+	// 	`SELECT * FROM musicstore.carts
+	// left outer join musicstore.items
+	// on musicstore.carts.itemID = musicstore.items.id where userID=?`,
+	// 	[req.body.userID],
+	// 	function (err, rows, fields) {
+	// 		if (err) {
+	// 			console.log(err);
+	// 		} else {
+	// 			res.send(rows);
+	// 		}
+	// 	}
+	// );
+	const { userID } = req.body;
+	console.log(req.body.userID);
+	Cart.findAll({ include: [{ model: Item }], where: { userID } }).then(result => res.send(result));
+	// Cart.findAll({ where: { userID } });
 });
 
 router.post('/editcart', function (req, res, next) {
-	mysqldb.connectiond.query(
-		`UPDATE musicstore.carts SET quantity=? WHERE id=?`,
-		[req.body.quantity, req.body.cartID],
-		function (err, rows, fields) {
-			if (err) {
-				console.log(err);
-			} else {
-				res.send(rows);
-			}
-		}
-	);
+	// mysqldb.connectiond.query(
+	// 	`UPDATE musicstore.carts SET quantity=? WHERE id=?`,
+	// 	[req.body.quantity, req.body.cartID],
+	// 	function (err, rows, fields) {
+	// 		if (err) {
+	// 			console.log(err);
+	// 		} else {
+	// 			res.send(rows);
+	// 		}
+	// 	}
+	// );
+	const { quantity, cartID, userID } = req.body;
+	console.log(quantity);
+	Cart.update({ quantity }, { where: { id: cartID } }).then(() => {
+		Cart.findAll({ include: [{ model: Item }], where: { userID } }).then(result => res.send(result));
+	});
 });
 
 router.post('/deletecart', function (req, res, next) {
-	mysqldb.connectiond.query(`DELETE FROM musicstore.carts WHERE id=?`, [req.body.cartID], function (err, rows, fields) {
-		if (err) {
-			console.log(err);
-		} else {
-			res.send(rows);
-		}
+	const { list, userID } = req.body;
+	console.log(list, userID);
+	Cart.destroy({ where: { userID, itemID: list } }).then(() => {
+		Cart.findAll({ include: [{ model: Item }], where: { userID } }).then(result => res.send(result));
 	});
 });
 
 router.post('/addcart', function (req, res, next) {
+	console.log(req.body);
 	Cart.create({
 		itemID: req.body.itemID,
 		userID: req.body.userID,
@@ -485,9 +494,8 @@ router.get('/email_check/:email', function (req, res) {
 	User.findOne({ where: { email } }).then(result => res.send(result));
 });
 router.post('/add_destination', function (req, res, next) {
-	console.log('in post req, /add_destination');
-	console.log(Destination);
 	Destination.create({
+		userID: req.body.userID,
 		customerName: req.body.customerName,
 		customerContact: req.body.customerContact,
 		postcode: req.body.postcode,
@@ -495,11 +503,18 @@ router.post('/add_destination', function (req, res, next) {
 		jibunAddress1: req.body.jibunAddress1,
 		jibunAddress2: req.body.jibunAddress2,
 		extraAddress: req.body.extraAddress,
-		addressOwner: req.body.addressOwner,
 	})
 		.then(result => {
-			console.log(result);
-			res.status(201).json(result);
+			console.log(result.id);
+			User.findOne({ where: { userID: req.body.userID } }).then(user => {
+				if (!user.defaultDestination) {
+					User.update({ defaultDestination: result.id }, { where: { userID: req.body.userID } }).then(() => {
+						User.findOne({ where: { userID: req.body.userID } }).then(result => res.send(result));
+					});
+				} else {
+					User.findOne({ where: { userID: req.body.userID } }).then(result => res.send(result));
+				}
+			});
 		})
 		.catch(err => {
 			console.log('error while destination add');
@@ -535,9 +550,25 @@ router.post('/edit_destination', function (req, res, next) {
 		});
 });
 
+router.post('/delete_destination_default', function (req, res, next) {
+	const { id, user, userID } = req.body;
+	User.update({ defaultDestination: null }, { where: { userID } }).then(() => {
+		Destination.destroy({
+			where: { id },
+		})
+			.then(() => {
+				User.findOne({ where: { userID } }).then(result => {
+					res.send(result);
+				});
+			})
+			.catch(err => {
+				console.log(err);
+				next(err);
+			});
+	});
+});
+
 router.post('/delete_destination', function (req, res, next) {
-	console.log('in post req, /delete_destination');
-	console.log(Destination);
 	Destination.destroy({
 		where: { id: req.body.id },
 	})
@@ -551,22 +582,30 @@ router.post('/delete_destination', function (req, res, next) {
 });
 
 router.post('/destination', function (req, res, next) {
-	console.log('in /destination POST req');
-	console.log(req.body.id);
+	const { userID } = req.body;
 	Destination.findAll({
 		where: {
-			addressOwner: req.body.id,
+			userID,
 		},
 	}).then(result => {
-		console.log(result);
 		res.status(201).json(result);
 	});
 });
 
+router.get('/destination/:id', function (req, res) {
+	const { id } = req.params;
+	Destination.findOne({ where: { id } }).then(result => res.send(result));
+});
 router.post('/login', passport.authenticate('local'), function (req, res) {
 	res.status(201).send(req.user);
 });
 
+router.post('/defaultDestination', (req, res) => {
+	const { info, userID } = req.body;
+	User.update({ defaultDestination: info }, { where: { userID } }).then(() => {
+		User.findOne({ where: { userID } }).then(result => res.send(result));
+	});
+});
 router.get('/login', function (req, res, next) {
 	console.log(req.isAuthenticated());
 	if (req.isAuthenticated()) {
@@ -599,7 +638,6 @@ router.get('/logout', (req, res) => {
 router.post('/userInfo', function (req, res, next) {
 	User.findOne({ where: { userID: req.body.userID } })
 		.then(response => {
-			console.log('in userInfo');
 			res.send(response);
 		})
 		.catch(err => {
@@ -894,4 +932,32 @@ router.get('/get_items/:genre', (req, res) => {
 	});
 });
 
+router.post('/getwishlist', (req, res) => {
+	const { userID } = req.body;
+	console.log(userID);
+	Wishlist.findAll({ include: [{ model: Item }], where: { userID } }).then(result => res.send(result));
+});
+
+router.post('/wishlist', (req, res, next) => {
+	const { itemID, userID } = req.body;
+	Wishlist.create({ itemID, userID })
+		.then(result => res.send(result))
+		.catch(err => {
+			next(err);
+		});
+});
+
+router.post('/delete_wishlist', (req, res) => {
+	const { list, userID } = req.body;
+	console.log(list, userID);
+
+	Wishlist.destroy({ where: { id: list } }).then(() => {
+		Wishlist.findAll({ include: [{ model: Item }], where: { userID } }).then(result => res.send(result));
+	});
+});
+router.post('/getItems', (req, res) => {
+	const { list } = req.body;
+	console.log(list);
+	Item.findAll({ where: { id: list } }).then(result => res.send(result));
+});
 module.exports = router;

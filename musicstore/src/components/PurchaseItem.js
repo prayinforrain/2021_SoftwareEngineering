@@ -1,11 +1,45 @@
 import * as config from './Config.js';
 import '../style/purchase.css';
 import axios from 'axios';
+import { useState } from 'react';
 
 const PurchaseItem = ({ item, setItem, onClose }) => {
-	const onPurchase = () => {};
-	const onWishlist = () => {};
-	const onCart = () => {};
+	const userID = window.sessionStorage.id;
+	const [quantity, setQuantity] = useState(1);
+	const isLoggedIn = () => {
+		if (userID) {
+			return true;
+		}
+		return false;
+	};
+	const onPurchase = () => {
+		if (isLoggedIn()) {
+		} else {
+			alert('로그인을 해야 구매가 가능합니다!');
+			onClose();
+		}
+	};
+	const onWishlist = () => {
+		if (isLoggedIn()) {
+			axios.post(`${config.BACKEND_URL}/wishlist`, { itemID: item.id, userID }).catch(err => {
+				alert('이미 등록된 상품입니다!');
+			});
+		} else {
+			alert('로그인을 해야 찜 목록에 추가할 수 있습니다!');
+			onClose();
+		}
+	};
+	const onCart = () => {
+		if (isLoggedIn()) {
+			axios.post(`${config.BACKEND_URL}/addcart`, { itemID: item.id, userID, quantity: quantity }).then(res => {
+				alert('장바구니 등록이 완료되었습니다!');
+				onClose();
+			});
+		} else {
+			alert('로그인을 해야 장바구니가 이용 가능합니다!');
+			onClose();
+		}
+	};
 	return (
 		<div id="purchase_container">
 			<div id="purchase_inner_container">
@@ -34,14 +68,29 @@ const PurchaseItem = ({ item, setItem, onClose }) => {
 						</div>
 						<div className="info">
 							<span>수량 : </span>
-							<input type="number" defaultValue="1" min="1" required style={{ width: '30px' }} />
+							<input
+								type="number"
+								onChange={e => {
+									setQuantity(e.target.value);
+								}}
+								defaultValue="1"
+								min="1"
+								required
+								style={{ width: '30px' }}
+							/>
 						</div>
 					</div>
 				</div>
 				<div className="lower_container">
-					<div className="purchase_button pbutton">구매하기</div>
-					<div className="wishlist_button pbutton">찜하기</div>
-					<div className="cart_button pbutton">장바구니</div>
+					<div className="purchase_button pbutton" onClick={onPurchase}>
+						구매하기
+					</div>
+					<div className="wishlist_button pbutton" onClick={onWishlist}>
+						찜하기
+					</div>
+					<div className="cart_button pbutton" onClick={onCart}>
+						장바구니
+					</div>
 					<div className="cancel_button pbutton" onClick={onClose}>
 						취소하기
 					</div>

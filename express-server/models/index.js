@@ -20,5 +20,12 @@ db.Item = require('./item')(sequelize, Sequelize);
 db.Genre = require('./genre')(sequelize, Sequelize);
 db.Itemgenre = require('./itemgenre')(sequelize, Sequelize);
 db.Cart = require('./cart')(sequelize, Sequelize);
+db.Wishlist = require('./wishlist')(sequelize, Sequelize);
+
+db.Cart.hasOne(db.Item, { foreignKey: 'id', sourceKey: 'itemID' });
+db.Item.belongsTo(db.Cart, { foreignKey: 'id', targetKey: 'itemID' });
+
+db.Wishlist.hasOne(db.Item, { foreignKey: 'id', sourceKey: 'itemID' });
+db.Item.belongsTo(db.Wishlist, { foreignKey: 'id', targetKey: 'itemID' });
 
 module.exports = db;

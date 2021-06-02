@@ -28,7 +28,7 @@ function App() {
 	}, []);
 	const [login_modal, set_login_modal] = useState(false);
 	const [signup_modal, set_signup_modal] = useState(false);
-	const [item, setItem] = useState(0);
+	const [item, setItem] = useState(false);
 	const [user, setUser] = useState('');
 	const openSignupModal = () => {
 		set_signup_modal(true);
@@ -53,7 +53,7 @@ function App() {
 		setItem(num);
 	};
 	const closeItemModal = () => {
-		setItem(0);
+		setItem(false);
 	};
 
 	return (
@@ -65,6 +65,7 @@ function App() {
 			) : (
 				<WebRouter
 					user={user}
+					setUser={setUser}
 					onLogout={onLogout}
 					openLogin={openLoginModal}
 					openSignup={openSignupModal}
