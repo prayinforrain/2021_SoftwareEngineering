@@ -3,7 +3,7 @@ import '../style/purchase.css';
 import axios from 'axios';
 import { useState } from 'react';
 
-const PurchaseItem = ({ item, setItem, onClose }) => {
+const PurchaseItem = ({ setPurchase, setBuyList, item, setItem, onClose }) => {
 	const userID = window.sessionStorage.id;
 	const [quantity, setQuantity] = useState(1);
 	const isLoggedIn = () => {
@@ -14,6 +14,10 @@ const PurchaseItem = ({ item, setItem, onClose }) => {
 	};
 	const onPurchase = () => {
 		if (isLoggedIn()) {
+			onClose();
+			setPurchase(true);
+			item.quantity = quantity;
+			setBuyList([item]);
 		} else {
 			alert('로그인을 해야 구매가 가능합니다!');
 			onClose();
@@ -21,9 +25,16 @@ const PurchaseItem = ({ item, setItem, onClose }) => {
 	};
 	const onWishlist = () => {
 		if (isLoggedIn()) {
-			axios.post(`${config.BACKEND_URL}/wishlist`, { itemID: item.id, userID }).catch(err => {
-				alert('이미 등록된 상품입니다!');
-			});
+			axios
+				.post(`${config.BACKEND_URL}/wishlist`, { itemID: item.id, userID })
+				.then(res => {
+					alert('상품이 찜 목록에 추가 되었습니다!');
+					onClose();
+				})
+				.catch(err => {
+					alert('이미 등록된 상품입니다!');
+					onClose();
+				});
 		} else {
 			alert('로그인을 해야 찜 목록에 추가할 수 있습니다!');
 			onClose();
@@ -31,10 +42,20 @@ const PurchaseItem = ({ item, setItem, onClose }) => {
 	};
 	const onCart = () => {
 		if (isLoggedIn()) {
-			axios.post(`${config.BACKEND_URL}/addcart`, { itemID: item.id, userID, quantity: quantity }).then(res => {
-				alert('장바구니 등록이 완료되었습니다!');
-				onClose();
-			});
+			console.log('hi');
+			axios
+				.post(`${config.BACKEND_URL}/checkcart/`, { userID, itemID: item.id })
+				.then(res => {
+					if (res.data) {
+						alert('이미 장바구니에 등록된 상품입니다!');
+					} else {
+						axios.post(`${config.BACKEND_URL}/addcart`, { itemID: item.id, userID, quantity: quantity }).then(res => {
+							alert('장바구니 등록이 완료되었습니다!');
+						});
+					}
+					onClose();
+				})
+				.catch(err => console.error(err));
 		} else {
 			alert('로그인을 해야 장바구니가 이용 가능합니다!');
 			onClose();

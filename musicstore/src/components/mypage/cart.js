@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import * as config from '../Config';
 
-const Cart = () => {
+const Cart = ({ setBuyList, setPurchase }) => {
 	/*
     ItemInfo의 상품 정보 DB 구조에 갯수인 count가 추가되었음
     */
@@ -63,7 +63,18 @@ const Cart = () => {
 			});
 		}
 	};
-
+	const handlePurchase = () => {
+		if (checkItems.length === 0) {
+			alert('구매하실 상품을 선택해주세요!');
+			return;
+		}
+		setPurchase(true);
+		console.log(checkItems);
+		axios.post(`${config.BACKEND_URL}/getselectedcart`, { userID }).then(res => {
+			console.log(res.data);
+			setBuyList(res.data);
+		});
+	};
 	const checkHandler = (checked, id) => {
 		if (checked) {
 			setCheckItems([...checkItems, id]);
@@ -85,8 +96,8 @@ const Cart = () => {
 	const setGlobalPrice = data => {
 		let total = 0;
 		data.map(item => {
-			if (checkItems.includes(item.itemID)) {
-				total += item.quantity * item.item.price;
+			if (checkItems.includes(item.id)) {
+				total += item.quantity * item.price;
 			}
 		});
 		setTotalPrice(total);
@@ -132,32 +143,36 @@ const Cart = () => {
 					<div className="cart_count">수량</div>
 					<div className="cart_price">가격</div>
 				</div>
-				{cart.map(i => (
-					<div className="cart_line" key={i.id}>
-						<div className="cart_check">
-							<input
-								type="checkbox"
-								name="cart_select"
-								onChange={e => checkHandler(e.target.checked, i.itemID)}
-								checked={checkItems.indexOf(i.itemID) >= 0 ? true : false}
-							/>
+				{cart.length !== 0 ? (
+					cart.map(i => (
+						<div className="cart_line" key={i.id}>
+							<div className="cart_check">
+								<input
+									type="checkbox"
+									name="cart_select"
+									onChange={e => checkHandler(e.target.checked, i.id)}
+									checked={checkItems.includes(i.id) ? true : false}
+								/>
+							</div>
+							<div className="cart_name">{i.album}</div>
+							<div className="cart_artist">{i.singer}</div>
+							<div className="cart_publish">{i.supply}</div>
+							<div className="cart_count">
+								<input type="number" min="1" name="product_count" value={i.quantity} onChange={e => onChange(e, i.id)} />
+							</div>
+							<div className="cart_price">{i.price}</div>
 						</div>
-						<div className="cart_name">{i.item.album}</div>
-						<div className="cart_artist">{i.item.singer}</div>
-						<div className="cart_publish">{i.item.supply}</div>
-						<div className="cart_count">
-							<input type="number" name="product_count" value={i.quantity} onChange={e => onChange(e, i.id)} />
-						</div>
-						<div className="cart_price">{i.item.price}</div>
-					</div>
-				))}
+					))
+				) : (
+					<div>로딩중</div>
+				)}
 			</div>
 			<div id="cart_box_footer">
 				<div id="cart_total">
 					총 : <span id="cart_total_price">{totalPrice}</span>원
 				</div>
 				<div className="cart_button">
-					선택한 상품을: <button>구매</button>
+					선택한 상품을: <button onClick={handlePurchase}>구매</button>
 					<button onClick={handleDelete}>삭제</button>
 				</div>
 			</div>

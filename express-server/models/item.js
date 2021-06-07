@@ -14,6 +14,10 @@ module.exports = (sequelize, DataTypes) => {
 				type: DataTypes.INTEGER,
 				allowNull: false,
 			},
+			fee: {
+				type: DataTypes.INTEGER,
+				allowNull: false,
+			},
 			supply: {
 				type: DataTypes.STRING(30),
 				allowNull: false,
@@ -39,11 +43,5 @@ module.exports = (sequelize, DataTypes) => {
 			timestamps: true,
 		}
 	);
-	Items.associate = function (models) {
-		models.Users.hasmany(models.Comments, {
-			foreignKey: 'id',
-			onDelete: 'cacade',
-		});
-	};
 	return Items;
 };

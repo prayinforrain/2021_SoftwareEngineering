@@ -95,27 +95,27 @@ router.post('/search', function (req, res, next) {
 				on musicstore.items.id = musicstore.itemgenres.itemID
 				where musicstore.itemgenres.genreID = ? and musicstore.items.available = true`;
 				queryParam[4] = [searchGenre];
-				var orderFooter = "";
-				if(req.body.searchOrder) {
-					if(req.body.minPrice !== -1) {
-						console.log("가격필터");
-						orderFooter += " and musicstore.items.price >= ?";
+				var orderFooter = '';
+				if (req.body.searchOrder) {
+					if (req.body.minPrice !== -1) {
+						console.log('가격필터');
+						orderFooter += ' and musicstore.items.price >= ?';
 						queryParam[req.body.searchOption].push(req.body.minPrice);
 					}
-					if(req.body.maxPrice !== -1) {
-						orderFooter += " and musicstore.items.price <= ?";
+					if (req.body.maxPrice !== -1) {
+						orderFooter += ' and musicstore.items.price <= ?';
 						queryParam[req.body.searchOption].push(req.body.maxPrice);
 					}
-					if(req.body.searchOrder === "0") {
-						orderFooter += " group by musicstore.items.id;"
+					if (req.body.searchOrder === '0') {
+						orderFooter += ' group by musicstore.items.id;';
 					}
-					if(req.body.searchOrder === "1") {
-						orderFooter += " group by musicstore.items.id order by musicstore.items.price asc;"
+					if (req.body.searchOrder === '1') {
+						orderFooter += ' group by musicstore.items.id order by musicstore.items.price asc;';
 					}
-					if(req.body.searchOrder === "2") {
-						orderFooter += " group by musicstore.items.id order by musicstore.items.price desc;"
+					if (req.body.searchOrder === '2') {
+						orderFooter += ' group by musicstore.items.id order by musicstore.items.price desc;';
 					}
-				} else orderFooter = " group by musicstore.items.id;";
+				} else orderFooter = ' group by musicstore.items.id;';
 				mysqldb.connectiond.query(
 					queryString[req.body.searchOption] + orderFooter,
 					queryParam[req.body.searchOption],
@@ -139,49 +139,77 @@ router.post('/getcart', function (req, res, next) {
 	on musicstore.carts.itemID = musicstore.items.id where userID=?;
 	를 할수 있으면 얼마나 좋을까?
 	*/
-	// mysqldb.connectiond.query(
-	// 	`SELECT * FROM musicstore.carts
-	// left outer join musicstore.items
-	// on musicstore.carts.itemID = musicstore.items.id where userID=?`,
-	// 	[req.body.userID],
-	// 	function (err, rows, fields) {
-	// 		if (err) {
-	// 			console.log(err);
-	// 		} else {
-	// 			res.send(rows);
-	// 		}
-	// 	}
-	// );
-	const { userID } = req.body;
-	console.log(req.body.userID);
-	Cart.findAll({ include: [{ model: Item }], where: { userID } }).then(result => res.send(result));
+	mysqldb.connectiond.query(
+		`SELECT * FROM musicstore.items
+	left outer join musicstore.carts
+	on musicstore.carts.itemID = musicstore.items.id where userID=?`,
+		[req.body.userID],
+		function (err, rows, fields) {
+			if (err) {
+				console.log(err);
+			} else {
+				res.send(rows);
+			}
+		}
+	);
+	// const { userID } = req.body;
+	// console.log(req.body.userID);
+	// Cart.findAll({ include: [{ model: Item }], where: { userID } }).then(result => res.send(result));
 	// Cart.findAll({ where: { userID } });
 });
-
-router.post('/editcart', function (req, res, next) {
-	// mysqldb.connectiond.query(
-	// 	`UPDATE musicstore.carts SET quantity=? WHERE id=?`,
-	// 	[req.body.quantity, req.body.cartID],
-	// 	function (err, rows, fields) {
-	// 		if (err) {
-	// 			console.log(err);
-	// 		} else {
-	// 			res.send(rows);
-	// 		}
-	// 	}
-	// );
-	const { quantity, cartID, userID } = req.body;
-	console.log(quantity);
-	Cart.update({ quantity }, { where: { id: cartID } }).then(() => {
-		Cart.findAll({ include: [{ model: Item }], where: { userID } }).then(result => res.send(result));
+router.post('/checkcart', function (req, res) {
+	const { userID, itemID } = req.body;
+	console.log(userID);
+	Cart.findAll({ where: { userID } }).then(result => {
+		res.send(result.map(el => el.itemID).includes(itemID));
 	});
+});
+router.post('/editcart', function (req, res, next) {
+	mysqldb.connectiond.query(
+		`UPDATE musicstore.carts SET quantity=? WHERE id=?`,
+		[req.body.quantity, req.body.cartID],
+		function (err, rows, fields) {
+			if (err) {
+				console.log(err);
+				next(err);
+			} else {
+				mysqldb.connectiond.query(
+					`SELECT * FROM musicstore.carts 
+				left outer join musicstore.items
+				on musicstore.carts.itemID = musicstore.items.id where userID=?`,
+					[req.body.userID],
+					function (err, rows, fields) {
+						if (err) {
+							console.log(err);
+							next(err);
+						} else {
+							res.send(rows);
+						}
+					}
+				);
+			}
+		}
+	);
 });
 
 router.post('/deletecart', function (req, res, next) {
 	const { list, userID } = req.body;
 	console.log(list, userID);
-	Cart.destroy({ where: { userID, itemID: list } }).then(() => {
-		Cart.findAll({ include: [{ model: Item }], where: { userID } }).then(result => res.send(result));
+	Cart.destroy({ where: { userID, id: list } }).then(() => {
+		mysqldb.connectiond.query(
+			`SELECT * FROM musicstore.carts 
+		left outer join musicstore.items
+		on musicstore.carts.itemID = musicstore.items.id where userID=?`,
+			[req.body.userID],
+			function (err, rows, fields) {
+				if (err) {
+					console.log(err);
+					next(err);
+				} else {
+					res.send(rows);
+				}
+			}
+		);
 	});
 });
 
@@ -254,6 +282,7 @@ router.post('/additem', function (req, res, next) {
 		album: req.body.album,
 		singer: req.body.singer,
 		price: req.body.price,
+		fee: req.body.fee,
 		supply: req.body.supply,
 		detail: req.body.detail,
 		cover: req.body.cover,
@@ -297,6 +326,7 @@ router.post('/edititem', function (req, res, next) {
 			album: req.body.album,
 			singer: req.body.singer,
 			price: req.body.price,
+			fee: req.body.fee,
 			supply: req.body.supply,
 			detail: req.body.detail,
 			cover: req.body.cover,
@@ -916,9 +946,19 @@ router.get('/get_items/:genre', (req, res) => {
 });
 
 router.post('/getwishlist', (req, res) => {
-	const { userID } = req.body;
-	console.log(userID);
-	Wishlist.findAll({ include: [{ model: Item }], where: { userID } }).then(result => res.send(result));
+	mysqldb.connectiond.query(
+		`SELECT * FROM musicstore.wishlists
+	left outer join musicstore.items
+	on musicstore.wishlists.itemID = musicstore.items.id where userID=?`,
+		[req.body.userID],
+		function (err, rows, fields) {
+			if (err) {
+				console.log(err);
+			} else {
+				res.send(rows);
+			}
+		}
+	);
 });
 
 router.post('/wishlist', (req, res, next) => {
@@ -943,4 +983,21 @@ router.post('/getItems', (req, res) => {
 	console.log(list);
 	Item.findAll({ where: { id: list } }).then(result => res.send(result));
 });
+
+router.post('/getselectedcart', (req, res) => {
+	mysqldb.connectiond.query(
+		`SELECT * FROM musicstore.items
+	left outer join musicstore.carts
+	on musicstore.carts.itemID = musicstore.items.id where userID=?`,
+		[req.body.userID],
+		function (err, rows, fields) {
+			if (err) {
+				console.log(err);
+			} else {
+				res.send(rows);
+			}
+		}
+	);
+});
+
 module.exports = router;

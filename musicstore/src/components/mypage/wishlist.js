@@ -66,10 +66,10 @@ const Wishlist = () => {
 										}}
 									/>
 								</div>
-								<div className="wish_name">{wishlist.item.album}</div>
-								<div className="wish_artist">{wishlist.item.singer}</div>
-								<div className="wish_publish">{wishlist.item.supply}</div>
-								<div className="wish_price">{wishlist.item.price}</div>
+								<div className="wish_name">{wishlist.album}</div>
+								<div className="wish_artist">{wishlist.singer}</div>
+								<div className="wish_publish">{wishlist.supply}</div>
+								<div className="wish_price">{wishlist.price}</div>
 							</div>
 						))}
 					</div>

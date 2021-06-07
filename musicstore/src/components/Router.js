@@ -26,7 +26,7 @@ import GenreSearch from './GenreSearch';
 
 // '/test' 주소에 들어간 ItemInfo의 queryID를 백엔드에 보내서 요청하는 상품의 ID를 지정
 
-function WebRouter({ user, setUser, onLogout, openSignup, openLogin, openItemModal, closeItemModal }) {
+function WebRouter({ user, setUser, onLogout, openSignup, openLogin, openItemModal, closeItemModal, setBuyList, setPurchase }) {
 	return (
 		<Router>
 			<Switch>
@@ -66,7 +66,7 @@ function WebRouter({ user, setUser, onLogout, openSignup, openLogin, openItemMod
 					<Header user={user} onLogout={onLogout} openSignup={openSignup} openLogin={openLogin} />
 					<div id="main_container">
 						<MypageMenu />
-						<Cart user={user} />
+						<Cart user={user} setPurchase={setPurchase} setBuyList={setBuyList} />
 					</div>
 					<Footer />
 				</Route>

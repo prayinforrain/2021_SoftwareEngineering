@@ -47,7 +47,7 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 
 			//폼 채우기
 			const form = document.getElementById('add_item_form');
-			const { album, singer, supply, price, detail, cover, available, released } = form;
+			const { album, singer, supply, price, fee, detail, cover, available, released } = form;
 			axios({
 				method: 'POST',
 				url: `${config.BACKEND_URL}/item_detail/`,
@@ -60,6 +60,7 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 					singer.value = res.data.singer;
 					supply.value = res.data.supply;
 					price.value = res.data.price;
+					fee.value = res.data.fee;
 					detail.value = res.data.detail;
 					available.checked = res.data.available;
 					released.value = res.data.released;
@@ -84,7 +85,7 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 	const submitHandler = e => {
 		e.preventDefault();
 		const form = document.getElementById('add_item_form');
-		const { album, singer, supply, price, detail, cover, available, released } = form;
+		const { album, singer, supply, price, fee, detail, cover, available, released } = form;
 		const fileForm = new FormData();
 		fileForm.append('cover', cover.files[0]);
 		if (editStatus === -1) {
@@ -104,6 +105,7 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 							singer: singer.value,
 							supply: supply.value,
 							price: parseInt(price.value),
+							fee: parseInt(fee.value),
 							detail: detail.value,
 							cover: coverPath.data,
 							genre: checkItems,
@@ -154,6 +156,7 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 								singer: singer.value,
 								supply: supply.value,
 								price: parseInt(price.value),
+								fee: parseInt(fee.value),
 								detail: detail.value,
 								cover: realPath,
 								released: released.value,
@@ -189,6 +192,7 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 						singer: singer.value,
 						supply: supply.value,
 						price: parseInt(price.value),
+						fee: parseInt(fee.value),
 						detail: detail.value,
 						cover: originURL,
 						genre: checkItems,
@@ -296,6 +300,12 @@ const Additem = ({ closePopup, closeEdit, editStatus }) => {
 					<div className="item_row_name">가격</div>
 					<div className="item_row_field">
 						<input type="number" id="price" name="price" placeholder="가격" />
+					</div>
+				</div>
+				<div className="item_row">
+					<div className="item_row_name">배송비</div>
+					<div className="item_row_field">
+						<input type="number" id="fee" name="fee" placeholder="가격" />
 					</div>
 				</div>
 				<div className="item_row">

@@ -8,6 +8,7 @@ import Login from './components/Login';
 import PurchaseItem from './components/PurchaseItem';
 import axios from 'axios';
 import Manage from './Managerpage';
+import PurchasePopup from './components/PurchasePopup';
 import * as config from './components/Config';
 
 function App() {
@@ -30,6 +31,8 @@ function App() {
 	const [signup_modal, set_signup_modal] = useState(false);
 	const [item, setItem] = useState(false);
 	const [user, setUser] = useState('');
+	const [purchase, setPurchase] = useState(false);
+	const [buyList, setBuyList] = useState([]);
 	const openSignupModal = () => {
 		set_signup_modal(true);
 	};
@@ -56,6 +59,9 @@ function App() {
 		setItem(false);
 	};
 
+	const closePurchaseModal = () => {
+		setPurchase(false);
+	};
 	return (
 		<div className="App">
 			{user.userID === 'admin' ? (
@@ -71,6 +77,8 @@ function App() {
 					openSignup={openSignupModal}
 					openItemModal={openItemModal}
 					closeItemModal={closeItemModal}
+					setBuyList={setBuyList}
+					setPurchase={setPurchase}
 				/>
 			)}
 
@@ -86,7 +94,18 @@ function App() {
 			)}
 			{item && (
 				<ModalPortal>
-					<PurchaseItem item={item} setItem={setItem} onClose={closeItemModal} />
+					<PurchaseItem
+						setBuyList={setBuyList}
+						setPurchase={setPurchase}
+						item={item}
+						setItem={setItem}
+						onClose={closeItemModal}
+					/>
+				</ModalPortal>
+			)}
+			{purchase && (
+				<ModalPortal>
+					<PurchasePopup buyList={buyList} onClose={closePurchaseModal} />
 				</ModalPortal>
 			)}
 		</div>

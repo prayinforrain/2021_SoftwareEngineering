@@ -33,7 +33,7 @@ const ProductPost = ({ data }) => {
 					<>{e.name}, </>
 				))}
 			</div>
-			<div className="product_release_date"></div>
+			<div className="product_release_date">{data.released}</div>
 			<div className="product_publish">{data.supply}</div>
 		</>
 	);
