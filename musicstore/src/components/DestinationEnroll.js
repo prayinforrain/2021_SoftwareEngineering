@@ -7,14 +7,14 @@ import * as config from './Config';
 
 const DestinationEnroll = ({ setModalStatus, user, info, setUser, setInfo }) => {
 	const userID = window.sessionStorage.id;
-	//console.log(info);
+	console.log(info);
 	const modalCloseHandler = e => {
 		if (e) e.preventDefault();
 		setInfo(false);
 		setModalStatus(0);
 	};
 	useEffect(() => {
-		if (info.length) {
+		if (info) {
 			axios.get(`${config.BACKEND_URL}/destination/${info}`).then(res => {
 				console.log(res[0]);
 				const form = document.getElementById('destination_form');
