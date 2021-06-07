@@ -7,7 +7,7 @@ import * as config from './Config';
 
 const DestinationEnroll = ({ setModalStatus, user, info, setUser, setInfo }) => {
 	const userID = window.sessionStorage.id;
-	console.log(info);
+	//console.log(info);
 	const modalCloseHandler = e => {
 		if (e) e.preventDefault();
 		setInfo(false);
@@ -16,6 +16,7 @@ const DestinationEnroll = ({ setModalStatus, user, info, setUser, setInfo }) => 
 	useEffect(() => {
 		if (info.length) {
 			axios.get(`${config.BACKEND_URL}/destination/${info}`).then(res => {
+				console.log(res[0]);
 				const form = document.getElementById('destination_form');
 				const { postcode, roadAddress, jibunAddress1, jibunAddress2, extraAddress, customerName, customerContact } = form;
 				postcode.value = res.data.postcode;
@@ -227,21 +228,21 @@ const DestinationEnroll = ({ setModalStatus, user, info, setUser, setInfo }) => 
 					</div>
 					<div className="input_box">
 						<span className="form_span">우편번호</span>
-						<input type="text" id="postcode" placeholder="우편번호" />
+						<input type="text" id="postcode" placeholder="우편번호" disabled/>
 						<input id="search_button" type="button" onClick={execDaumPostcode} value="우편번호 찾기" />
 						<br />
 					</div>
 					<div className="input_box">
 						<span className="form_span">도로명 주소</span>
-						<input type="text" id="roadAddress" placeholder="도로명주소" />
+						<input type="text" id="roadAddress" placeholder="도로명주소" disabled />
 					</div>
 					<div className="input_box">
 						<span className="form_span">지번 주소</span>
-						<input type="text" id="jibunAddress1" placeholder="지번주소" />
+						<input type="text" id="jibunAddress1" placeholder="지번주소" disabled />
 					</div>
 					<div className="input_box">
 						<span className="form_span"></span>
-						<input type="text" id="jibunAddress2" placeholder="참고항목" />
+						<input type="text" id="jibunAddress2" placeholder="참고항목" disabled/>
 					</div>
 					<span id="guide" style={{ color: '#999', display: 'none' }}></span>
 					<div className="input_box">

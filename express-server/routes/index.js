@@ -73,77 +73,60 @@ router.post('/search', function (req, res, next) {
 				musicstore.items.album like concat('%', ?, '%') or
 				musicstore.items.singer like concat('%', ?, '%') or
 				musicstore.items.supply like concat('%', ?, '%'))
-				and musicstore.items.available = true
-				group by musicstore.items.id;`;
+				and musicstore.items.available = true`;
 				queryParam[0] = [searchGenre, req.body.keyword, req.body.keyword, req.body.keyword];
 				queryString[1] = `SELECT musicstore.items.* FROM musicstore.items
 				join musicstore.itemgenres
 				on musicstore.items.id = musicstore.itemgenres.itemID
-				where musicstore.items.album like concat('%', ?, '%') and musicstore.items.available = true
-				group by musicstore.items.id;`;
+				where musicstore.items.album like concat('%', ?, '%') and musicstore.items.available = true`;
 				queryParam[1] = [req.body.keyword];
 				queryString[2] = `SELECT musicstore.items.* FROM musicstore.items
 				join musicstore.itemgenres
 				on musicstore.items.id = musicstore.itemgenres.itemID
-				where musicstore.items.singer like concat('%', ?, '%') and musicstore.items.available = true
-				group by musicstore.items.id;`;
+				where musicstore.items.singer like concat('%', ?, '%') and musicstore.items.available = true`;
 				queryParam[2] = [req.body.keyword];
 				queryString[3] = `SELECT musicstore.items.* FROM musicstore.items
 				join musicstore.itemgenres
 				on musicstore.items.id = musicstore.itemgenres.itemID
-				where musicstore.items.supply like concat('%', ?, '%') and musicstore.items.available = true
-				group by musicstore.items.id;`;
+				where musicstore.items.supply like concat('%', ?, '%') and musicstore.items.available = true`;
 				queryParam[3] = [req.body.keyword];
 				queryString[4] = `SELECT musicstore.items.* FROM musicstore.items
 				join musicstore.itemgenres
 				on musicstore.items.id = musicstore.itemgenres.itemID
-				where musicstore.itemgenres.genreID = ? and musicstore.items.available = true
-				group by musicstore.items.id;`;
+				where musicstore.itemgenres.genreID = ? and musicstore.items.available = true`;
 				queryParam[4] = [searchGenre];
-				/*console.log("쿼리 정보:");
-				console.log(queryString);
-				console.log(queryParam);*/
-				if (req.body.searchOption === '0') {
-					mysqldb.connectiond.query(queryString[1], queryParam[1], function (err, rows1, fields) {
+				var orderFooter = "";
+				if(req.body.searchOrder) {
+					if(req.body.minPrice !== -1) {
+						console.log("가격필터");
+						orderFooter += " and musicstore.items.price >= ?";
+						queryParam[req.body.searchOption].push(req.body.minPrice);
+					}
+					if(req.body.maxPrice !== -1) {
+						orderFooter += " and musicstore.items.price <= ?";
+						queryParam[req.body.searchOption].push(req.body.maxPrice);
+					}
+					if(req.body.searchOrder === "0") {
+						orderFooter += " group by musicstore.items.id;"
+					}
+					if(req.body.searchOrder === "1") {
+						orderFooter += " group by musicstore.items.id order by musicstore.items.price asc;"
+					}
+					if(req.body.searchOrder === "2") {
+						orderFooter += " group by musicstore.items.id order by musicstore.items.price desc;"
+					}
+				} else orderFooter = " group by musicstore.items.id;";
+				mysqldb.connectiond.query(
+					queryString[req.body.searchOption] + orderFooter,
+					queryParam[req.body.searchOption],
+					function (err, rows, fields) {
 						if (err) {
 							console.log(err);
 						} else {
-							mysqldb.connectiond.query(queryString[2], queryParam[2], function (err, rows2, fields) {
-								if (err) {
-									console.log(err);
-								} else {
-									mysqldb.connectiond.query(queryString[3], queryParam[3], function (err, rows3, fields) {
-										if (err) {
-											console.log(err);
-										} else {
-											mysqldb.connectiond.query(queryString[4], queryParam[4], function (err, rows4, fields) {
-												if (err) {
-													console.log(err);
-												} else {
-													var resultrows = [rows1, rows2, rows3, rows4];
-													//console.log(resultrows);
-													res.send(resultrows);
-												}
-											});
-										}
-									});
-								}
-							});
+							res.send(rows);
 						}
-					});
-				} else {
-					mysqldb.connectiond.query(
-						queryString[req.body.searchOption],
-						queryParam[req.body.searchOption],
-						function (err, rows, fields) {
-							if (err) {
-								console.log(err);
-							} else {
-								res.send(rows);
-							}
-						}
-					);
-				}
+					}
+				);
 			}
 		}
 	);
@@ -248,13 +231,13 @@ router.post('/getgenres', function (req, res, next) {
 						itemID: req.body.itemID,
 					},
 				}).then(genRes => {
-					console.log(req.body.itemID + '번 아이템에 대한 장르 연결 정보:');
-					console.log(genRes);
+					//console.log(req.body.itemID + '번 아이템에 대한 장르 연결 정보:');
+					//console.log(genRes);
 					genRes.forEach(g => {
 						listofGenres.push(result.find(value => value.id === g.dataValues.genreID).dataValues);
 					});
-					console.log(req.body.itemID + '번 아이템에 대한 장르:');
-					console.log(listofGenres);
+					//console.log(req.body.itemID + '번 아이템에 대한 장르:');
+					//console.log(listofGenres);
 					res.send(listofGenres);
 				});
 			} else {

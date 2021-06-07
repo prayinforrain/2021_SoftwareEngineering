@@ -509,3 +509,41 @@ footer .footer_container {
   background:black;
   color:white;
 }
+
+.searchres_row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-overflow: ellipsis;
+  border: 1px solid black;
+  text-align: center;
+}
+
+.searchres_title {
+  width: 40%;
+}
+
+.searchres_genre {
+  width: 10%;
+  height: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.searchres_singer {
+  width: 10%;
+}
+
+.searchres_release_date {
+  width: 10%;
+}
+
+.searchres_publish {
+  width: 10%;
+}
+
+#searchres_header {
+  border-bottom: 3px double black !important ;
+}
