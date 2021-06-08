@@ -12,6 +12,7 @@ var Genre = require('../models').Genre;
 var Itemgenre = require('../models').Itemgenre;
 var Cart = require('../models').Cart;
 var Wishlist = require('../models').Wishlist;
+var Inquiry = require('../models').Inquiry
 
 const passport = require('passport');
 var fs = require('fs');
@@ -47,6 +48,70 @@ router.get('/uploads/:img_id', function (req, res) {
 router.post('/upload', upload.single('cover'), function (req, res) {
 	res.send(req.file.path);
 });
+
+router.get('/inquiry', function(req, res) {
+	mysqldb.connectiond.query(
+		`SELECT * FROM musicstore.inquiries`, [], function(err, rows, fields) {
+			if(err) {
+				res.send(err);
+				console.log(err);
+				return;
+			} else {
+				res.send(rows);
+			}
+		}
+	)
+})
+
+router.post('/get_inquiry', function(req, res) {
+	console.log("userID = ", req.body.userID);
+	mysqldb.connectiond.query(
+		`SELECT * FROM musicstore.inquiries WHERE customerID = ?`, [req.body.userID], function(err, rows, fields) {
+			if(err) {
+				res.send(err);
+				console.log(err);
+				return;
+			} else {
+				res.send(rows);
+			}
+		}
+	)
+})
+
+router.post('/answer_inquiry', function(req, res) {
+	console.log("userID = ", req.body.userID);
+	Inquiry.update(
+		{
+			answer: req.body.answer
+		},
+		{
+			where: { id: req.body.id },
+		}
+	).catch(err => {
+		res.status(406).json(err);
+		console.log(err);
+		return;
+	}).then(rows => {
+		res.status(200).json(rows);
+	})
+})
+
+router.post('/new_inquiry', function(req, res) {
+	Inquiry.create({
+		productID: req.body.productID,
+		orderID: req.body.orderID,
+		customerID: req.body.customerID,
+		title: req.body.title,
+		detail: req.body.detail,
+	})
+	.then(result => {
+		res.status(200).json(result);
+	})
+	.catch(err => {
+		console.error(err);
+		res.status(406);
+	});
+})
 
 router.post('/search', function (req, res, next) {
 	// 통합 제목 가수 배급사 장르 0~4

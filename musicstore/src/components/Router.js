@@ -70,14 +70,6 @@ function WebRouter({ user, setUser, onLogout, openSignup, openLogin, openItemMod
 					</div>
 					<Footer />
 				</Route>
-				<Route exact path="/mypage/service-center">
-					<Header user={user} onLogout={onLogout} openSignup={openSignup} openLogin={openLogin} />
-					<div id="main_container">
-						<MypageMenu />
-						<Cs />
-					</div>
-					<Footer />
-				</Route>
 				<Route exact path="/mypage/tracking">
 					<Header user={user} onLogout={onLogout} openSignup={openSignup} openLogin={openLogin} />
 					<div id="main_container">
@@ -98,7 +90,7 @@ function WebRouter({ user, setUser, onLogout, openSignup, openLogin, openItemMod
 					<Header user={user} onLogout={onLogout} openSignup={openSignup} openLogin={openLogin} />
 					<div id="main_container">
 						<MypageMenu />
-						<Cs />
+						<Cs user={user}/>
 					</div>
 					<Footer />
 				</Route>

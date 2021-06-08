@@ -30,6 +30,7 @@ const Login = ({ user, onLogin, onClose }) => {
 					onLogin(data);
 					alert(data.name + '님 환영합니다!');
 					window.sessionStorage.setItem('id', data.userID);
+					window.sessionStorage.setItem('uid', data.id);
 					window.location.href = '/';
 				}
 			})

@@ -393,11 +393,25 @@ header .header_container .menu {
 }
 
 .qna_line {
+  width: 100%;
   height: auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
   border: 1px solid black;
+}
+
+.qna_row {
+  width: 100%;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid black;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .qna_no {
@@ -406,17 +420,17 @@ header .header_container .menu {
 }
 
 .qna_title {
-  width: 45%;
+  width: 35%;
   text-align: center;
 }
 
 .qna_postedat {
-  width: 10%;
+  width: 15%;
   text-align: center;
 }
 
 .qna_answeredat {
-  width: 10%;
+  width: 15%;
   text-align: center;
 }
 
@@ -426,7 +440,126 @@ header .header_container .menu {
 }
 
 #qna_button {
+  width: 100%;
   margin: 0 0 0 auto;
+}
+
+#qna_button button {
+  width: 100%;
+}
+
+.qna_detail {
+  width: 100%;
+  display: none;
+}
+
+.qna_detail_row {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: stretch;
+  border: 1px solid black;
+}
+
+.qna_detail_row_header {
+  width: 20%;
+  border-right: 1px solid black;
+  background-color: #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.qna_detail_row_content {
+  width: 100%;
+  text-align: left;
+}
+
+.qna_no_answer {
+  width: 100%;
+  background-color: gainsboro;
+}
+
+.qna_no_answer::after {
+  text-align: center;
+  content: "아직 답변이 없습니다.";
+}
+
+.qna_more {
+  width: 100%;
+  display: none;
+  flex-direction: row;
+}
+
+.qna_more_textarea {
+  width: 100%;
+}
+
+.qna_more_input {
+  width: 100%;
+  height: 100%;
+  resize: none;
+  padding: 3px;
+}
+
+.qna_more_submit {
+  display: flex;
+  align-items: center;
+}
+
+.qna_more_submit button {
+  height: 100%;
+}
+
+#qna_new_popup {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.qna_new {
+  width: 500px;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+.qna_new_title {
+  width: 100%;
+}
+
+.qna_new_title_input {
+  width: 100%;
+  resize: none;
+  padding: 3px;
+}
+
+.qna_new_textarea {
+  width: 100%;
+  height: 100%;
+}
+
+.qna_new_input {
+  width: 100%;
+  height: 100%;
+  resize: none;
+  padding: 3px;
+}
+
+.qna_new_submit {
+  display: flex;
+  align-items: center;
+}
+
+.qna_new_submit button {
+  width: 50%;
 }
 
 footer {
@@ -437,6 +570,7 @@ footer {
   height: 5vh;
   border: 1px solid black;
 }
+
 footer .footer_container {
   width: 1200px;
   height: 100%;

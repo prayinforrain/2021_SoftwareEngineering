@@ -29,13 +29,15 @@ const ManagerSection = () => {
 	const [productPopup, setProductPopup] = useState(false);
 	const [productStatus, setProductStatus] = useState(-1);
 
-	const [preivew, setPreivew] = useState('');
-
 	useEffect(() => {
+		fetchBoards();
+	}, [board, productPopup]);
+
+	const fetchBoards = () => {
 		axios.get(`${config.BACKEND_URL}/${board}`).then(res => {
 			setBoardData(res.data.reverse());
 		});
-	}, [board, productPopup]);
+	}
 	// 게시판 메뉴 선택 함수
 	const chooseMenu = e => {
 		const targetBoard = e.target.className.split('_')[1];
@@ -62,7 +64,11 @@ const ManagerSection = () => {
 	};
 
 	const openPopup = data => {
-		if (board !== 'product') {
+		if(board === 'inquiry' && !data['id']) return; // Q&A에 추가버튼 작동 안하게
+		if (board === 'product') {
+			setProductPopup(true);
+			setProductStatus(-1);
+		} else {
 			const background = document.querySelector('.popup_background');
 			const popup = document.querySelector(`.board_modify_popup`);
 			const addButton = document.getElementById('add_button');
@@ -70,17 +76,24 @@ const ManagerSection = () => {
 			const deleteButton = document.getElementById('delete_button');
 			if (data['id']) {
 				deleteButton.style.display = 'block';
-				modifyButton.style.display = 'block';
-				modifyButton.key = data['id'];
+				if(modifyButton) modifyButton.style.display = 'block';
+				if(modifyButton) modifyButton.key = data['id'];
 				deleteButton.key = data.id;
-				if (board !== 'banner') {
-					document.getElementById('board_popup_title').value = data.title;
-					document.getElementById('board_popup_detail').value = data.contents;
-				} else {
+				if (board === 'banner') {
 					document.getElementById('board_popup_title').value = data.title;
 					document.getElementById('preview').src = `${config.BACKEND_URL}/${data.bannerPath}`;
 					document.getElementById('start').value = data.start;
 					document.getElementById('end').value = data.end;
+				} else if(board === 'inquiry') {
+					document.getElementById('board_popup_inquiry_title').innerText = data.title;
+					document.getElementById('board_popup_inquiry_detail').innerText = data.detail;
+					document.getElementById('board_popup_inquiry_id').innerText = data.id;
+					document.getElementById('board_popup_detail').value = data.answer;
+					addButton.style.display = 'block';
+					deleteButton.style.display = 'none';
+				} else {
+					document.getElementById('board_popup_title').value = data.title;
+					document.getElementById('board_popup_detail').value = data.contents;
 				}
 			} else {
 				addButton.style.display = 'block';
@@ -89,9 +102,6 @@ const ManagerSection = () => {
 
 			background.style.display = 'block';
 			popup.style.display = 'block';
-		} else {
-			setProductPopup(true);
-			setProductStatus(-1);
 		}
 	};
 
@@ -132,10 +142,14 @@ const ManagerSection = () => {
 	const closePopup = () => {
 		const background = document.querySelector(`.popup_background`);
 		const popup = document.querySelector(`.board_modify_popup`);
-		document.getElementById('add_button').style.display = 'none';
-		document.getElementById('modify_button').style.display = 'none';
-		document.getElementById(`board_popup_title`).value = '';
-		document.getElementById(`board_popup_detail`).value = '';
+		if(board === 'inquiry') {
+			
+		}else {
+			document.getElementById('add_button').style.display = 'none';
+			document.getElementById('modify_button').style.display = 'none';
+			document.getElementById(`board_popup_title`).value = '';
+			document.getElementById(`board_popup_detail`).value = '';
+		}
 		background.style.display = 'none';
 		popup.style.display = 'none';
 	};
@@ -230,16 +244,37 @@ const ManagerSection = () => {
 				}
 			}
 			closeBannerPopup();
+		} else if(board === "inquiry") {
+			const contents = document.getElementById(`board_popup_detail`).value;
+			console.log(document.getElementById('board_popup_inquiry_id').innerText);
+			axios({
+                method: 'POST',
+                url: `${config.BACKEND_URL}/answer_inquiry`,
+                data: {
+					id: document.getElementById('board_popup_inquiry_id').innerText,
+					answer: contents
+                },
+            }).then( res => {
+                console.log(res);
+                if(res.status === 200) {
+                    alert("문의 등록이 완료되었습니다.")
+					closePopup();
+					fetchBoards();
+                } else {
+                    alert("오류가 발생하였습니다.")
+                }
+            }).catch(err => {
+                console.log(err);
+                alert("오류가 발생하였습니다.")
+            });
 		} else {
-			const title = document.getElementById(`board_popup_title`).value;
 			const contents = document.getElementById(`board_popup_detail`).value;
 
 			axios({
 				method: 'POST',
 				url: `${config.BACKEND_URL}/${board}`,
 				data: {
-					title,
-					contents,
+					answer: contents,
 				},
 			})
 				.then(res => {
@@ -277,7 +312,7 @@ const ManagerSection = () => {
 						<li className="menu_product" onClick={chooseMenu}>
 							상품 관리
 						</li>
-						<li className="menu_qna" onClick={chooseMenu}>
+						<li className="menu_inquiry" onClick={chooseMenu}>
 							Q&A 관리
 						</li>
 						<li className="menu_faq" onClick={chooseMenu}>
@@ -312,7 +347,7 @@ const ManagerSection = () => {
 				<div className="right"></div>
 			</div>
 			<div className="popup_background"></div>
-			{board === 'banner' ? ( // 배너 게시물 추가 팝업
+			{board === 'banner' && ( // 배너 게시물 추가 팝업
 				<div className="board_modify_popup">
 					<form id="board_modify_form" onSubmit={onSubmit}>
 						<div className="board_popup_title_area">
@@ -350,7 +385,70 @@ const ManagerSection = () => {
 						삭제
 					</div>
 				</div>
-			) : (
+			)}
+			{board === 'inquiry' && ( // 문의 확인
+			<div className="board_modify_popup">
+				<form id="board_modify_form" onSubmit={onSubmit}>
+					<div className="board_popup_title_area">
+						<div className="board_popup_text">문의 제목</div>
+						<div id="board_popup_inquiry_title"></div>
+					</div>
+					<div className="board_popup_inquiry_info">
+						문의ID : <span id="board_popup_inquiry_id"></span><br/>
+						문의한 상품, 주문에 대한 정보가 들어갈 칸; 구매부분 구현되면 넣을것
+					</div>
+					<div className="board_popup_detail_area">
+						<div id="board_popup_inquiry_detail"></div>
+						<hr/>
+						<div id="board_popup_inquiry_answer">
+							<div id="board_popup_inquiry_answer_header">답변 내용</div>
+							<textarea name="board_popup_detail" id="board_popup_detail"></textarea>
+						</div>
+					</div>
+					<div className="board_popup_ox">
+						<button type="submit" id="add_button">
+							입력하기
+						</button>
+						<button type="button" onClick={closePopup}>
+							취소하기
+						</button>
+					</div>
+				</form>
+				<div id="delete_button" onClick={deletePost}>
+					삭제
+				</div>
+				{/*<form id="board_modify_form" onSubmit={onSubmit}>
+					<div className="board_popup_title_area">
+						<div className="board_popup_text">{board} 제목</div>
+						<div id="board_popup_inquiry_title"></div>
+					</div>
+					<div className="board_popup_inquiry_info">
+						문의한 상품, 주문에 대한 정보가 들어갈 칸; 구매부분 구현되면 넣을것
+					</div>
+					<div className="board_popup_detail_area">
+						<div className="board_popup_text">내용</div>
+						<div id="board_popup_inquiry_detail"></div>
+						<textarea name="board_popup_detail" id="board_popup_detail"></textarea>
+					</div>
+					<div className="board_popup_ox">
+						<button type="submit" id="add_button">
+							입력하기
+						</button>
+						<button type="button" id="modify_button" onClick={modifyPost}>
+							수정하기
+						</button>
+						<button type="button" onClick={closePopup}>
+							취소하기
+						</button>
+					</div>
+				</form>
+				<div id="delete_button" onClick={deletePost}>
+					삭제
+			</div>*/}
+			</div>
+			)}
+			{/*
+			 : (
 				// 공지, QnA, FAQ 추가 팝업
 				<div className="board_modify_popup">
 					<form id="board_modify_form" onSubmit={onSubmit}>
@@ -379,7 +477,7 @@ const ManagerSection = () => {
 					</div>
 				</div>
 			)}
-
+			*/}
 			{productPopup && <Additem closePopup={setProductPopup} closeEdit={setProductStatus} editStatus={productStatus} />}
 		</div>
 	);

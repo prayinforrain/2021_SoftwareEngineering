@@ -58,7 +58,7 @@ textarea:focus {
 .popup_background {
     width: 100vw;
     height: 100vh;
-    background: (0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.4);
     position: absolute;
     left: 0;
     top: 0;
@@ -158,6 +158,10 @@ textarea:focus {
 .board_popup_detail_area {
     width: 100%;
     height: 70%;
+}
+#board_popup_inquiry_answer {
+    width: 100%;
+    height: 100%;
 }
 .board_popup_ox {
     margin: 0 auto;

@@ -21,5 +21,6 @@ db.Genre = require('./genre')(sequelize, Sequelize);
 db.Itemgenre = require('./itemgenre')(sequelize, Sequelize);
 db.Cart = require('./cart')(sequelize, Sequelize);
 db.Wishlist = require('./wishlist')(sequelize, Sequelize);
+db.Inquiry = require('./inquiry')(sequelize, Sequelize);
 
 module.exports = db;
