@@ -22,6 +22,16 @@ const Post = ({ board, data, openPopup, setBannerKey }) => {
 			</div>
 		);
 	}
+	if (board === 'inquiry') {
+		return (
+			<div className="inner_board" onClick={clickHandler}>
+				<div className={`board_idx`}>{data.id}</div>
+				<div className={`board_title`}>{data.title}</div>
+				<div className={`board_answered`}>{data.answer !== "" ? (<>✔</>) : (<>❌</>)}</div>
+				<div className={`board_date`}>{data.createdAt.slice(0, 10)}</div>
+			</div>
+		);
+	}
 	return (
 		<div className="inner_board" onClick={clickHandler}>
 			<div className={`board_idx`}>{data.id}</div>

@@ -59,7 +59,7 @@ const Board = ({ board, boardData, openPopup, setBannerKey }) => {
 			<div className="inner_board">
 				<div className="board_idx">번호</div>
 				<div className="board_title notice_title_top">{board} 제목</div>
-				<div className="board_contents"></div>
+				{board === 'inquiry' ? (<div className="board_answered">답변</div>) : (<div className="board_contents"></div>)}
 				<div className="board_date">날짜</div>
 			</div>
 			{!boardData ? (

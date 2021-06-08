@@ -99,6 +99,11 @@ textarea:focus {
 .board_contents{
     display:none;
 }
+
+.board_answered {
+    width: 5%;
+}
+
 .board_title_top {
     text-align: center;
     padding: 0;

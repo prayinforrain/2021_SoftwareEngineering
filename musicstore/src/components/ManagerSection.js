@@ -74,6 +74,7 @@ const ManagerSection = () => {
 			const addButton = document.getElementById('add_button');
 			const modifyButton = document.getElementById('modify_button');
 			const deleteButton = document.getElementById('delete_button');
+			if(board !== 'banner') document.getElementById('board_popup_detail').disabled = false;
 			if (data['id']) {
 				deleteButton.style.display = 'block';
 				if(modifyButton) modifyButton.style.display = 'block';
@@ -88,7 +89,12 @@ const ManagerSection = () => {
 					document.getElementById('board_popup_inquiry_title').innerText = data.title;
 					document.getElementById('board_popup_inquiry_detail').innerText = data.detail;
 					document.getElementById('board_popup_inquiry_id').innerText = data.id;
-					document.getElementById('board_popup_detail').value = data.answer;
+					document.getElementById('board_popup_inquiry_productID').innerText = data.productID;
+					document.getElementById('board_popup_inquiry_orderID').innerText = data.orderID;
+					if(data.answer !== "") {
+						document.getElementById('board_popup_detail').value = data.answer;
+						document.getElementById('board_popup_detail').disabled = true;
+					}
 					addButton.style.display = 'block';
 					deleteButton.style.display = 'none';
 				} else {
@@ -257,7 +263,7 @@ const ManagerSection = () => {
             }).then( res => {
                 console.log(res);
                 if(res.status === 200) {
-                    alert("문의 등록이 완료되었습니다.")
+                    alert("답변 등록이 완료되었습니다.")
 					closePopup();
 					fetchBoards();
                 } else {
@@ -268,13 +274,15 @@ const ManagerSection = () => {
                 alert("오류가 발생하였습니다.")
             });
 		} else {
+			const title = document.getElementById(`board_popup_title`).value;
 			const contents = document.getElementById(`board_popup_detail`).value;
 
 			axios({
 				method: 'POST',
 				url: `${config.BACKEND_URL}/${board}`,
 				data: {
-					answer: contents,
+					title,
+					contents
 				},
 			})
 				.then(res => {
@@ -395,7 +403,8 @@ const ManagerSection = () => {
 					</div>
 					<div className="board_popup_inquiry_info">
 						문의ID : <span id="board_popup_inquiry_id"></span><br/>
-						문의한 상품, 주문에 대한 정보가 들어갈 칸; 구매부분 구현되면 넣을것
+						관련 상품 ID : <span id="board_popup_inquiry_productID"></span><br/>
+						주문 ID : <span id="board_popup_inquiry_orderID"></span><br/>
 					</div>
 					<div className="board_popup_detail_area">
 						<div id="board_popup_inquiry_detail"></div>
@@ -407,48 +416,19 @@ const ManagerSection = () => {
 					</div>
 					<div className="board_popup_ox">
 						<button type="submit" id="add_button">
-							입력하기
+							답변하기
 						</button>
 						<button type="button" onClick={closePopup}>
-							취소하기
+							닫기
 						</button>
 					</div>
 				</form>
 				<div id="delete_button" onClick={deletePost}>
 					삭제
 				</div>
-				{/*<form id="board_modify_form" onSubmit={onSubmit}>
-					<div className="board_popup_title_area">
-						<div className="board_popup_text">{board} 제목</div>
-						<div id="board_popup_inquiry_title"></div>
-					</div>
-					<div className="board_popup_inquiry_info">
-						문의한 상품, 주문에 대한 정보가 들어갈 칸; 구매부분 구현되면 넣을것
-					</div>
-					<div className="board_popup_detail_area">
-						<div className="board_popup_text">내용</div>
-						<div id="board_popup_inquiry_detail"></div>
-						<textarea name="board_popup_detail" id="board_popup_detail"></textarea>
-					</div>
-					<div className="board_popup_ox">
-						<button type="submit" id="add_button">
-							입력하기
-						</button>
-						<button type="button" id="modify_button" onClick={modifyPost}>
-							수정하기
-						</button>
-						<button type="button" onClick={closePopup}>
-							취소하기
-						</button>
-					</div>
-				</form>
-				<div id="delete_button" onClick={deletePost}>
-					삭제
-			</div>*/}
 			</div>
 			)}
-			{/*
-			 : (
+			{board === "notice" && (
 				// 공지, QnA, FAQ 추가 팝업
 				<div className="board_modify_popup">
 					<form id="board_modify_form" onSubmit={onSubmit}>
@@ -477,7 +457,35 @@ const ManagerSection = () => {
 					</div>
 				</div>
 			)}
-			*/}
+			{board === "faq" && (
+				// 공지, QnA, FAQ 추가 팝업
+				<div className="board_modify_popup">
+					<form id="board_modify_form" onSubmit={onSubmit}>
+						<div className="board_popup_title_area">
+							<div className="board_popup_text">{board} 제목</div>
+							<input type="text" id="board_popup_title" />
+						</div>
+						<div className="board_popup_detail_area">
+							<div className="board_popup_text">내용</div>
+							<textarea name="board_popup_detail" id="board_popup_detail"></textarea>
+						</div>
+						<div className="board_popup_ox">
+							<button type="submit" id="add_button">
+								입력하기
+							</button>
+							<button type="button" id="modify_button" onClick={modifyPost}>
+								수정하기
+							</button>
+							<button type="button" onClick={closePopup}>
+								취소하기
+							</button>
+						</div>
+					</form>
+					<div id="delete_button" onClick={deletePost}>
+						삭제
+					</div>
+				</div>
+			)}
 			{productPopup && <Additem closePopup={setProductPopup} closeEdit={setProductStatus} editStatus={productStatus} />}
 		</div>
 	);
